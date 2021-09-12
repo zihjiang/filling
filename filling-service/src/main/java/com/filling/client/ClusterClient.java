@@ -13,7 +13,7 @@ public interface ClusterClient {
      * 提交任务
      * @return 返回任务id, 提交失败, 则为空
      */
-    Optional<String> submit(String jobText, Integer parallelism);
+    Optional<String> submit(String jobText);
 
     /**
      * 停止正在运行的任务

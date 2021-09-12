@@ -42,19 +42,21 @@ public class StandaloneClusterClient implements ClusterClient {
     }
 
     @Override
-    public Optional<String> submit(String jobText, Integer parallelism) {
+    public Optional<String> submit(String jobText) {
         Optional<String> jobId = Optional.empty();
-        String url = flink.getUrl() + "/jars/{id}/run?entry-class={entry-class}&parallelism={parallelism}&program-args={args}";
+        String url = flink.getUrl() + "/jars/{id}/run";
+
+        JSONObject bodyJson = new JSONObject();
+        bodyJson.put("programArgs", Base64Utils.encode(jobText));
+        bodyJson.put("entryClass", jarInfo.getJSONArray("entry").getJSONObject(0).getString("name"));
         url = url.replace("{id}", jarInfo.getString("id"));
-        url = url.replace("{entry-class}", jarInfo.getJSONArray("entry").getJSONObject(0).getString("name"));
-        url = url.replace("{parallelism}", parallelism.toString());
-        url = url.replace("{args}", Base64Utils.encode(jobText));
+
         log.info("submit job url: {}", url);
         log.info("args is: {}", Base64Utils.encode(jobText));
         OkHttpClient client = new OkHttpClient().newBuilder()
             .build();
         MediaType mediaType = MediaType.parse("text/plain");
-        RequestBody body = RequestBody.create(mediaType, "");
+        RequestBody body = RequestBody.create(mediaType, bodyJson.toJSONString());
         Request request = new Request.Builder()
             .url(url)
             .method("POST", body)
