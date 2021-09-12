@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity FillingJobsHistory.
+    -->
+    <changeSet id="20210829085610-1" author="jhipster">
+        <createTable tableName="filling_jobs_history">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="application_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="job_text" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="conf_prop" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="createtime" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="updatetime" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="created_by" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="addjar" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="description" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="filling_jobs_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+        <dropDefaultValue tableName="filling_jobs_history" columnName="createtime" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="filling_jobs_history" columnName="updatetime" columnDataType="${datetimeType}"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20210829085610-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/filling_jobs_history.csv"
+                  separator=";"
+                  tableName="filling_jobs_history">
+            <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
+            <column name="application_id" type="string"/>
+            <column name="job_text" type="string"/>
+            <column name="type" type="string"/>
+            <column name="conf_prop" type="string"/>
+            <column name="status" type="string"/>
+            <column name="createtime" type="${datetimeType}"/>
+            <column name="updatetime" type="${datetimeType}"/>
+            <column name="created_by" type="string"/>
+            <column name="addjar" type="string"/>
+            <column name="description" type="string"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

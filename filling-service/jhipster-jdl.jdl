@@ -1,0 +1,35 @@
+entity FillingJobs(filling_jobs) {
+	name String,
+	applicationId String,
+	jobText String,
+	type String, // 任务类型
+	confProp String,
+    status String,
+    createtime Instant,
+    updatetime Instant,
+    createdBy String,
+    addjar String,
+    description String
+}
+
+entity FillingJobsHistory(filling_jobs_history) {
+	name String,
+	applicationId String,
+	jobText String,
+	type String, // 任务类型
+	confProp String,
+    status String,
+    createtime Instant,
+    updatetime Instant,
+    createdBy String,
+    addjar String,
+    description String
+}
+relationship OneToMany {
+	FillingJobs to FillingJobsHistory{fillingJobs}
+}
+service FillingJobs with serviceClass
+paginate FillingJobs with pagination
+
+service FillingJobsHistory with serviceClass
+paginate FillingJobsHistory with pagination
