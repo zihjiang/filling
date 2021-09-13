@@ -95,17 +95,17 @@ class ParamsFrom extends Component {
     // if (pluginOptions) {
     if (this.state.data != undefined) {
       // 编辑
-      // initialValues = data;
-      pluginOptions.forEach((pluginOption) => {
+      initialValues = data;
+      // pluginOptions.forEach((pluginOption) => {
         // if(pluginOption.type == "array") {
         //   if(_.find(pluginOptions, (d) => {return d.father == pluginOption.father })) {
 
         //   }
         // }
-        initialValues[pluginOption.name] = data[pluginOption.name];
-      })
+      //   initialValues[pluginOption.name] = data[pluginOption.name];
+      // })
 
-      console.log('编辑');
+      console.log('编辑', initialValues);
     } else {
       // 新建
       pluginOptions.forEach((pluginOption) => {
