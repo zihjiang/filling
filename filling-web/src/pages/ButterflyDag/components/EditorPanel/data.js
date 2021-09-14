@@ -185,7 +185,7 @@ const source = [
             }, {
                 "name": "driver",
                 "text": "驱动",
-                "defaultValue": "com.mysql.cj.jdbc.Driver",
+                "defaultValue": "com.mysql.jdbc.Driver",
                 "required": true,
                 "paramsDesc": "jdbc驱动类",
                 "desc": " ",

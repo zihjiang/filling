@@ -186,6 +186,8 @@ class EditorToolbar extends Component {
             // _node['data'] = options.data;
             result.nodes.push(_node);
         }
+        // 排序
+        result.nodes = _.orderBy(result.nodes, ['left', 'top']);
         // edges
         for (let i = 0; i < edges.length; i++) {
             const edge = edges[i];
