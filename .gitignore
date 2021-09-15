@@ -14,6 +14,7 @@ filling-web/node_modules/
 filling-web/src/.umi/*
 filling-web/src/.umi-production/*
 filling-web/npm-debug.log.*
+filling-service/src/main/webapp
 /.awcache/*
 /.cache-loader/*
 
@@ -159,3 +160,4 @@ Desktop.ini
 ######################
 /coverage/
 /.nyc_output/
+/filling-service/src/main/webapp/

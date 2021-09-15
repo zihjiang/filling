@@ -60,16 +60,16 @@ class EditorFlow extends Component {
       <PageContainer content="这是一个新页面，从这里进行开发！" className={styles.main}>
         <div className={styles.editor}>
           <Row className={styles.editorHd}>
-            <Col span={20}>
+            <Col md={20} lg={20}>
               {/* FlowToolbar  */}
               <EditorToolbar data={this.state.data} />
             </Col>
           </Row>
           <Row className={styles.editorBd}>
-            <Col span={20} className={styles.editorContent}>
+            <Col md={20} lg={20} className={styles.editorContent}>
               <EditorGraph data={data} />
             </Col>
-            <Col span={4} className={styles.editorSidebar}>
+            <Col md={4} lg={4}  className={styles.editorSidebar}>
               {/* FlowItemPanel */}
               <EditorPanel />
             </Col>

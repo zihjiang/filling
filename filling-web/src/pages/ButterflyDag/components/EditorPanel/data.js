@@ -1,17 +1,18 @@
-import kafkaIcon from './images/kafka.png';
-import jdbsIcon from './images/jdbc.png';
-import dataGenIcon from './images/dataGen.png';
-import DataAggregatesIcon from './images/DataAggregates.png';
-import enbase64Icon from './images/enbase64.png';
-import debase64Icon from './images/debase64.png';
-import dataJoinIcon from './images/dataJoin.png';
-import dataSelectorIcon from './images/dataSelector.png';
-import devIcon from './images/dev.png';
-import elasticsearchIcon from './images/Elasticsearch.png';
-import converIcon from './images/conver.png';
-import fieldIcon from './images/field.png';
-import sqlIcon from './images/sql.png';
-import selectIocn from './images/selected.png';
+import kafkaIcon from './images/kafka.svg';
+import jdbsIcon from './images/jdbc.svg';
+import dataGenIcon from './images/dataGen.svg';
+import DataAggregatesIcon from './images/DataAggregates.svg';
+import enbase64Icon from './images/enbase64.svg';
+import debase64Icon from './images/debase64.svg';
+import dataJoinIcon from './images/dataJoin.svg';
+import dataSelectorIcon from './images/dataSelector.svg';
+import devIcon from './images/dev.svg';
+// import elasticsearchIcon from './images/Elasticsearch.png';
+import elasticsearchIcon from './images/Elasticsearch.svg';
+import converIcon from './images/convert.svg';
+import fieldIcon from './images/field.svg';
+import sqlIcon from './images/sql.svg';
+import selectIocn from './images/selected.svg';
 
 import BaseEndpoint from '../EditorGraph/endpoint';
 

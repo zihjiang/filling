@@ -58,6 +58,7 @@ class panelPlugins {
 
         let img = new Image();
         // let img = document.createElement('svg');
+        // img.src = './images/Elasticsearch.svg';
         img.src = item.content;
         
 
