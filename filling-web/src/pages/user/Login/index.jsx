@@ -89,7 +89,7 @@ const Login = () => {
           <div className={styles.header}>
             <Link to="/">
               <img alt="logo" className={styles.logo} src="/logo.svg" />
-              <span className={styles.title}>Ant Design</span>
+              <span className={styles.title}>Filling</span>
             </Link>
           </div>
           <div className={styles.desc}>
@@ -124,22 +124,6 @@ const Login = () => {
               handleSubmit(values);
             }}
           >
-            <Tabs activeKey={type} onChange={setType}>
-              <Tabs.TabPane
-                key="account"
-                tab={intl.formatMessage({
-                  id: 'pages.login.accountLogin.tab',
-                  defaultMessage: '账户密码登录',
-                })}
-              />
-              <Tabs.TabPane
-                key="mobile"
-                tab={intl.formatMessage({
-                  id: 'pages.login.phoneLogin.tab',
-                  defaultMessage: '手机号登录',
-                })}
-              />
-            </Tabs>
 
             {status === 'error' && loginType === 'account' && (
               <LoginMessage
@@ -159,7 +143,7 @@ const Login = () => {
                   }}
                   placeholder={intl.formatMessage({
                     id: 'pages.login.username.placeholder',
-                    defaultMessage: '用户名: admin or user',
+                    defaultMessage: '用户名',
                   })}
                   rules={[
                     {
@@ -181,7 +165,7 @@ const Login = () => {
                   }}
                   placeholder={intl.formatMessage({
                     id: 'pages.login.password.placeholder',
-                    defaultMessage: '密码: ant.design',
+                    defaultMessage: '密码',
                   })}
                   rules={[
                     {
@@ -300,12 +284,6 @@ const Login = () => {
               </a>
             </div>
           </ProForm>
-          <Space className={styles.other}>
-            <FormattedMessage id="pages.login.loginWith" defaultMessage="其他登录方式" />
-            <AlipayCircleOutlined className={styles.icon} />
-            <TaobaoCircleOutlined className={styles.icon} />
-            <WeiboCircleOutlined className={styles.icon} />
-          </Space>
         </div>
       </div>
       <Footer />
