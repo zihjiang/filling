@@ -12,7 +12,10 @@ import {
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
 import _ from 'lodash';
-import MonacoEditor from 'react-monaco-editor';
+import AceEditor from "react-ace";
+
+import 'ace-builds/src-noconflict/mode-json';
+import "ace-builds/src-noconflict/theme-terminal";
 
 class ParamsFrom extends Component {
   constructor(props) {
@@ -49,6 +52,7 @@ class ParamsFrom extends Component {
   // 更新node的数据
   updateData = (values) => {
 
+    console.log('values', values);
     _.map(window.canvas.nodes, (d) => { if (d.id == window.selectNode.id) d.options.data = _.merge(d.options.data, values) });
   }
 
@@ -77,8 +81,6 @@ class ParamsFrom extends Component {
   }
 
   changeType = (value) => {
-
-    console.log(value);
     this.setState(
       {
         editModel: value
@@ -86,25 +88,25 @@ class ParamsFrom extends Component {
     )
   }
 
+  editorWillMount(monaco) {
+    console.log(monaco);
+  }
 
   render() {
     let initialValues = this.state.initialValues;
     const pluginOptions = this.state.pluginOptions;
     let data = this.state.data;
 
+
+    const options = {
+      contextmenu: true
+    };
+
+
     // if (pluginOptions) {
     if (this.state.data != undefined) {
       // 编辑
       initialValues = data;
-      // pluginOptions.forEach((pluginOption) => {
-        // if(pluginOption.type == "array") {
-        //   if(_.find(pluginOptions, (d) => {return d.father == pluginOption.father })) {
-
-        //   }
-        // }
-      //   initialValues[pluginOption.name] = data[pluginOption.name];
-      // })
-
       console.log('编辑', initialValues);
     } else {
       // 新建
@@ -116,7 +118,7 @@ class ParamsFrom extends Component {
     }
     // }
 
-    let Universal = (type) => (
+    let Universal = () => (
       this.state.pluginOptions.map((item, idx) => {
         switch (item.type) {
           case "text":
@@ -211,6 +213,30 @@ class ParamsFrom extends Component {
         }
       })
     );
+
+    let Configuration = () => {
+      return <AceEditor
+        placeholder="Placeholder Text"
+        mode="json"
+        name="data"
+        theme="terminal"
+        fontSize={12}
+        showPrintMargin={true}
+        showGutter={true}
+        highlightActiveLine={true}
+        value={JSON.stringify(initialValues, null, 2)}
+        setOptions={{
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true,
+          enableSnippets: true,
+          showLineNumbers: true,
+          tabSize: 2,
+        }} />
+    }
+
+    let getFrom = (type) => {
+      return type == 'json' ? Configuration() : Universal();
+    }
     return (
       <>
         <DrawerForm
@@ -236,7 +262,7 @@ class ParamsFrom extends Component {
           onValuesChange={(value) => this._forceUpdate(value)}
         >
 
-          {/* <ProFormRadio.Group
+          <ProFormRadio.Group
             style={{
               margin: 16,
             }}
@@ -248,10 +274,10 @@ class ParamsFrom extends Component {
             options={[
               '配置',
               'json'
-              
+
             ]}
-          /> */}
-          {Universal(1)}
+          />
+          {getFrom(this.state.editModel)}
         </DrawerForm>
       </>
     );

@@ -6,8 +6,8 @@ import { panelPluginsInstance } from './panelPlugins';
 import './index.less';
 import { Component } from 'react';
 import LightFilter, { ProFormSelect, ProFormText } from '@ant-design/pro-form';
-import { PlusOutlined } from '@ant-design/icons';
 import data from './data';
+import { Affix } from 'antd';
 class EditorPanel extends Component {
 
     constructor(props) {
@@ -47,7 +47,7 @@ class EditorPanel extends Component {
                     canvas: this.canvas,
                     // type: 'basic',
                     height: 90,
-                    data: _.filter(data, (d) => { return (d.text.indexOf(values["filterString"])>=0 || (d.pluginType == values["selectMode"] ||  values["selectMode"]== "all") ) }),
+                    data: _.filter(data, (d) => { return (d.text.indexOf(values["filterString"]) >= 0 || (d.pluginType == values["selectMode"] || values["selectMode"] == "all")) }),
                 },
             ], () => {
                 console.log('finish')
@@ -66,20 +66,24 @@ class EditorPanel extends Component {
                     submitter={false}
                     onValuesChange={(values) => this.filterFrom(values)}
                 >
-                    <ProFormSelect
-                        valueEnum={{
-                            all: '全部',
-                            source: '源',
-                            transform: '算子',
-                            sink: '目标'
-                        }}
-                        style={{
-                            margin: 16,
-                        }}
-                        name="selectMode"
-                    />
+                    <Affix offsetTop={10}>
+                        <ProFormSelect
+                            valueEnum={{
+                                all: '全部',
+                                source: '源',
+                                transform: '算子',
+                                sink: '目标'
+                            }}
+                            style={{
+                                margin: 16,
+                            }}
+                            name="selectMode"
+                        />
+                        <ProFormText name="filterString" placeholder="过滤" />
 
-                    <ProFormText name="filterString" placeholder="过滤" />
+                    </Affix>
+
+
                 </LightFilter>
 
                 <div className="dnd" id="dnd"></div>
