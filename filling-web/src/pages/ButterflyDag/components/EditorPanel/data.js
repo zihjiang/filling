@@ -1366,6 +1366,81 @@ const sink = [
         content: elasticsearchIcon,
         height: 90,
         width: "100%"
+    },
+
+
+    {
+        id: 'KafkaTable',
+        text: 'Kafka producer',
+        type: 'png',
+        Data: {},
+        pluginType: 'sink',
+        pluginName: "KafkaTable",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "Kafka-sink",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "KafkaTable",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "text"
+            },{
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": true,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            },
+            {
+                "name": "producer.bootstrap.servers",
+                "text": "producer.bootstrap.servers",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "kafka地址, 例如: 10.11.12.1:9092",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "topics",
+                "text": "topics",
+                "defaultValue": "filling",
+                "required": true,
+                "paramsDesc": "topics",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            }
+        ],
+        endpoints: [{
+            id: 'kafkasink_source_table_name',
+            orientation: [-1, 0],
+            pos: [0, 0.5],
+            Class: BaseEndpoint,
+            color: 'system-green'
+        }],
+        content: kafkaIcon,
+        height: 90,
+        width: "100%"
     }
 
 ];
