@@ -6,8 +6,7 @@ import {
   ProFormTextArea,
   ProFormDigit,
   ProFormRadio,
-  ProFormSelect,
-  ProField
+  ProFormSelect
 
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
@@ -53,7 +52,19 @@ class ParamsFrom extends Component {
   updateData = (values) => {
 
     console.log('values', values);
-    _.map(window.canvas.nodes, (d) => { if (d.id == window.selectNode.id) d.options.data = _.merge(d.options.data, values) });
+    console.log('editModel', this.state.editModel);
+    console.log('window.selectNode.id', window.selectNode.id);
+
+    console.log('this.state.data', window.selectNode.id);
+    switch (this.state.editModel) {
+      case "json":
+
+        _.map(window.canvas.nodes, (d) => { if (d.id == window.selectNode.id) d.options.data = this.state.data });
+        break;
+      default:
+        _.map(window.canvas.nodes, (d) => { if (d.id == window.selectNode.id) d.options.data = _.merge(d.options.data, values) });
+        break;
+    }
   }
 
   _forceUpdate = (values) => {
@@ -225,6 +236,8 @@ class ParamsFrom extends Component {
         showGutter={true}
         highlightActiveLine={true}
         value={JSON.stringify(initialValues, null, 2)}
+        // onChange={(d) => this.setState({ data: d })}
+        onChange={(d) => this.state.data = JSON.parse(d)}
         setOptions={{
           enableBasicAutocompletion: true,
           enableLiveAutocompletion: true,
