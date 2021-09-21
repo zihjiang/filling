@@ -1375,7 +1375,7 @@ const sink = [
         type: 'png',
         Data: {},
         pluginType: 'sink',
-        pluginName: "KafkaTable",
+        pluginName: "KafkaSink",
         pluginOptions: [
             {
                 "name": "name",
@@ -1390,7 +1390,7 @@ const sink = [
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
-                "defaultValue": "KafkaTable",
+                "defaultValue": "KafkaSink",
                 "required": true,
                 "paramsDesc": "插件名称, 系统自带, 无需更改",
                 "desc": " ",
