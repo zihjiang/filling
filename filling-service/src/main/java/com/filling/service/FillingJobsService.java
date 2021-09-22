@@ -1,5 +1,6 @@
 package com.filling.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
@@ -167,5 +168,14 @@ public class FillingJobsService {
             // TODO 停止失败的逻辑
         }
         return save(fillingJobs);
+    }
+
+    /**
+     * plan this job
+     * @param fillingJobs
+     * @return
+     */
+    public JSONObject plan(FillingJobs fillingJobs) {
+        return clusterClient.plan(fillingJobs.toJobString());
     }
 }

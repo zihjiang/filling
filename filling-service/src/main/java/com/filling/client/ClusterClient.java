@@ -1,5 +1,7 @@
 package com.filling.client;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.util.Optional;
 
 public interface ClusterClient {
@@ -21,4 +23,11 @@ public interface ClusterClient {
      * @return
      */
     Boolean cancel(String jobId);
+
+    /**
+     * 测试任务是否可以提交至集群
+     * @param jobId
+     * @return
+     */
+    JSONObject plan(String jobId);
 }

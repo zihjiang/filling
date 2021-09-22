@@ -72,3 +72,11 @@ export async function stopFillingJobs(id) {
     method: 'GET'
   });
 }
+
+/** 检查一个任务是否能正常工作 plan /api/filling-jobs */
+
+export async function planFillingJobs(id) {
+  return request('/api/filling-jobs/' + id + '/plan', {
+    method: 'GET'
+  });
+}

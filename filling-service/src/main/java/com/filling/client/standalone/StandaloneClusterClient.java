@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Configuration
 public class StandaloneClusterClient implements ClusterClient {
@@ -108,6 +109,47 @@ public class StandaloneClusterClient implements ClusterClient {
         } catch (Exception e) {
             e.printStackTrace();
             result = false;
+        } finally {
+            return result;
+        }
+    }
+
+    @Override
+    public JSONObject plan(String jobText) {
+        JSONObject result = new JSONObject();
+        Optional<String> jobId = Optional.empty();
+        String url = flink.getUrl() + "/jars/{id}/plan";
+
+        JSONObject bodyJson = new JSONObject();
+        bodyJson.put("programArgs", Base64Utils.encode(jobText));
+        bodyJson.put("entryClass", jarInfo.getJSONArray("entry").getJSONObject(0).getString("name"));
+        url = url.replace("{id}", jarInfo.getString("id"));
+
+        log.info("plan job url: {}", url);
+        log.info("args is: {}", Base64Utils.encode(jobText));
+        OkHttpClient client = new OkHttpClient().newBuilder()
+            .callTimeout(1, TimeUnit.MINUTES)
+            .build();
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, bodyJson.toJSONString());
+        Request request = new Request.Builder()
+            .url(url)
+            .method("POST", body)
+            .build();
+        try(Response response = client.newCall(request).execute()) {
+            String respStr = response.body().string();
+            JSONObject resp = JSONObject.parseObject(respStr);
+            if(StringUtils.isEmpty(resp.getString("errors"))) {
+                log.info("plan success");
+                log.info("plan result: {}",respStr);
+                result = resp;
+            } else {
+                log.info("plan failed");
+                log.info("respStr: {}", resp);
+                result = resp;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             return result;
         }

@@ -1,5 +1,6 @@
 package com.filling.web.rest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
@@ -217,5 +218,12 @@ public class FillingJobsResource {
 
         }
         return ResponseUtil.wrapOrNotFound(fillingJobsService.findOne(id));
+    }
+
+    @GetMapping("/filling-jobs/{id}/plan")
+    public ResponseEntity<JSONObject> planFillingJobs(@PathVariable Long id) {
+        log.debug("REST request to plan FillingJobs : {}", id);
+        Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
+        return ResponseEntity.ok(fillingJobsService.plan(fillingJobs.get()));
     }
 }
