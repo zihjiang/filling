@@ -301,12 +301,6 @@
         </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
 
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-clients_2.11</artifactId>
-            <version>1.13.1</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>

@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.testcontainers.shaded.okhttp3.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Base64;
 import java.util.Optional;
 
@@ -28,17 +29,24 @@ public class StandaloneClusterClient implements ClusterClient {
 
     static JSONObject jarInfo;
 
+    static String jarName;
+
 
     @Override
     public void init() {
-
-        if (getLastFile() == null) {
-            log.info("uploading fillingcore.... ");
-            uploadJar();
-            log.info("uploadJar success");
+        File file = new File(flink.getJar());
+        if(file.exists()) {
+            jarName = file.getName();
+            if (getLastFile() == null) {
+                log.info("uploading fillingcore.... ");
+                uploadJar();
+                log.info("uploadJar success");
+            }
+            jarInfo = getLastFile();
+            System.out.println("getLastFile: " + jarInfo.toJSONString());
+        } else {
+            new IOException("file " + flink.getJar() + "not exists");
         }
-        jarInfo = getLastFile();
-        System.out.println("getLastFile: " + jarInfo.toJSONString());
     }
 
     @Override
@@ -72,7 +80,7 @@ public class StandaloneClusterClient implements ClusterClient {
                 log.info("submit failed");
                 new Exception(resp.getString("errors"));
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         } finally {
             return jobId;
@@ -154,7 +162,7 @@ public class StandaloneClusterClient implements ClusterClient {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 System.out.println(jsonObject.toJSONString());
-                if ("calculation-core-1.0-SNAPSHOT.jar".equals(jsonObject.getString("name"))) {
+                if (jarName.equals(jsonObject.getString("name"))) {
                     return jsonObject;
                 }
             }
