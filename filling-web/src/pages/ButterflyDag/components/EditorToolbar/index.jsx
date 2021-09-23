@@ -12,8 +12,7 @@ import {
     DownloadOutlined,
     SelectOutlined,
     FormOutlined,
-    PauseCircleFilled,
-    Icon
+    PauseCircleFilled
 } from '@ant-design/icons';
 import React, { Component, useState } from 'react';
 import './index.less';
@@ -23,9 +22,10 @@ import ProForm, {
     ProFormText,
     ProFormTextArea,
     ProFormSelect,
+    ProFormDigit,
+    ProFormGroup
 } from '@ant-design/pro-form';
-import { PlusOutlined } from '@ant-design/icons';
-import { startFillingJobs, stopFillingJobs, addFillingJobs, updateFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
+import { planFillingJobs, startFillingJobs, stopFillingJobs, addFillingJobs, updateFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
 import { history } from 'umi';
 
 class EditorToolbar extends Component {
@@ -157,6 +157,21 @@ class EditorToolbar extends Component {
         }
     }
 
+    plan = async () => {
+        if (this.state.jobId) {
+            const hide = message.loading('检查中');
+            const status = await planFillingJobs(this.state.jobId);
+            hide();
+            console.log('status', status);
+            if (status.errors) {
+                message.error(status.errors[1]);
+            } else {
+                message.success('检查成功');
+            }
+        }
+
+    }
+
     // 把canvas对象data换成能序列化的对象
     deCodeDataMap = (dataMap) => {
         let result = {
@@ -206,6 +221,9 @@ class EditorToolbar extends Component {
 
     render() {
         let initialValues = this.state.data;
+        if(!initialValues.confProp) {
+            initialValues.confProp = '{"execution.parallelism": 2}';
+        }
         const appEdit = (<>
             <ModalForm
                 title="编辑基础信息"
@@ -231,6 +249,12 @@ class EditorToolbar extends Component {
                     placeholder="请输入名称"
                 />
 
+                <ProFormGroup label="任务参数">
+                    <ProFormTextArea width="xl" name="confProp"  label="" />
+                </ProFormGroup>
+
+
+
                 <ProFormTextArea width="xl" name="description" label="说明" />
             </ModalForm>
         </>);
@@ -245,7 +269,7 @@ class EditorToolbar extends Component {
                 <ZoomOutOutlined onClick={this.zoomInOut} title="缩小" />
                 <BugFilled title="调试" onClick={this.debugMode} />
                 <SaveFilled title="保存" onClick={() => this.save()} />
-                <CheckCircleFilled title="检查" />
+                <CheckCircleFilled title="检查" onClick={() => this.plan()} />
 
                 <PlayCircleFilled title="启动" style={{ display: (this.state.status == 2) ? 'none' : '' }} onClick={() => this.start()} />
                 <PauseCircleFilled title="停止" style={{ display: (this.state.status != 2) ? 'none' : '' }} onClick={() => this.stop()} />

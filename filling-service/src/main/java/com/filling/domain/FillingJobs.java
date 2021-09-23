@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.filling.enumeration.JobStatus;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -308,6 +309,7 @@ public class FillingJobs implements Serializable {
         JSONArray source = new JSONArray();
         JSONArray transfrom = new JSONArray();
         JSONArray sink = new JSONArray();
+        JSONObject env = JSONObject.parseObject(getConfProp());
         orgJobTextNodes.stream().forEach(d -> {
             JSONObject jsonObject = JSON.parseObject(d.toString());
             if("source".equals(jsonObject.getString("PluginType"))) {
@@ -319,7 +321,11 @@ public class FillingJobs implements Serializable {
             }
         });
 
-        result.put("env", new JSONObject());
+
+        if(StringUtils.isEmpty(env.getString("job.name"))) {
+            env.put("job.name", getName());
+        }
+        result.put("env", env);
         result.put("source", source);
         result.put("transform", transfrom);
         result.put("sink", sink);
