@@ -27,7 +27,6 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import { planFillingJobs, startFillingJobs, stopFillingJobs, addFillingJobs, updateFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
 import { history } from 'umi';
-
 class EditorToolbar extends Component {
     constructor(props) {
         super(props);
@@ -37,10 +36,6 @@ class EditorToolbar extends Component {
             status: (props.data.status == undefined) ? 1 : props.data.status
         }
         console.log(props);
-    }
-
-    componentDidMount() {
-
     }
 
     // 删除节点或线条
@@ -193,7 +188,7 @@ class EditorToolbar extends Component {
             const _node = { id, data, top, width, left, height };
             _node['endpoints'] = _endpoints;
 
-            _node['pluginOptions'] = options.pluginOptions;
+            // _node['pluginOptions'] = options.pluginOptions;
             _node['PluginType'] = options.PluginType;
             _node['pluginName'] = options.pluginName;
             _node['data'] = options.data;
@@ -221,7 +216,7 @@ class EditorToolbar extends Component {
 
     render() {
         let initialValues = this.state.data;
-        if(!initialValues.confProp) {
+        if (!initialValues.confProp) {
             initialValues.confProp = '{"execution.parallelism": 2}';
         }
         const appEdit = (<>
@@ -250,7 +245,7 @@ class EditorToolbar extends Component {
                 />
 
                 <ProFormGroup label="任务参数">
-                    <ProFormTextArea width="xl" name="confProp"  label="" />
+                    <ProFormTextArea width="xl" name="confProp" label="" />
                 </ProFormGroup>
 
 

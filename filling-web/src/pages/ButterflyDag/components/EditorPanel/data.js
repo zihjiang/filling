@@ -320,7 +320,7 @@ const source = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "kafka-source",
+                "defaultValue": "dataGen-source",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -367,16 +367,6 @@ const source = [
 
                 "readOnly": false,
                 "type": "text"
-            }, {
-                "name": "fields",
-                "text": "字段",
-                "defaultValue": [],
-                "required": true,
-                "paramsDesc": "字段生成方式",
-                "desc": " ",
-
-                "readOnly": false,
-                "type": "array"
             }, {
                 "name": "parallelism",
                 "text": "并行度",

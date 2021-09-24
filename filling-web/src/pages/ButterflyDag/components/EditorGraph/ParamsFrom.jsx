@@ -15,6 +15,7 @@ import AceEditor from "react-ace";
 
 import 'ace-builds/src-noconflict/mode-json';
 import "ace-builds/src-noconflict/theme-terminal";
+import rightTools from '../EditorPanel/data';
 
 class ParamsFrom extends Component {
   constructor(props) {
@@ -45,20 +46,15 @@ class ParamsFrom extends Component {
       pluginName: window.selectNode.options.pluginName,
       pluginOptions: window.selectNode.options.pluginOptions ? JSON.parse(window.selectNode.options.pluginOptions) : {}
     });
+    console.log('pluginOptions', this.state.pluginOptions);
 
     // this._forceUpdate({1: 1});
   }
   // 更新node的数据
   updateData = (values) => {
 
-    console.log('values', values);
-    console.log('editModel', this.state.editModel);
-    console.log('window.selectNode.id', window.selectNode.id);
-
-    console.log('this.state.data', window.selectNode.id);
     switch (this.state.editModel) {
       case "json":
-
         _.map(window.canvas.nodes, (d) => { if (d.id == window.selectNode.id) d.options.data = this.state.data });
         break;
       default:
@@ -99,20 +95,21 @@ class ParamsFrom extends Component {
     )
   }
 
-  editorWillMount(monaco) {
-    console.log(monaco);
-  }
 
   render() {
     let initialValues = this.state.initialValues;
     const pluginOptions = this.state.pluginOptions;
+    console.log('pluginOptions', pluginOptions);
     let data = this.state.data;
 
 
-    const options = {
-      contextmenu: true
-    };
-
+    rightTools.map(d => {
+      if (data && d.pluginName == data.plugin_name) {
+        data.pluginOptions = d.pluginOptions;
+        this.state.pluginOptions = d.pluginOptions;
+      }
+    });
+    if(!Array.isArray(this.state.pluginOptions)) this.state.pluginOptions = [];
 
     // if (pluginOptions) {
     if (this.state.data != undefined) {
@@ -127,6 +124,7 @@ class ParamsFrom extends Component {
 
       console.log('新建');
     }
+    console.log('pluginOptions', pluginOptions);
     // }
 
     let Universal = () => (
