@@ -105,7 +105,7 @@ class ParamsFrom extends Component {
 
     rightTools.map(d => {
       if (data && d.pluginName == data.plugin_name) {
-        data.pluginOptions = d.pluginOptions;
+        // pluginOptions = d.pluginOptions;
         this.state.pluginOptions = d.pluginOptions;
       }
     });
