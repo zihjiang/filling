@@ -1,5 +1,5 @@
 
-import {Node} from 'butterfly-dag';
+import { Node } from 'butterfly-dag';
 import $ from 'jquery';
 class BaseNode extends Node {
   constructor(opts) {
@@ -10,10 +10,10 @@ class BaseNode extends Node {
 
   }
   mounted() {
-    
+
   }
 
-  
+
   draw = (data) => {
     let container = $('<div class= "test-base-node"></div>')
       .css('top', data.top)
@@ -21,7 +21,7 @@ class BaseNode extends Node {
       .css('width', 140)
       .css('height', 90);
     switch (this.options.PluginType) {
-      case 'source' :
+      case 'source':
         this.logEventDom = $('<div class="butterflie-circle-endpoint system-green-point"></div>');
         break;
       case 'transform':
@@ -42,8 +42,7 @@ class BaseNode extends Node {
     // }
 
     container.append(`<span class='text'>${data.options.text}</span>`);
-    container.append(`<img class='image' src=${ data.options.content}></img>`);
-
+    container.append(`<img class='image' src=${data.options.content}></img>`);
 
     $(container).on('dblclick', () => {
 

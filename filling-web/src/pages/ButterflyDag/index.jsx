@@ -56,21 +56,18 @@ class EditorFlow extends Component {
   render() {
     if (_.isEqual(this.state.data, {})) return (<Spin />);
     const data = JSON.parse(this.state.data.jobText);
-
-    console.log(data);
-
+    // 更改全局状态
+    window.jobRunStatus = this.state.data.status == 2 ? true : false;
     if (data.nodes) {
       data.nodes.map(d => {
         const node = rightTools.find(_d => _d.pluginName == d.pluginName) || {pluginOptions: "[]"} ;
         d.pluginOptions = JSON.stringify(node.pluginOptions);
         d.content = node.content;
-        console.log('node', node);
         if (!d.Class) {
           console.log('no class');
           d.Class = BaseNode;
         }
       })
-      console.log('data',data);
     }
 
     return (

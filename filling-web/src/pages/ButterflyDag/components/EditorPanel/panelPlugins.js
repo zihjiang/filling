@@ -72,6 +72,7 @@ class panelPlugins {
           e.originalEvent.dataTransfer.setData('pluginOptions', JSON.stringify(item['pluginOptions']));
 
           e.originalEvent.dataTransfer.setData('endpoints', JSON.stringify(item['endpoints']));
+          e.originalEvent.dataTransfer.setData('content', JSON.stringify(item['content']));
           e.originalEvent.dataTransfer.setDragImage(img, 0, 0);
         })
 
@@ -91,7 +92,7 @@ class panelPlugins {
           let { clientX, clientY } = e;
           let coordinates = registerData.canvas.terminal2canvas([clientX, clientY]);
           let id = e.originalEvent.dataTransfer.getData('id');
-          let content = e.originalEvent.dataTransfer.getData('originId');
+          let content = e.originalEvent.dataTransfer.getData('content');
           // let data = JSON.parse(e.originalEvent.dataTransfer.getData('data'));
 
           let endpoints = JSON.parse(e.originalEvent.dataTransfer.getData('endpoints'));

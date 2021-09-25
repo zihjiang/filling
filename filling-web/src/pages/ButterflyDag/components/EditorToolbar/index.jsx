@@ -124,10 +124,12 @@ class EditorToolbar extends Component {
                 case "2":
                     hide();
                     message.success('启动成功');
+                    window.jobRunStatus = true;
                     break;
                 default:
                     hide();
                     message.error('启动失败, 请查看flink端日志');
+                    window.jobRunStatus = false;
                     break;
             };
 
@@ -152,6 +154,7 @@ class EditorToolbar extends Component {
             );
             hide();
             message.success('停止成功');
+            window.jobRunStatus = false;
         } else {
             message.warning('请先保存');
         }

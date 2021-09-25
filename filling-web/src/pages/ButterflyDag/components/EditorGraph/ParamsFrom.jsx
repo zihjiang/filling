@@ -113,6 +113,7 @@ class ParamsFrom extends Component {
       console.log('新建');
     }
     console.log('pluginOptions', pluginOptions);
+    console.log('window.jobRunStatus', window.jobRunStatus);
     // }
 
     let Universal = () => (
@@ -125,7 +126,7 @@ class ParamsFrom extends Component {
               label={item.text}
               placeholder={item.paramsDesc}
               style={{ display: item.display }}
-              disabled={item.readOnly}
+              disabled={item.readOnly || window.jobRunStatus}
               formItemProps={
                 {
                   rules: [
@@ -143,8 +144,8 @@ class ParamsFrom extends Component {
               name={item.name}
               label={item.text}
               placeholder={item.paramsDesc}
-              style={{ display: item.display }}
-              disabled={item.readOnly}
+              style={{ display: item.display}}
+              disabled={item.readOnly || window.jobRunStatus }
             />
           case "digit":
             return <ProFormDigit
@@ -152,10 +153,10 @@ class ParamsFrom extends Component {
               name={item.name}
               label={item.text}
               placeholder={item.paramsDesc}
-              style={{ display: item.display }}
+              style={{ display: item.display  }}
               min={item.digitMin}
               max={item.digitMax}
-              disabled={item.readOnly}
+              disabled={item.readOnly|| window.jobRunStatus}
             />
 
           case "select":
@@ -164,8 +165,8 @@ class ParamsFrom extends Component {
               name={item.name}
               label={item.text}
               placeholder={item.paramsDesc}
-              style={{ display: item.display }}
-              disabled={item.readOnly}
+              style={{ display: item.display}}
+              disabled={item.readOnly || window.jobRunStatus }
               options={item.selectOptions}>
             </ProFormSelect>
 
@@ -177,7 +178,7 @@ class ParamsFrom extends Component {
               label={item.text}
               placeholder={item.paramsDesc}
               style={{ display: item.display }}
-              disabled={item.readOnly}
+              disabled={item.readOnly|| window.jobRunStatus}
               options={item.selectOptions}>
 
             </ProFormSelect>
@@ -189,7 +190,7 @@ class ParamsFrom extends Component {
               label={item.text.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               placeholder={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               style={{ display: item.display }}
-              disabled={item.readOnly}
+              disabled={item.readOnly || window.jobRunStatus}
               options={item.selectOptions}>
             </ProFormText>
 
@@ -201,8 +202,7 @@ class ParamsFrom extends Component {
                 label={item.text.replace("{field}", _item)}
                 placeholder={item.paramsDesc.replace("{field}", _item)}
                 style={{ display: item.display }}
-                disabled={item.readOnly}
-                onClick={(d) => console.log(d)}
+                disabled={item.readOnly || window.jobRunStatus}
                 options={item.selectOptions}>
               </ProFormText>
             })
