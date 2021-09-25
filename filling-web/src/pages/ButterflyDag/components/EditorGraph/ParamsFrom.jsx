@@ -15,7 +15,7 @@ import AceEditor from "react-ace";
 
 import 'ace-builds/src-noconflict/mode-json';
 import "ace-builds/src-noconflict/theme-terminal";
-import rightTools from '../EditorPanel/data';
+
 
 class ParamsFrom extends Component {
   constructor(props) {
@@ -27,15 +27,12 @@ class ParamsFrom extends Component {
       pluginName: "",
       pluginOptions: [],
       initialValues: {},
-      editModel: 'json'
+      editModel: '配置'
     }
 
   }
 
   componentDidMount() {
-    this.setState({
-      editModel: 'json'
-    })
   }
 
   handleUpdate = () => {
@@ -101,15 +98,6 @@ class ParamsFrom extends Component {
     const pluginOptions = this.state.pluginOptions;
     console.log('pluginOptions', pluginOptions);
     let data = this.state.data;
-
-
-    rightTools.map(d => {
-      if (data && d.pluginName == data.plugin_name) {
-        // pluginOptions = d.pluginOptions;
-        this.state.pluginOptions = d.pluginOptions;
-      }
-    });
-    if(!Array.isArray(this.state.pluginOptions)) this.state.pluginOptions = [];
 
     // if (pluginOptions) {
     if (this.state.data != undefined) {

@@ -35,8 +35,11 @@ class EditorToolbar extends Component {
             data: props.data,
             status: (props.data.status == undefined) ? 1 : props.data.status
         }
-        console.log(props);
     }
+
+    forceJobUpdate = (job) => {
+        this.props.forceJobUpdate(job);
+    };
 
     // 删除节点或线条
     deleteNodeAndEdge = () => {
@@ -102,6 +105,8 @@ class EditorToolbar extends Component {
             }
             hide();
             message.success('保存成功');
+            // 通知父组件
+            this.forceJobUpdate(entity);
             return true;
         } catch (error) {
             hide();

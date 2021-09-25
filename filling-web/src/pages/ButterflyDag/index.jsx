@@ -9,6 +9,7 @@ import { Component } from 'react';
 import BaseNode from './components/EditorGraph/node';
 import { fillingJob } from '../FillingJobs/service';
 import { Spin } from 'antd';
+import rightTools from './components/EditorPanel/data';
 class EditorFlow extends Component {
   constructor(props) {
     super(props);
@@ -19,12 +20,10 @@ class EditorFlow extends Component {
   }
 
   getJob = () => {
-
     return fillingJob(this.state.id);
   }
 
   componentDidMount() {
-
     if (this.state.id) {
       console.log("编辑任务");
       this.getJob().then((job) => {
@@ -39,7 +38,18 @@ class EditorFlow extends Component {
         data: { jobText }
       })
     }
+  }
 
+  forceJobUpdate(job) {
+    console.log('forceJobUpdate,', job);
+    if (job.description) {
+      console.log(job.description)
+      // this.setState({
+      //   data: {  }
+      // })
+      // TODO 暂时不能做到实时更新任务名称和说明
+      console.log(this.state);
+    }
 
   }
 
@@ -47,22 +57,31 @@ class EditorFlow extends Component {
     if (_.isEqual(this.state.data, {})) return (<Spin />);
     const data = JSON.parse(this.state.data.jobText);
 
+    console.log(data);
+
     if (data.nodes) {
       data.nodes.map(d => {
+        const node = rightTools.find(_d => _d.pluginName == d.pluginName) || {pluginOptions: "[]"} ;
+        d.pluginOptions = JSON.stringify(node.pluginOptions);
+        d.content = node.content;
+        console.log('node', node);
         if (!d.Class) {
           console.log('no class');
           d.Class = BaseNode;
         }
       })
+      console.log('data',data);
     }
 
     return (
-      <PageContainer content="这是一个新页面，从这里进行开发！" className={styles.main}>
+      <PageContainer header={{
+        title: this.state.data.name || '未命名'
+      }} content={this.state.data.description} className={styles.main}>
         <div className={styles.editor}>
           <Row className={styles.editorHd}>
             <Col lg={20} xxl={22}>
               {/* FlowToolbar  */}
-              <EditorToolbar data={this.state.data} />
+              <EditorToolbar data={this.state.data} forceJobUpdate={this.forceJobUpdate} />
             </Col>
           </Row>
           <Row className={styles.editorBd}>

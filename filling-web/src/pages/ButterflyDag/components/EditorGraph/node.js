@@ -42,6 +42,7 @@ class BaseNode extends Node {
     // }
 
     container.append(`<span class='text'>${data.options.text}</span>`);
+    container.append(`<img class='image' src=${ data.options.content}></img>`);
 
 
     $(container).on('dblclick', () => {

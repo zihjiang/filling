@@ -8,54 +8,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
 import { fillingJobs, addFillingJobs, updateFillingJobs, removeFillingJobs } from './service';
 import { Link } from 'react-router-dom'
-/**
- * 添加节点
- *
- * @param fields
- */
-const handleAdd = async (fields) => {
-  const hide = message.loading('正在添加');
 
-  try {
-    await addFillingJobs({ ...fields });
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-/**
- * 更新节点
- *
- * @param fields
- */
-
-const handleUpdate = async (fields) => {
-  const hide = message.loading('正在配置');
-
-  try {
-    await updateFillingJobs({
-      name: fields.name,
-      desc: fields.desc,
-      key: fields.key,
-    });
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-/**
- * 删除节点
- *
- * @param selectedRows
- */
 
 const handleRemove = async (selectedRow) => {
   const hide = message.loading('正在删除');
@@ -182,7 +135,7 @@ const TableList = () => {
   return (
     <PageContainer>
       <ProTable
-        headerTitle="查询表格"
+        headerTitle="任务列表"
         actionRef={actionRef}
         rowKey="id"
         search={{
