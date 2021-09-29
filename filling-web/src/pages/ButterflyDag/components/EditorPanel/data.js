@@ -701,9 +701,9 @@ const transform = [
             },{
                 "name": "join.secondary.where",
                 "text": "join的条件",
-                "defaultValue": "",
+                "defaultValue": "{main}.field = {secondary}.field",
                 "required": true,
-                "paramsDesc": "join的条件",
+                "paramsDesc": "join的条件,{main}和{secondary}代表主副表",
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
@@ -740,19 +740,19 @@ const transform = [
             }
         ],
         endpoints: [{
-            id: 'DataJoin_result_table_name',
+            id: 'DataJoin_source_table_name',
             orientation: [-1, 0],
             pos: [0, 0.5],
             Class: BaseEndpoint,
             color: 'system-green'
         },{
-            id: 'DataJoin_join_result_table_name',
+            id: 'DataJoin_join_source_table_name',
             orientation: [-1, 0],
             pos: [0, 0.8],
             Class: BaseEndpoint,
             color: 'system-green'
         }, {
-            id: 'DataJoin_source_table_name',
+            id: 'DataJoin_result_table_name',
             orientation: [1, 0],
             pos: [0, 0.5],
             Class: BaseEndpoint,

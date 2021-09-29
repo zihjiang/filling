@@ -48,15 +48,16 @@ class EditorGraph extends Component {
       }
     }
 
+    // 当选择datajoin第二根线的时候
+    if (edge.targetEndpoint.id == 'DataJoin_join_source_table_name') {
+      console.log("触发第二根线");
+      targetNode.options.data['join.source_table_name'] = [this.generateTableName(sourceNode.id)];
+      return;
+    }
+
     // 默认以node id为source_table_name
     if (targetNode.options.PluginType != 'source')
       targetNode.options.data['source_table_name'] = this.generateTableName(sourceNode.id);
-
-    // 当选择datajoin第二根线的时候
-    if (edge.targetEndpoint.id == 'DataJoin_join_result_table_name') {
-
-      targetNode.options.data['join.source_table_name'] = this.generateTableName(sourceNode.id);
-    }
 
     // pluginName为DataSelector时, 特殊处理
     if (sourceNode.options.pluginName == 'DataSelector') {
@@ -64,9 +65,9 @@ class EditorGraph extends Component {
       // 当选择DataSelector第一根线的时候
       if (edge.sourceEndpoint.id == 'DataSelector_t1_result_table_name') {
 
-        targetNode.options.data['source_table_name'] = this.generateTableName(sourceNode.id) + "_"  + 't1';
+        targetNode.options.data['source_table_name'] = this.generateTableName(sourceNode.id) + "_" + 't1';
 
-        sourceNode.options.data['select.result_table_name'][0] = this.generateTableName(sourceNode.id)  + '_t1';
+        sourceNode.options.data['select.result_table_name'][0] = this.generateTableName(sourceNode.id) + '_t1';
 
       }
 

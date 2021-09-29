@@ -124,6 +124,7 @@ class ParamsFrom extends Component {
               key={idx}
               name={item.name}
               label={item.text}
+              tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
               style={{ display: item.display }}
               disabled={item.readOnly || window.jobRunStatus}
@@ -143,6 +144,7 @@ class ParamsFrom extends Component {
               key={idx}
               name={item.name}
               label={item.text}
+              tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
               style={{ display: item.display}}
               disabled={item.readOnly || window.jobRunStatus }
@@ -152,6 +154,7 @@ class ParamsFrom extends Component {
               key={idx}
               name={item.name}
               label={item.text}
+              tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
               style={{ display: item.display  }}
               min={item.digitMin}
@@ -164,6 +167,7 @@ class ParamsFrom extends Component {
               key={idx}
               name={item.name}
               label={item.text}
+              tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
               style={{ display: item.display}}
               disabled={item.readOnly || window.jobRunStatus }
@@ -176,6 +180,7 @@ class ParamsFrom extends Component {
               mode="tags"
               name={item.name}
               label={item.text}
+              tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
               style={{ display: item.display }}
               disabled={item.readOnly|| window.jobRunStatus}
@@ -186,6 +191,7 @@ class ParamsFrom extends Component {
           case "text_rex_id":
             return <ProFormText
               key={idx}
+              tooltip={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               name={item.name.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               label={item.text.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               placeholder={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
