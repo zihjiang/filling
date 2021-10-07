@@ -60,10 +60,17 @@ export default [
     component: './ButterflyDag',
   },
   {
-    name: '查询表格',
+    name: '边缘任务',
     icon: 'smile',
-    path: '/listtablelist',
-    component: './ListTableList',
+    path: '/fillingedgeJobs',
+    component: './FillingEdgeJobs',
+  },
+  {
+    name: '编辑边缘任务',
+    icon: 'smile',
+    path: '/FillingEdgeJobs/FillingEdgeJob/:id?',
+    hideInMenu: true,
+    component: './ButterflyDag',
   },
   {
     component: './404',

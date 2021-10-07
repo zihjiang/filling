@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 
 @Component
 public class FlinkInitConfiguration{
@@ -17,7 +18,7 @@ public class FlinkInitConfiguration{
     @Autowired
     ClusterClient client;
     @PostConstruct
-    public void pingStart() {
+    public void pingStart() throws IOException {
 //        ClusterClient client = new StandaloneClusterClient();
         client.init();
     }

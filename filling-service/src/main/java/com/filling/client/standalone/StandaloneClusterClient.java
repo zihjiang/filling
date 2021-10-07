@@ -34,19 +34,19 @@ public class StandaloneClusterClient implements ClusterClient {
 
 
     @Override
-    public void init() {
+    public void init() throws IOException {
         File file = new File(flink.getJar());
         if(file.exists()) {
             jarName = file.getName();
             if (getLastFile() == null) {
-                log.info("uploading fillingcore.... ");
+                log.info("uploading filling core.... ");
                 uploadJar();
                 log.info("uploadJar success");
             }
             jarInfo = getLastFile();
             System.out.println("getLastFile: " + jarInfo.toJSONString());
         } else {
-            new IOException("file " + flink.getJar() + "not exists");
+            throw  new IOException("file " + flink.getJar() + "not exists");
         }
     }
 

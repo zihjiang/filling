@@ -1279,6 +1279,17 @@ const sink = [
                 "type": "text"
             },
             {
+                "name": "index_id_field",
+                "text": "主键",
+                "defaultValue": "",
+                "required": false,
+                "paramsDesc": "es中的_id字段",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
                 "name": "es.bulk.flush.max.actions",
                 "text": "刷新前要缓冲的最大文档数",
                 "defaultValue": 1000,
