@@ -4,14 +4,7 @@ Filling, 如其名, 致力于填充你的各种存储,  是一个`非常易用`�
 
 ---
 
-
-### 如果您没时间看下面内容，请直接进入正题:
-
-
-
-<img src="./docs/zh-cn/images/wechat-qrcode/garyelephant.jpeg" height="240" width="240">
-
-想了解Filling的设计与实现原理，请查看视频：[https://time.geekbang.org/dailylesson/detail/100028486](https://time.geekbang.org/dailylesson/detail/100028486)
+filling设计思路参考waterdrop: [https://interestinglab.github.io/waterdrop/]
 
 
 ---
@@ -49,14 +42,27 @@ Filling, 如其名, 致力于填充你的各种存储,  是一个`非常易用`�
 
 
 
-<p align="center">
-    <img src="./docs/zh-cn/images/wd-workflow.png" height="460" width="280" >
-</p>
+![image-20211011150714876](./images/image-20211011150714876.png)
 
 
+
+```Mermaid
+graph TD
+source[source] --> transfrom[transfrom]
+transfrom --> sink[sink]
 ```
-Input[数据源输入] -> Filter[数据处理]-> Filter[数据处理]-> Filter[数据处理]-> Filter[数据处理] -> Output[结果输出]
-```
+
+## Filling 功能截图
+
+### 任务列表
+
+![image-20211011150935022](./images/image-20211011150935022.png)
+
+### 编辑任务
+![image-20211011151632652](./images/image-20211011151632652.png)
+### 查看任务
+![image-20211011151528347](./images/image-20211011151528347.png)
+
 
 多个Filter构建了数据处理的Pipeline，满足各种各样的数据处理需求，如果您熟悉SQL，也可以直接通过SQL构建数据处理的Pipeline，简单高效。目前Filling支持的[Filter列表](zh-cn/configuration/filter-plugin), 仍然在不断扩充中。您也可以开发自己的数据处理插件，整个系统是易于扩展的。
 
@@ -80,9 +86,9 @@ Elasticsearch, File, Jdbc, Kafka, Mysql, Stdout, 自行开发的Output plugin
 
 2. 如果您要在集群环境中运行Filling，那么需要以下flink集群环境的任意一种：
 
-* Flink on Yarn
+* Flink on Yarn // TODO
 * Flink Standalone
-* Flink on Mesos
+* Flink on Mesos // TODO
 
 如果您的数据量较小或者只是做功能验证，也可以仅使用`local`模式启动，无需集群环境，Filling支持单机运行。
 

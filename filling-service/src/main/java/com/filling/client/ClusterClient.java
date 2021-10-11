@@ -2,6 +2,7 @@ package com.filling.client;
 
 import com.alibaba.fastjson.JSONObject;
 
+import java.io.IOException;
 import java.util.Optional;
 
 public interface ClusterClient {
@@ -9,7 +10,7 @@ public interface ClusterClient {
     /**
      * 初始化集群
      */
-    void init();
+    void init() throws IOException;
 
     /**
      * 提交任务
