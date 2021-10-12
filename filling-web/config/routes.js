@@ -70,7 +70,7 @@ export default [
     icon: 'smile',
     path: '/FillingEdgeJobs/FillingEdgeJob/:id?',
     hideInMenu: true,
-    component: './ButterflyDag',
+    component: './FillingEdgeJobs/FillingEdgeJob',
   },
   {
     component: './404',

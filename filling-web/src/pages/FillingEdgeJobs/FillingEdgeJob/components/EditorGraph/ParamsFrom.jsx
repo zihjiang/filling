@@ -16,7 +16,9 @@ import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
 import "ace-builds/src-noconflict/theme-terminal";
 
+import { Tabs, Radio, Space } from 'antd';
 
+const { TabPane } = Tabs;
 class ParamsFrom extends Component {
   constructor(props) {
     super(props);
@@ -117,104 +119,17 @@ class ParamsFrom extends Component {
     // }
 
     let Universal = () => (
-      this.state.pluginOptions.map((item, idx) => {
-        switch (item.type) {
-          case "text":
-            return <ProFormText
-              key={idx}
-              name={item.name}
-              label={item.text}
-              tooltip={item.paramsDesc}
-              placeholder={item.paramsDesc}
-              style={{ display: item.display }}
-              disabled={item.readOnly || window.jobRunStatus}
-              formItemProps={
-                {
-                  rules: [
-                    {
-                      required: item.required,
-                      message: `${item.text}是必须的`,
-                    },
-                  ],
-                }
-              }
-            />
-          case "textArea":
-            return <ProFormTextArea
-              key={idx}
-              name={item.name}
-              label={item.text}
-              tooltip={item.paramsDesc}
-              placeholder={item.paramsDesc}
-              style={{ display: item.display}}
-              disabled={item.readOnly || window.jobRunStatus }
-            />
-          case "digit":
-            return <ProFormDigit
-              key={idx}
-              name={item.name}
-              label={item.text}
-              tooltip={item.paramsDesc}
-              placeholder={item.paramsDesc}
-              style={{ display: item.display  }}
-              min={item.digitMin}
-              max={item.digitMax}
-              disabled={item.readOnly|| window.jobRunStatus}
-            />
-
-          case "select":
-            return <ProFormSelect
-              key={idx}
-              name={item.name}
-              label={item.text}
-              tooltip={item.paramsDesc}
-              placeholder={item.paramsDesc}
-              style={{ display: item.display}}
-              disabled={item.readOnly || window.jobRunStatus }
-              options={item.selectOptions}>
-            </ProFormSelect>
-
-          case "array":
-            return <ProFormSelect
-              key={idx}
-              mode="tags"
-              name={item.name}
-              label={item.text}
-              tooltip={item.paramsDesc}
-              placeholder={item.paramsDesc}
-              style={{ display: item.display }}
-              disabled={item.readOnly|| window.jobRunStatus}
-              options={item.selectOptions}>
-
-            </ProFormSelect>
-
-          case "text_rex_id":
-            return <ProFormText
-              key={idx}
-              tooltip={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
-              name={item.name.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
-              label={item.text.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
-              placeholder={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
-              style={{ display: item.display }}
-              disabled={item.readOnly || window.jobRunStatus}
-              options={item.selectOptions}>
-            </ProFormText>
-
-          case "child":
-            return (_.find(this.state.pluginOptions, (d) => { return d.name == item.father }) || []).defaultValue.map((_item, _idx) => {
-              return <ProFormText
-                key={idx + _idx}
-                name={item.name.replace("{field}", _item)}
-                label={item.text.replace("{field}", _item)}
-                placeholder={item.paramsDesc.replace("{field}", _item)}
-                style={{ display: item.display }}
-                disabled={item.readOnly || window.jobRunStatus}
-                options={item.selectOptions}>
-              </ProFormText>
-            })
-
-        }
-      })
+      <Tabs tabPosition={'left'}>
+        <TabPane tab="Tab 1" key="1">
+          Content of Tab 1
+        </TabPane>
+        <TabPane tab="Tab 2" key="2">
+          Content of Tab 2
+        </TabPane>
+        <TabPane tab="Tab 3" key="3">
+          Content of Tab 3
+        </TabPane>
+      </Tabs>
     );
 
     let Configuration = () => {
@@ -262,7 +177,7 @@ class ParamsFrom extends Component {
             return true;
 
           }}
-          width='20%'
+          width='30%'
           initialValues={initialValues}
           onValuesChange={(value) => this._forceUpdate(value)}
         >

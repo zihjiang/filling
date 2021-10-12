@@ -44,8 +44,8 @@ class panelPlugins {
 
       if (registerData.data) {
         for (let item of registerData.data) {
-          item.width = item.width || 36;
-          item.height = item.height || 36;
+          // item.width = item.width || 36;
+          // item.height = item.height || 36;
           this.imgData.push(item);
           this.userImgData.push(item);
         }
@@ -53,13 +53,12 @@ class panelPlugins {
 
       for (let item of this.imgData) {
         let nodeItem = $('<div class="panel-node-dnd" drag></div>')
-          .css('width', item.width + 'px')
-          .css('height', item.height + 'px');
+          .css('height', '90px');
 
         let img = new Image();
         // let img = document.createElement('svg');
         // img.src = './images/Elasticsearch.svg';
-        img.src = item.content;
+        img.src = item.icon;
         
 
         let jqImg = $(img).addClass('panel-img');
@@ -77,7 +76,7 @@ class panelPlugins {
         })
 
         nodeItem.append(img);
-        nodeItem.append(`<div class='panel-lab'> ${item['text']} </div>`);
+        nodeItem.append(`<div class='panel-lab'> ${item['label']} </div>`);
         $(registerData.root).append(nodeItem);
       }
 
