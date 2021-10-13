@@ -67,12 +67,14 @@ class panelPlugins {
           e.originalEvent.dataTransfer.setData('originId', item.id);
           // e.originalEvent.dataTransfer.setData('data', JSON.stringify(item.data));
           e.originalEvent.dataTransfer.setData('pluginType', item['pluginType']);
-          e.originalEvent.dataTransfer.setData('pluginName', item['pluginName']);
+          e.originalEvent.dataTransfer.setData('label', item['label']);
           e.originalEvent.dataTransfer.setData('pluginOptions', JSON.stringify(item['pluginOptions']));
 
           e.originalEvent.dataTransfer.setData('endpoints', JSON.stringify(item['endpoints']));
           e.originalEvent.dataTransfer.setData('content', JSON.stringify(item['content']));
           e.originalEvent.dataTransfer.setDragImage(img, 0, 0);
+
+          e.originalEvent.dataTransfer.setData('icon', item.icon);
         })
 
         nodeItem.append(img);
@@ -91,7 +93,6 @@ class panelPlugins {
           let { clientX, clientY } = e;
           let coordinates = registerData.canvas.terminal2canvas([clientX, clientY]);
           let id = e.originalEvent.dataTransfer.getData('id');
-          let content = e.originalEvent.dataTransfer.getData('content');
           // let data = JSON.parse(e.originalEvent.dataTransfer.getData('data'));
 
           let endpoints = JSON.parse(e.originalEvent.dataTransfer.getData('endpoints'));
@@ -99,7 +100,8 @@ class panelPlugins {
           let pluginName = e.originalEvent.dataTransfer.getData('pluginName');
           let pluginOptions = e.originalEvent.dataTransfer.getData('pluginOptions');
 
-          let text = pluginName;
+          let label = e.originalEvent.dataTransfer.getData('label');
+          let icon = e.originalEvent.dataTransfer.getData('icon');
 
           let node = {
             id,
@@ -111,8 +113,8 @@ class panelPlugins {
             // data: data,
             PluginType: PluginType,
             endpoints: endpoints,
-            content,
-            text: text
+            icon,
+            label
           }
 
           this.addNode(registerData.canvas, node);

@@ -1724,12 +1724,12 @@ const data = [
     "producingEvents": false,
     "preconditions": true,
     endpoints: [{
-      id: 'jdbc_result_table_name',
-      orientation: [1, 0],
+      id: 'influxdb_source_table_name',
+      orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }],
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_kafka_KafkaDTarget",
@@ -9948,7 +9948,14 @@ const data = [
     "yamlUpgrader": "upgrader/KafkaDTarget.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'kafkaP_source_table_name',
+      orientation: [-1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_fieldfilter_FieldFilterDProcessor",
@@ -10558,7 +10565,20 @@ const data = [
     "yamlUpgrader": "upgrader/FieldFilterDProcessor.yaml",
     "onRecordError": false,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'remover_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }, {
+      id: 'remover_source_table_name',
+      orientation: [-1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_devnull_NullDTarget",
@@ -10609,7 +10629,14 @@ const data = [
     "yamlUpgrader": "upgrader/NullDTarget.yaml",
     "onRecordError": false,
     "producingEvents": false,
-    "preconditions": false
+    "preconditions": false,
+    endpoints: [{
+      id: 'trash_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_selector_SelectorDProcessor",
@@ -10782,7 +10809,26 @@ const data = [
         "max": 9223372036854776000,
         "mode": "text/plain",
         "elDefs": null,
-        "evaluation": "EXPLICIT"
+        "evaluation": "EXPLICIT",
+        endpoints: [{
+          id: 'selecter_result_table_name',
+          orientation: [-1, 0],
+          pos: [0, 0.5],
+          Class: BaseEndpoint,
+          color: 'system-green'
+      },{
+          id: 'selecter_t1_result_table_name',
+          orientation: [1, 0],
+          pos: [0, 0.5],
+          Class: BaseEndpoint,
+          color: 'system-green'
+      }, {
+          id: 'selecter_t2_result_table_name',
+          orientation: [1, 0],
+          pos: [0, 0.8],
+          Class: BaseEndpoint,
+          color: 'system-green'
+      }],
       },
       {
         "name": "stageOnRecordError",
@@ -26690,7 +26736,14 @@ const data = [
     "yamlUpgrader": "upgrader/WebSocketClientDSource.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": false
+    "preconditions": false,
+    endpoints: [{
+      id: 'websocket_client_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_origin_spooldir_SpoolDirDSource",
@@ -37595,7 +37648,14 @@ const data = [
     "yamlUpgrader": "upgrader/SpoolDirDSource.yaml",
     "onRecordError": true,
     "producingEvents": true,
-    "preconditions": false
+    "preconditions": false,
+    endpoints: [{
+      id: 'spooldir_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_origin_logtail_FileTailDSource",
@@ -48177,7 +48237,14 @@ const data = [
     "yamlUpgrader": "upgrader/FileTailDSource.yaml",
     "onRecordError": true,
     "producingEvents": true,
-    "preconditions": false
+    "preconditions": false,
+    endpoints: [{
+      id: 'taildir_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_websocket_WebSocketDTarget",
@@ -54511,7 +54578,14 @@ const data = [
     "yamlUpgrader": "upgrader/WebSocketDTarget.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'websocket_clientP_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_delay_DelayProcessor",
@@ -55095,7 +55169,20 @@ const data = [
     "yamlUpgrader": "upgrader/DelayProcessor.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'delay_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }, {
+      id: 'delay_source_table_name',
+      orientation: [-1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }],
   },
   {
     "name": "com_streamsets_pipeline_stage_origin_http_HttpClientDSource",
@@ -74248,7 +74335,14 @@ const data = [
     "yamlUpgrader": "upgrader/HttpClientDSource.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": false
+    "preconditions": false,
+    endpoints: [{
+      id: 'http_client_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_http_HttpClientDTarget",
@@ -85930,7 +86024,14 @@ const data = [
     "yamlUpgrader": "upgrader/HttpClientDTarget.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'http_client_P_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_http_HttpDProcessor",
@@ -104892,7 +104993,14 @@ const data = [
     "yamlUpgrader": "upgrader/HttpDProcessor.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'http_client_pp_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_javascript_JavaScriptDProcessor",
@@ -105884,7 +105992,20 @@ const data = [
     "yamlUpgrader": "upgrader/JavaScriptDProcessor.yaml",
     "onRecordError": true,
     "producingEvents": true,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'javascript_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }, {
+      id: 'javascript_source_table_name',
+      orientation: [-1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+  }],
   }
 ];
 export default data;
