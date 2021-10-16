@@ -87,7 +87,7 @@ class EditorToolbar extends Component {
         const hide = message.loading('正在保存');
         if (entity) {
             // 修改基本信息
-            console.log(entity);
+            this.setState({data: entity});
             delete entity.jobText;
         } else {
             // 只保存图表
@@ -116,6 +116,11 @@ class EditorToolbar extends Component {
     }
 
     start = async () => {
+        console.log('this.state.data.name ', this.state.data.name );
+        if(this.state.data.name == undefined) {
+            message.info('任务名称不能为空');
+            return;
+        }
         if (this.state.jobId) {
             const hide = message.loading('启动中');
             const job = await startFillingJobs(this.state.jobId);
