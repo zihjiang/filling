@@ -68,7 +68,9 @@ class panelPlugins {
           // e.originalEvent.dataTransfer.setData('data', JSON.stringify(item.data));
           e.originalEvent.dataTransfer.setData('pluginType', item['pluginType']);
           e.originalEvent.dataTransfer.setData('label', item['label']);
-          e.originalEvent.dataTransfer.setData('pluginOptions', JSON.stringify(item['pluginOptions']));
+
+          e.originalEvent.dataTransfer.setData('configGroupDefinition', JSON.stringify(item['configGroupDefinition']));
+          e.originalEvent.dataTransfer.setData('configDefinitions', JSON.stringify(item['configDefinitions']));
 
           e.originalEvent.dataTransfer.setData('endpoints', JSON.stringify(item['endpoints']));
           e.originalEvent.dataTransfer.setData('content', JSON.stringify(item['content']));
@@ -98,7 +100,9 @@ class panelPlugins {
           let endpoints = JSON.parse(e.originalEvent.dataTransfer.getData('endpoints'));
           let PluginType = e.originalEvent.dataTransfer.getData('PluginType');
           let pluginName = e.originalEvent.dataTransfer.getData('pluginName');
-          let pluginOptions = e.originalEvent.dataTransfer.getData('pluginOptions');
+
+          const configDefinitions = e.originalEvent.dataTransfer.getData('configDefinitions');
+          const configGroupDefinition = e.originalEvent.dataTransfer.getData('configGroupDefinition');
 
           let label = e.originalEvent.dataTransfer.getData('label');
           let icon = e.originalEvent.dataTransfer.getData('icon');
@@ -109,12 +113,13 @@ class panelPlugins {
             top: coordinates[1],
             Class: BaseNode,
             pluginName: pluginName,
-            pluginOptions: pluginOptions,
             // data: data,
             PluginType: PluginType,
             endpoints: endpoints,
             icon,
-            label
+            label,
+            configDefinitions,
+            configGroupDefinition
           }
 
           this.addNode(registerData.canvas, node);

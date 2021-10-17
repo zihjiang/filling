@@ -116,7 +116,6 @@ class EditorToolbar extends Component {
     }
 
     start = async () => {
-        console.log('this.state.data.name ', this.state.data.name );
         if(this.state.data.name == undefined) {
             message.info('任务名称不能为空');
             return;
