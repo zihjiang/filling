@@ -66,7 +66,8 @@ class panelPlugins {
           e.originalEvent.dataTransfer.setData('id', item.id + '-' + this.guid());
           e.originalEvent.dataTransfer.setData('originId', item.id);
           // e.originalEvent.dataTransfer.setData('data', JSON.stringify(item.data));
-          e.originalEvent.dataTransfer.setData('pluginType', item['pluginType']);
+          e.originalEvent.dataTransfer.setData('pluginType', item['type']);
+          e.originalEvent.dataTransfer.setData('pluginName', item['name']);
           e.originalEvent.dataTransfer.setData('label', item['label']);
 
           e.originalEvent.dataTransfer.setData('configGroupDefinition', JSON.stringify(item['configGroupDefinition']));
@@ -98,7 +99,7 @@ class panelPlugins {
           // let data = JSON.parse(e.originalEvent.dataTransfer.getData('data'));
 
           let endpoints = JSON.parse(e.originalEvent.dataTransfer.getData('endpoints'));
-          let PluginType = e.originalEvent.dataTransfer.getData('PluginType');
+          let PluginType = e.originalEvent.dataTransfer.getData('pluginType');
           let pluginName = e.originalEvent.dataTransfer.getData('pluginName');
 
           const configDefinitions = e.originalEvent.dataTransfer.getData('configDefinitions');

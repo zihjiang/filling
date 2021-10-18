@@ -199,6 +199,8 @@ class EditorToolbar extends Component {
             // _node['pluginOptions'] = options.pluginOptions;
             _node['PluginType'] = options.PluginType;
             _node['pluginName'] = options.pluginName;
+            _node['inputLanes'] = options.inputLanes;
+            _node['outputLanes'] = options.outputLanes;
             _node['data'] = options.data;
             _node['text'] = options.text;
             // _node['data'] = options.data;

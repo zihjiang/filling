@@ -131,6 +131,7 @@ class ParamsFrom extends Component {
       case "TEXT":
         return (
           <Form.Item
+            key={_idx}
             name={_item.name}
             label={_item.label}
             defaultValue={_item.defaultValue}

@@ -25,24 +25,24 @@ class EditorGraph extends Component {
     if (sourceNode.options.data == undefined) {
       // init data
       sourceNode.options.data = {};
-      const pluginOptions = JSON.parse(sourceNode.options.pluginOptions);
-      for (let i = 0; i < pluginOptions.length; i++) {
-        let option = pluginOptions[i];
+      const configDefinitions = JSON.parse(sourceNode.options.configDefinitions);
+      for (let i = 0; i < configDefinitions.length; i++) {
+        let option = configDefinitions[i];
 
         sourceNode.options.data[option.name] = option.defaultValue;
       }
     }
 
     // 默认以node id为result_table_name
-    if (sourceNode.options.PluginType != 'sink')
-      sourceNode.options.data['result_table_name'] = this.generateTableName(sourceNode.id);
+    if (sourceNode.options.PluginType != 'TARGET')
+    sourceNode.options['outputLanes'] = this.generateTableName(sourceNode.id);
 
     if (targetNode.options.data == undefined) {
       // init data
       targetNode.options.data = {};
-      const pluginOptions = JSON.parse(targetNode.options.pluginOptions);
-      for (let i = 0; i < pluginOptions.length; i++) {
-        let option = pluginOptions[i];
+      const configDefinitions = JSON.parse(targetNode.options.configDefinitions);
+      for (let i = 0; i < configDefinitions.length; i++) {
+        let option = configDefinitions[i];
 
         targetNode.options.data[option.name] = option.defaultValue;
       }
@@ -56,8 +56,8 @@ class EditorGraph extends Component {
     }
 
     // 默认以node id为source_table_name
-    if (targetNode.options.PluginType != 'source')
-      targetNode.options.data['source_table_name'] = this.generateTableName(sourceNode.id);
+    if (targetNode.options.PluginType != 'SOURCE')
+      targetNode.options['inputLanes'] = this.generateTableName(sourceNode.id);
 
     // pluginName为DataSelector时, 特殊处理
     if (sourceNode.options.pluginName == 'DataSelector') {

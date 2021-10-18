@@ -76435,7 +76435,7 @@ const data = [
     "preconditions": false,
     endpoints: [{
       id: 'trash_result_table_name',
-      orientation: [1, 0],
+      orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
@@ -82776,7 +82776,7 @@ const data = [
     "preconditions": true,
     endpoints: [{
       id: 'websocket_clientP_result_table_name',
-      orientation: [1, 0],
+      orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
@@ -96180,7 +96180,7 @@ const data = [
     "preconditions": true,
     endpoints: [{
       id: 'http_client_P_result_table_name',
-      orientation: [1, 0],
+      orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
