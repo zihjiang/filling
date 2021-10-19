@@ -67,6 +67,7 @@ class EditorPanel extends Component {
                     onValuesChange={(values) => this.filterFrom(values)}
                 >
                     <Affix offsetTop={10}>
+                        <div>
                         <ProFormSelect
                             valueEnum={{
                                 all: '全部',
@@ -80,6 +81,7 @@ class EditorPanel extends Component {
                             name="selectMode"
                         />
                         <ProFormText name="filterString" placeholder="过滤" />
+                        </div>
 
                     </Affix>
 
