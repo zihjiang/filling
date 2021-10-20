@@ -47,7 +47,7 @@ export default [
     redirect: '/welcome',
   },
   {
-    name: '任务列表',
+    name: '流式计算',
     icon: 'smile',
     path: '/fillingjobs',
     component: './FillingJobs',
@@ -60,7 +60,7 @@ export default [
     component: './ButterflyDag',
   },
   {
-    name: '边缘任务',
+    name: '边缘节点',
     icon: 'smile',
     path: '/fillingedgeJobs',
     component: './FillingEdgeJobs',
