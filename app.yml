@@ -1,0 +1,35 @@
+version: '2'
+services:
+  filling:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: filling:latest
+    container_name: filling
+    environment:
+      - _JAVA_OPTIONS=-Xmx1g -Xms1g
+      - JHIPSTER_SLEEP=10 # gives time for the JHipster Registry to boot before the application
+      - SPRING_PROFILES_ACTIVE=dev
+      - application_flink_url=http://jobmanager:8081
+    ports:
+      - "8080:8080"
+  jobmanager:
+    image: flink:1.13.1-scala_2.11
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+  taskmanager:
+    image: flink:1.13.1-scala_2.11
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    scale: 4
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 3
