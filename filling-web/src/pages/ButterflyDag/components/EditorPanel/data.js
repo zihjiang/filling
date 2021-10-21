@@ -15,6 +15,7 @@ import sqlIcon from './images/sql.svg';
 import selectIocn from './images/selected.svg';
 
 import BaseEndpoint from '../EditorGraph/endpoint';
+import ClickHouseIcon from './images/clickhouse.svg';
 
 import _ from 'lodash';
 const source = [
@@ -340,7 +341,7 @@ const source = [
             }, {
                 "name": "schema",
                 "text": "简单数据",
-                "defaultValue": "{\"host\":\"f0e31d4cd63b\",\"@timestamp\":\"2021-08-12T03:27:57.316Z\",\"path\":\"/sample_data/apache_access_logs_1000w_02\",\"message\":\"127.0.0.1 - - [19/Jun/1998:23:12:52 +0000] \\\"GET /images/logo_cfo.gif HTTP/1.0\\\" 304 0\",\"@version\":\"1\"}",
+                "defaultValue": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
                 "required": true,
                 "paramsDesc": "数据样本, 用来解析数据格式",
                 "desc": " ",
@@ -1440,6 +1441,115 @@ const sink = [
             color: 'system-green'
         }],
         content: kafkaIcon,
+        height: 90,
+        width: "100%"
+    },
+
+
+
+    {
+        id: 'ClickHouseSink',
+        text: 'ClickHouseSink',
+        type: 'png',
+        Data: {},
+        pluginType: 'sink',
+        pluginName: "ClickHouseSink",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "ClickHouse-sink",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "ClickHouseSink",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "text"
+            },{
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": true,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            },
+            {
+                "name": "driver",
+                "text": "driver",
+                "defaultValue": "ru.yandex.clickhouse.ClickHouseDriver",
+                "required": true,
+                "paramsDesc": "ck驱动地址",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "url",
+                "text": "url地址, jdbc链接字符串",
+                "defaultValue": "jdbc:clickhouse://127.0.0.1:8123/aiops",
+                "required": true,
+                "paramsDesc": "url",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "query",
+                "text": "insert语句, 用?表示占位符",
+                "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
+                "required": true,
+                "paramsDesc": "query",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "params",
+                "text": "insert语句, 的参数, 与query数量必须保持一致",
+                "defaultValue": ["id", "host", "MetricsName", "value", "host", "source", "_time"],
+                "required": true,
+                "paramsDesc": "params",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "array"
+            },
+            {
+                "name": "batch_size",
+                "text": "每个批次多少条数据",
+                "defaultValue": "20000",
+                "required": true,
+                "paramsDesc": "params",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            }
+        ],
+        endpoints: [{
+            id: 'clickHouseSink_source_table_name',
+            orientation: [-1, 0],
+            pos: [0, 0.5],
+            Class: BaseEndpoint,
+            color: 'system-green'
+        }],
+        content: ClickHouseIcon,
         height: 90,
         width: "100%"
     }
