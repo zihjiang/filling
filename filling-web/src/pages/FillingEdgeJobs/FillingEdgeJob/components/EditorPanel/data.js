@@ -17583,7 +17583,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_origin_spooldir_SpoolDirDSource",
@@ -28495,7 +28495,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_origin_websocket_WebSocketClientDSource",
@@ -44016,7 +44016,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_origin_logtail_FileTailDSource",
@@ -54605,7 +54605,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_fieldfilter_FieldFilterDProcessor",
@@ -55222,13 +55222,13 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }, {
+    }, {
       id: 'remover_source_table_name',
       orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_selector_SelectorDProcessor",
@@ -55408,19 +55408,19 @@ const data = [
           pos: [0, 0.5],
           Class: BaseEndpoint,
           color: 'system-green'
-      },{
+        }, {
           id: 'selecter_t1_result_table_name',
           orientation: [1, 0],
           pos: [0, 0.5],
           Class: BaseEndpoint,
           color: 'system-green'
-      }, {
+        }, {
           id: 'selecter_t2_result_table_name',
           orientation: [1, 0],
           pos: [0, 0.8],
           Class: BaseEndpoint,
           color: 'system-green'
-      }],
+        }],
       },
       {
         "name": "stageOnRecordError",
@@ -55814,7 +55814,26 @@ const data = [
     "yamlUpgrader": "upgrader/SelectorDProcessor.yaml",
     "onRecordError": true,
     "producingEvents": false,
-    "preconditions": true
+    "preconditions": true,
+    endpoints: [{
+      id: 'StreamSelector_result_table_name',
+      orientation: [-1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+    }, {
+      id: 'StreamSelector_t1_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+    }, {
+      id: 'StreamSelector_t2_result_table_name',
+      orientation: [1, 0],
+      pos: [0, 0.8],
+      Class: BaseEndpoint,
+      color: 'system-green'
+    }],
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_delay_DelayProcessor",
@@ -56405,13 +56424,13 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }, {
+    }, {
       id: 'delay_source_table_name',
       orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }],
+    }],
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_http_HttpDProcessor",
@@ -75376,7 +75395,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_javascript_JavaScriptDProcessor",
@@ -76375,13 +76394,13 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }, {
+    }, {
       id: 'javascript_source_table_name',
       orientation: [-1, 0],
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }],
+    }],
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_devnull_NullDTarget",
@@ -76439,7 +76458,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_websocket_WebSocketDTarget",
@@ -82780,7 +82799,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_influxdb_InfluxDTarget",
@@ -96184,7 +96203,7 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-  }]
+    }]
   },
   {
     "name": "com_streamsets_pipeline_stage_destination_kafka_KafkaDTarget",

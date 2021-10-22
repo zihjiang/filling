@@ -59,7 +59,7 @@ class panelPlugins {
         // let img = document.createElement('svg');
         // img.src = './images/Elasticsearch.svg';
         img.src = item.icon;
-        
+
 
         let jqImg = $(img).addClass('panel-img');
         jqImg.on('dragstart', (e) => {
@@ -72,6 +72,9 @@ class panelPlugins {
 
           e.originalEvent.dataTransfer.setData('configGroupDefinition', JSON.stringify(item['configGroupDefinition']));
           e.originalEvent.dataTransfer.setData('configDefinitions', JSON.stringify(item['configDefinitions']));
+          e.originalEvent.dataTransfer.setData('library', item['library']);
+          e.originalEvent.dataTransfer.setData('stageName', item['name']);
+          e.originalEvent.dataTransfer.setData('stageVersion', item['version']);
 
           e.originalEvent.dataTransfer.setData('endpoints', JSON.stringify(item['endpoints']));
           e.originalEvent.dataTransfer.setData('content', JSON.stringify(item['content']));
@@ -105,6 +108,10 @@ class panelPlugins {
           const configDefinitions = e.originalEvent.dataTransfer.getData('configDefinitions');
           const configGroupDefinition = e.originalEvent.dataTransfer.getData('configGroupDefinition');
 
+          const library = e.originalEvent.dataTransfer.getData('library');
+          const stageName = e.originalEvent.dataTransfer.getData('stageName');
+          const stageVersion = e.originalEvent.dataTransfer.getData('stageVersion');
+
           let label = e.originalEvent.dataTransfer.getData('label');
           let icon = e.originalEvent.dataTransfer.getData('icon');
 
@@ -120,7 +127,10 @@ class panelPlugins {
             icon,
             label,
             configDefinitions,
-            configGroupDefinition
+            configGroupDefinition,
+            library,
+            stageName,
+            stageVersion
           }
 
           this.addNode(registerData.canvas, node);
