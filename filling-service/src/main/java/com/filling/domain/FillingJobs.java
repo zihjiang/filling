@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.filling.enumeration.JobStatus;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
@@ -46,9 +48,8 @@ public class FillingJobs implements Serializable {
     private String status;
 
     @Column(name = "createtime")
-    private Instant createtime;
+    private Instant createtime = Instant.now();
 
-    @LastModifiedDate
     @Column(name = "updatetime")
     private Instant updatetime;
 

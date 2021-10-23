@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
+
+import java.time.Instant;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -78,9 +80,6 @@ public class FillingJobsService {
                     if (fillingJobs.getCreatetime() != null) {
                         existingFillingJobs.setCreatetime(fillingJobs.getCreatetime());
                     }
-                    if (fillingJobs.getUpdatetime() != null) {
-                        existingFillingJobs.setUpdatetime(fillingJobs.getUpdatetime());
-                    }
                     if (fillingJobs.getCreatedBy() != null) {
                         existingFillingJobs.setCreatedBy(fillingJobs.getCreatedBy());
                     }
@@ -90,6 +89,8 @@ public class FillingJobsService {
                     if (fillingJobs.getDescription() != null) {
                         existingFillingJobs.setDescription(fillingJobs.getDescription());
                     }
+
+                    existingFillingJobs.setUpdatetime(Instant.now());
 
                     return existingFillingJobs;
                 }
@@ -133,12 +134,13 @@ public class FillingJobsService {
 
     /**
      * start thes filling job
+     *
      * @param fillingJobs
      * @return
      */
     public FillingJobs start(FillingJobs fillingJobs) {
         Optional<String> jobId = clusterClient.submit(fillingJobs.toJobString());
-        if(jobId.isPresent()) {
+        if (jobId.isPresent()) {
             fillingJobs.setStatus("2");
             fillingJobs.setApplicationId(jobId.get());
             save(fillingJobs);
@@ -151,18 +153,19 @@ public class FillingJobsService {
 
     /**
      * stop this job
+     *
      * @param fillingJobs
      * @return
      */
     public FillingJobs stop(FillingJobs fillingJobs) {
-        if(StringUtils.isEmpty(fillingJobs.getApplicationId())) {
-           log.warn("jobid is null {}", fillingJobs);
+        if (StringUtils.isEmpty(fillingJobs.getApplicationId())) {
+            log.warn("jobid is null {}", fillingJobs);
             // TODO jobid is null 的逻辑
-           return fillingJobs;
+            return fillingJobs;
         }
 
         Boolean result = clusterClient.cancel(fillingJobs.getApplicationId());
-        if(result) {
+        if (result) {
             fillingJobs.setStatus("5");
         } else {
             // TODO 停止失败的逻辑
@@ -172,6 +175,7 @@ public class FillingJobsService {
 
     /**
      * plan this job
+     *
      * @param fillingJobs
      * @return
      */
