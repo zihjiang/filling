@@ -2,10 +2,13 @@ package com.filling.web.rest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
+import com.filling.config.ApplicationProperties;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
 import com.filling.service.FillingJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -28,6 +31,8 @@ import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * REST controller for managing {@link com.filling.domain.FillingJobs}.
  */
@@ -46,6 +51,9 @@ public class FillingJobsResource {
     private final FillingJobsService fillingJobsService;
 
     private final FillingJobsRepository fillingJobsRepository;
+
+    @Autowired
+    ApplicationProperties flink;
 
     public FillingJobsResource(FillingJobsService fillingJobsService, FillingJobsRepository fillingJobsRepository) {
         this.fillingJobsService = fillingJobsService;
@@ -225,5 +233,13 @@ public class FillingJobsResource {
         log.debug("REST request to plan FillingJobs : {}", id);
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
         return ResponseEntity.ok(fillingJobsService.plan(fillingJobs.get()));
+    }
+
+    @GetMapping("/filling-jobs/overview/{id}")
+    public void planFillingJobsOverview(@PathVariable Long id, HttpServletResponse response) throws IOException {
+        log.debug("REST request to overview FillingJobs : {}", id);
+        Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
+
+        response.sendRedirect(flink.getUrl() + "/#/job/" + fillingJobs.get().getApplicationId() + "/overview");
     }
 }

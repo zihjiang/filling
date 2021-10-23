@@ -12,7 +12,8 @@ import {
     DownloadOutlined,
     SelectOutlined,
     FormOutlined,
-    PauseCircleFilled
+    PauseCircleFilled,
+    BarChartOutlined
 } from '@ant-design/icons';
 import React, { Component, useState } from 'react';
 import './index.less';
@@ -87,7 +88,7 @@ class EditorToolbar extends Component {
         const hide = message.loading('正在保存');
         if (entity) {
             // 修改基本信息
-            this.setState({data: entity});
+            this.setState({ data: entity });
             delete entity.jobText;
         } else {
             // 只保存图表
@@ -116,7 +117,7 @@ class EditorToolbar extends Component {
     }
 
     start = async () => {
-        if(this.state.data.name == undefined) {
+        if (this.state.data.name == undefined) {
             message.info('任务名称不能为空');
             return;
         }
@@ -178,6 +179,12 @@ class EditorToolbar extends Component {
             }
         }
 
+    }
+
+    overview = async () => {
+        if(this.state.jobId) {
+            window.open(`/api/filling-jobs/overview/${this.state.jobId}`);
+        }
     }
 
     // 把canvas对象data换成能序列化的对象
@@ -281,10 +288,9 @@ class EditorToolbar extends Component {
 
                 <PlayCircleFilled title="启动" style={{ display: (this.state.status == 2) ? 'none' : '' }} onClick={() => this.start()} />
                 <PauseCircleFilled title="停止" style={{ display: (this.state.status != 2) ? 'none' : '' }} onClick={() => this.stop()} />
-
+                <BarChartOutlined title="监控" style={{ display: (this.state.status != 2) ? 'none' : '' }} onClick={() => this.overview()} />
                 <DownloadOutlined title="下载" />
                 <SelectOutlined title="另存为" />
-
                 {appEdit}
             </div>
         );

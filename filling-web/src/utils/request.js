@@ -75,14 +75,14 @@ request.interceptors.request.use(async (url, options) => {
         const { exp, refreshTime } = decodeToken;
         const maxTime = exp * 1000 + refreshTime;
         const nowTime = new Date().getTime();
-        console.log(parseInt((maxTime - nowTime) / 1000) + '秒后重新登录')
+        console.log(parseInt((exp * 1000 - nowTime) / 1000) + '秒后重新登录')
         if (nowTime >= maxTime) {
             //token过期，而且延期token也过去了，那么，清空你的数据，直接返回登录，不允许操作了
             console.log('超时了')
             location.href = '/user/login'
             return;
         }
-        console.log(parseInt((exp * 1000 - nowTime) / 1000) + '秒后第一个过期')
+        console.log(parseInt((exp * 1000 - nowTime) / 1000) + '秒后过期')
         if (nowTime >= exp * 1000) {
             //只是过期了，那就去拿新的token
 

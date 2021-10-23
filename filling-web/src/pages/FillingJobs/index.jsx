@@ -2,12 +2,13 @@ import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import ProTable from '@ant-design/pro-table';
+import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import UpdateForm from './components/UpdateForm';
 import { fillingJobs, addFillingJobs, updateFillingJobs, removeFillingJobs } from './service';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import { startFillingJobs, stopFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
 
 
 const handleRemove = async (selectedRow) => {
@@ -29,12 +30,53 @@ const handleRemove = async (selectedRow) => {
   }
 };
 
+const handleMonitor = async (selectedRow) => {
+
+  window.open(`/api/filling-jobs/overview/${selectedRow.id}`);
+}
+
+// 启动任务
+const start = async (record) => {
+  if (record.name == undefined) {
+    message.info('任务名称不能为空');
+    return;
+  }
+  if (record.id) {
+    const hide = message.loading('启动中');
+    const job = await startFillingJobs(record.id);
+    console.log("job", job.status);
+    switch (job.status) {
+      case "2":
+        hide();
+        message.success('启动成功');
+        break;
+      default:
+        hide();
+        message.error('启动失败, 请查看flink端日志');
+        window.jobRunStatus = false;
+        break;
+    };
+  } else {
+    message.warning('请先保存');
+  }
+}
+// 停止任务
+const stop = async (record) => {
+  if (record.id) {
+    const hide = message.loading('停止中');
+    const job = await stopFillingJobs(record.id);
+    hide();
+    message.success('停止成功');
+  } else {
+    message.warning('未知');
+  }
+}
+
 const TableList = () => {
   /** 新建窗口的弹窗 */
   const [createModalVisible, handleModalVisible] = useState(false);
   /** 分布更新窗口的弹窗 */
 
-  const [updateModalVisible, handleUpdateModalVisible] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
@@ -45,6 +87,7 @@ const TableList = () => {
     {
       title: '任务名称',
       dataIndex: 'name',
+      ellipsis: true,
       tip: '也是flink的任务名称',
       render: (dom, entity) => {
         return (
@@ -100,36 +143,83 @@ const TableList = () => {
     {
       title: '最后修改时间',
       dataIndex: 'updatetime',
-      valueType: "dataTime"
+      valueType: "dateTime"
     },
     {
       title: 'description',
       sorter: true,
       dataIndex: 'description',
-      valueType: 'textarea'
+      valueType: 'textarea',
+      ellipsis: true
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      render: (_, record) => [
-        <a
-          key="id"
-          onClick={() => {
-            handleUpdateModalVisible(true);
-            setCurrentRow(record);
-          }}
-        >
-          修改
-        </a>,
-        <a key="id" onClick={() => {
-          handleRemove(record);
-          setSelectedRows([]);
-          actionRef.current?.reloadAndRest?.();
-        }}>
-          删除
-        </a>,
-      ],
+      render: (_, record) => {
+        let result = [];
+        // 修改
+        result.push(
+          <Link key="id" to={"/butterfly-dag/" + record.id} > 修改 </Link>
+        );
+        // 删除
+        if (record.status != 2) {
+
+          result.push(
+            <a key="id" onClick={() => {
+              handleRemove(record);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}>
+              删除
+            </a>
+          );
+          result.push(
+            <a key="id" onClick={() => {
+              start(record).then(() => {
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              })
+            }}>
+              启动
+            </a>
+          );
+        }
+        // 监控
+        if (record.status == 2) {
+          result.push(
+            <a key="id" onClick={() => {
+              handleMonitor(record);
+              setSelectedRows([]);
+            }}>
+              监控
+            </a>
+          );
+          result.push(
+            <a key="id" onClick={() => {
+              stop(record).then(() => {
+                setSelectedRows([]);
+                actionRef.current?.reloadAndRest?.();
+              });
+
+            }}>
+              停止
+            </a>
+          )
+        }
+
+        result.push(
+          <TableDropdown
+            key="actionGroup"
+            onSelect={() => action?.reload()}
+            menus={[
+              { key: 'copy', name: '复制' },
+              { key: 'delete', name: '删除' },
+            ]}
+          />
+        )
+        return result;
+      }
     },
   ];
   return (
@@ -142,9 +232,9 @@ const TableList = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-            <Link to={"/butterfly-dag/"} >
-              新建任务
-            </Link>,
+          <Link to={"/butterfly-dag/"} >
+            新建任务
+          </Link>,
         ]}
         request={fillingJobs}
         columns={columns}
@@ -185,7 +275,7 @@ const TableList = () => {
           <Button type="primary">批量审批</Button>
         </FooterToolbar>
       )}
-      
+
 
       <Drawer
         width={600}
