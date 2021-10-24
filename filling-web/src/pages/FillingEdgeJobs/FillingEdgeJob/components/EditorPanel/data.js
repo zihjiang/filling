@@ -75395,7 +75395,13 @@ const data = [
       pos: [0, 0.5],
       Class: BaseEndpoint,
       color: 'system-green'
-    }]
+    }, {
+      id: 'http_client_pp_source_table_name',
+      orientation: [-1, 0],
+      pos: [0, 0.5],
+      Class: BaseEndpoint,
+      color: 'system-green'
+    }],
   },
   {
     "name": "com_streamsets_pipeline_stage_processor_javascript_JavaScriptDProcessor",
