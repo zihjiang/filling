@@ -7,7 +7,7 @@ import EditorPanel from './components/EditorPanel/index';
 import EditorToolbar from './components/EditorToolbar';
 import { Component } from 'react';
 import BaseNode from './components/EditorGraph/node';
-import { fillingJob } from './service';
+import { fillingEdgeJob } from './service';
 import { Spin } from 'antd';
 import rightTools from './components/EditorPanel/data';
 class EditorFlow extends Component {

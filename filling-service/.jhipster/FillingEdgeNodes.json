@@ -1,0 +1,77 @@
+{
+  "name": "FillingEdgeNodes",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "uuid",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "valid",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "metadata",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "host",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "url",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "created",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "lastModified",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "creator",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastModifier",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "fillingEdgeJobs",
+      "otherEntityRelationshipName": "fillingEdgeNodes",
+      "relationshipName": "fillingEdgeJobs"
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "nodeLabel",
+      "otherEntityRelationshipName": "fillingEdgeNodes",
+      "relationshipName": "nodeLabel"
+    }
+  ],
+  "entityTableName": "filling_edge_nodes",
+  "dto": "no",
+  "pagination": "pagination",
+  "service": "no",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20211025131248"
+}

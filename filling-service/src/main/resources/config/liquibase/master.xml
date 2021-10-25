@@ -17,8 +17,13 @@
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210829085609_added_entity_FillingJobs.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20210829085610_added_entity_FillingJobsHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211025131248_added_entity_FillingEdgeNodes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211025131249_added_entity_FillingEdgeJobs.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211025131250_added_entity_NodeLabel.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20210829085610_added_entity_constraints_FillingJobsHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211025131249_added_entity_constraints_FillingEdgeJobs.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20211025131250_added_entity_constraints_NodeLabel.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

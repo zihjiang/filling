@@ -1,25 +1,58 @@
-import { request } from 'umi';
+// @ts-ignore
 
-export async function queryFakeList(params) {
-  return request('/api/get_list', {
-    params,
+/* eslint-disable */
+import request from '@/utils/request';
+
+/** 获取列表 GET /api/filling-edge-nodes */
+
+export async function fillingEdgeNodeById(id, options) {
+  return request('/api/filling-edge-nodes/' + id, {
+    method: 'GET',
+    ...(options || {}),
   });
 }
-export async function removeFakeList(params) {
-  return request('/api/post_fake_list', {
-    method: 'POST',
-    data: { ...params, method: 'delete' },
+
+
+/** 获取列表 GET /api/filling-edge-nodes */
+
+export async function fillingEdgeNodes(params, options) {
+  return request('/api/filling-edge-nodes', {
+    method: 'GET',
+    params: { ...params },
+    ...(options || {}),
   });
 }
-export async function addFakeList(params) {
-  return request('/api/post_fake_list', {
-    method: 'POST',
-    data: { ...params, method: 'post' },
+/** 新建任务 PUT /api/filling-edge-nodes */
+
+export async function updateFillingEdgeNode(options) {
+  return request('/api/filling-edge-nodes', {
+    method: 'PUT',
+    ...(options || {}),
   });
 }
-export async function updateFakeList(params) {
-  return request('/api/post_fake_list', {
+/** 新建任务 POST /api/filling-edge-nodes */
+
+export async function addFillingEdgeNode(options) {
+  return request('/api/filling-edge-nodes', {
     method: 'POST',
-    data: { ...params, method: 'update' },
+    ...(options || {}),
+  });
+}
+/** 删除任务 DELETE /api/filling-edge-nodes */
+
+export async function removeFillingEdgeNode(id) {
+  console.log(id);
+  return request('/api/filling-edge-nodes/' + id, {
+    method: 'DELETE'
+  });
+}
+
+/** 修改部分任务 PATCH /api/filling-edge-nodes */
+
+export async function patchFillingEdgeNode(id, options) {
+  options.data.id = id;
+  return request('/api/filling-edge-nodes/' + id, {
+    method: 'PATCH',
+    ...(options || {})
   });
 }

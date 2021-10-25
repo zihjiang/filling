@@ -1,0 +1,31 @@
+{
+  "name": "NodeLabel",
+  "fields": [
+    {
+      "fieldName": "title",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "color",
+      "fieldType": "String"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "fillingEdgeNodes",
+      "otherEntityRelationshipName": "nodeLabel",
+      "relationshipName": "fillingEdgeNodes"
+    }
+  ],
+  "entityTableName": "node_label",
+  "dto": "no",
+  "pagination": "no",
+  "service": "serviceClass",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20211025131250"
+}

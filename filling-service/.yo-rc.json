@@ -43,7 +43,7 @@
     "clientPackageManager": "npm",
     "clientThemeVariant": "",
     "languages": ["en", "fr"],
-    "entities": ["FillingJobs", "FillingJobsHistory"],
-    "lastLiquibaseTimestamp": 1630227370000
+    "lastLiquibaseTimestamp": 1635167570000,
+    "entities": ["FillingEdgeNodes", "FillingEdgeJobs", "NodeLabel"]
   }
 }

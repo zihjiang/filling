@@ -1,0 +1,47 @@
+entity FillingEdgeNodes(filling_edge_nodes) {
+    name String,
+    title String,
+    uuid String,
+    valid Boolean,
+    metadata String,
+    host String,
+    url String,
+    description String,
+    created Instant,
+    lastModified Instant,
+    creator String,
+    lastModifier String
+}
+entity FillingEdgeJobs(filling_edge_jobs) {
+    name String,
+    pipelineId String,
+    title String,
+    uuid String,
+    valid Boolean,
+    metadata String,
+    ctlVersion String,
+    ctlId String,
+    jobText String,
+    status String,
+    description String,
+    created Instant,
+    lastModified Instant,
+    creator String,
+    lastModifier String
+}
+
+entity NodeLabel {
+    title String,
+    color String
+}
+
+relationship OneToMany {
+	FillingEdgeNodes to FillingEdgeJobs
+    FillingEdgeNodes to NodeLabel
+}
+service FillingEdgeJobs with serviceClass
+paginate FillingEdgeJobs with pagination
+
+paginate FillingEdgeNodes with pagination
+
+service NodeLabel with serviceClass

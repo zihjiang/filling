@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+    <!--
+        Added the constraints for entity NodeLabel.
+    -->
+    <changeSet id="20211025131250-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="filling_edge_nodes_id"
+                                 baseTableName="node_label"
+                                 constraintName="fk_node_label__filling_edge_nodes_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="filling_edge_nodes"/>
+    </changeSet>
+</databaseChangeLog>
