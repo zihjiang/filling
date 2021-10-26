@@ -38,7 +38,7 @@
             <column name="ctl_id" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="job_text" type="varchar(255)">
+            <column name="job_text" type="text">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">

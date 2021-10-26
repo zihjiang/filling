@@ -7,7 +7,7 @@ import EditorPanel from './components/EditorPanel/index';
 import EditorToolbar from './components/EditorToolbar';
 import { Component } from 'react';
 import BaseNode from './components/EditorGraph/node';
-import { fillingEdgeJob } from './service';
+import { fillingEdgeJobById } from './service';
 import { Spin } from 'antd';
 import rightTools from './components/EditorPanel/data';
 class EditorFlow extends Component {
@@ -20,7 +20,7 @@ class EditorFlow extends Component {
   }
 
   getJob = () => {
-    return fillingJob(this.state.id);
+    return fillingEdgeJobById(this.state.id);
   }
 
   componentDidMount() {
@@ -60,16 +60,18 @@ class EditorFlow extends Component {
     window.jobRunStatus = this.state.data.status == 2 ? true : false;
     if (data.nodes) {
       data.nodes.map(d => {
-        const node = rightTools.find(_d => _d.pluginName == d.pluginName) || {pluginOptions: "[]"} ;
-        d.pluginOptions = JSON.stringify(node.pluginOptions);
-        d.content = node.content;
+        const node = rightTools.find(_d => _d.name == d.pluginName);
+
+        d.configDefinitions = JSON.stringify(node.configDefinitions);
+        d.configGroupDefinition = JSON.stringify(node.configGroupDefinition);
+        d.icon = node.icon;
+        d.label = node.label;
         if (!d.Class) {
           console.log('no class');
           d.Class = BaseNode;
         }
       })
     }
-
     return (
       <PageContainer header={{
         title: this.state.data.name || '未命名'

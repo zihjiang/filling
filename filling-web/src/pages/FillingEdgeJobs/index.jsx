@@ -6,176 +6,141 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
 
 
-import { fillingEdgeNodes } from '@/pages/FillingEdgeJobs/service';
+import { fillingEdgeNodes, removeFillingEdgeNode } from '@/pages/FillingEdgeJobs/service';
 
-const columns = [
-  {
-    title: '任务名称',
-    dataIndex: 'name',
-    ellipsis: true,
-    tip: '也是flink的任务名称',
-    render: (dom, entity) => {
-      return (
-        <Link to={"/FillingEdgeJobs/FillingEdgeJob/" + entity.id} >
-          {dom}
-        </Link>
-      );
-    },
-  },
-  {
-    title: '任务类型',
-    dataIndex: 'type'
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    hideInForm: true,
-    valueEnum: {
-      1: {
-        text: '未运行',
-        status: 'Created',
-      },
-      2: {
-        text: '运行中',
-        status: 'Processing',
-      },
-      3: {
-        text: '完成',
-        status: 'Success',
-      },
-      4: {
-        text: '失败',
-        status: 'Error',
-      },
-      5: {
-        text: '停止',
-        status: 'normal',
-      },
-      6: {
-        text: '失败',
-        status: 'Error',
-      },
-      7: {
-        text: '取消中',
-        status: 'Canceling',
-      },
-      8: {
-        text: '重启中',
-        status: 'Restarting',
-      }
-    },
-  },
-  {
-    title: '最后修改时间',
-    dataIndex: 'updatetime',
-    valueType: "dateTime"
-  },
-  {
-    title: 'description',
-    sorter: true,
-    dataIndex: 'description',
-    valueType: 'textarea',
-    ellipsis: true
-  },
-  {
-    title: '操作',
-    dataIndex: 'option',
-    valueType: 'option',
-    render: (_, record) => {
-      let result = [];
-      // 修改
-      result.push(
-        <Link key="id" to={"/FillingEdgeJobs/FillingEdgeJob/" + record.id} > 修改 </Link>
-      );
-      // 删除
-      if (record.status != 2) {
+const handleRemove = async (selectedRow) => {
+  const hide = message.loading('正在删除');
+  if (!selectedRow) return true;
 
-        result.push(
-          <a key="id" onClick={() => {
-            handleRemove(record);
-            setSelectedRows([]);
-            actionRef.current?.reloadAndRest?.();
-          }}>
-            删除
-          </a>
-        );
-        result.push(
-          <a key="id" onClick={() => {
-            start(record).then(() => {
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            })
-          }}>
-            启动
-          </a>
-        );
-      }
-      // 监控
-      if (record.status == 2) {
-        result.push(
-          <a key="id" onClick={() => {
-            handleMonitor(record);
-            setSelectedRows([]);
-          }}>
-            监控
-          </a>
-        );
-        result.push(
-          <a key="id" onClick={() => {
-            stop(record).then(() => {
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            });
+  try {
 
-          }}>
-            停止
-          </a>
-        )
-      }
+    console.log(selectedRow);
+    await removeFillingEdgeNode(selectedRow.id);
+    hide();
+    message.success('删除成功，即将刷新');
+    return true;
+  } catch (error) {
+    console.log(error);
+    hide();
+    message.error('删除失败，请重试');
+    return false;
+  }
+};
 
-      result.push(
-        <TableDropdown
-          key="actionGroup"
-          onSelect={() => action?.reload()}
-          menus={[
-            { key: 'copy', name: '复制' },
-            { key: 'delete', name: '删除' },
-          ]}
-        />
-      )
-      return result;
-    }
-  },
-];
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
 export default () => {
 
   const [showDetail, setShowDetail] = useState(false);
   const actionRef = useRef();
   const [currentRow, setCurrentRow] = useState();
   const [selectedRowsState, setSelectedRows] = useState([]);
+
+
+  const columns = [
+    {
+      title: '节点名称',
+      dataIndex: 'name',
+      ellipsis: true,
+      tip: '所在节点',
+      render: (dom, entity) => {
+        return (
+          <Link to={"/FillingEdgeJobs/FillingEdgeJob/" + entity.id} >
+            {dom}
+          </Link>
+        );
+      },
+    },
+    {
+      title: '任务类型',
+      dataIndex: 'type'
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      hideInForm: true,
+      valueEnum: {
+        1: {
+          text: '未运行',
+          status: 'Created',
+        },
+        2: {
+          text: '运行中',
+          status: 'Processing',
+        },
+        3: {
+          text: '完成',
+          status: 'Success',
+        },
+        4: {
+          text: '失败',
+          status: 'Error',
+        },
+        5: {
+          text: '停止',
+          status: 'normal',
+        },
+        6: {
+          text: '失败',
+          status: 'Error',
+        },
+        7: {
+          text: '取消中',
+          status: 'Canceling',
+        },
+        8: {
+          text: '重启中',
+          status: 'Restarting',
+        }
+      },
+    },
+    {
+      title: '最后修改时间',
+      dataIndex: 'updatetime',
+      valueType: "dateTime"
+    },
+    {
+      title: 'description',
+      sorter: true,
+      dataIndex: 'description',
+      valueType: 'textarea',
+      ellipsis: true
+    },
+    {
+      title: '操作',
+      dataIndex: 'option',
+      valueType: 'option',
+      render: (_, record) => {
+        let result = [];
+        // 修改
+        result.push(
+          <Link key="id" to={"/FillingEdgeJobs/FillingEdgeJob/" + record.id} > 修改 </Link>
+        );
+        // 删除
+        if (record.status != 2) {
+  
+          result.push(
+            <a key="id" onClick={() => {
+              handleRemove(record);
+              actionRef.current?.reloadAndRest?.();
+            }}>
+              删除
+            </a>
+          );
+        }
+  
+        result.push(
+          <TableDropdown
+            key="actionGroup"
+            onSelect={() => action?.reload()}
+            menus={[
+              { key: 'copy', name: '复制' },
+              { key: 'delete', name: '删除' },
+            ]}
+          />
+        )
+        return result;
+      }
+    },
+  ];
   return (
     <PageContainer>
       <ProTable

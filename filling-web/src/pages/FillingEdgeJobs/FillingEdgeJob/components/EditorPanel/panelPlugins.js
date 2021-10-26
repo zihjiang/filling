@@ -63,8 +63,8 @@ class panelPlugins {
 
         let jqImg = $(img).addClass('panel-img');
         jqImg.on('dragstart', (e) => {
-          e.originalEvent.dataTransfer.setData('id', item.id + '-' + this.guid());
-          e.originalEvent.dataTransfer.setData('originId', item.id);
+          e.originalEvent.dataTransfer.setData('id', item.name + '-' + this.guid());
+          e.originalEvent.dataTransfer.setData('originId', item.name);
           // e.originalEvent.dataTransfer.setData('data', JSON.stringify(item.data));
           e.originalEvent.dataTransfer.setData('pluginType', item['type']);
           e.originalEvent.dataTransfer.setData('pluginName', item['name']);

@@ -1,6 +1,7 @@
 package com.filling.web.rest;
 
 import com.filling.domain.FillingEdgeJobs;
+import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingEdgeJobsRepository;
 import com.filling.service.FillingEdgeJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
@@ -149,8 +150,7 @@ public class FillingEdgeJobsResource {
    * @throws URISyntaxException if the Location URI syntax is incorrect.
    */
   @PatchMapping(
-    value = "/filling-edge-jobs/{id}",
-    consumes = "application/merge-patch+json"
+    value = "/filling-edge-jobs/{id}"
   )
   public ResponseEntity<FillingEdgeJobs> partialUpdateFillingEdgeJobs(
     @PathVariable(value = "id", required = false) final Long id,
@@ -253,4 +253,20 @@ public class FillingEdgeJobsResource {
       )
       .build();
   }
+
+
+
+    /**
+     * {@code GET  /filling-jobs/:id} : preview the "id" FillingEdgeJobs.
+     *
+     * @param id the id of the FillingEdgeJobs to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the FillingEdgeJobs, or with status {@code 404 (Not Found)}.
+     */
+    @PostMapping("/filling-edge-jobs/{id}/preview")
+    public String previewFillingJobs(@PathVariable Long id, @RequestBody FillingEdgeJobs fillingEdgeJobs) {
+        log.debug("REST request to get FillingEdgeJobs : {}", id);
+
+        System.out.println("fillingEdgeJobs.getJobString(): "+ fillingEdgeJobs.getJobString());
+        return fillingEdgeJobs.getJobString();
+    }
 }

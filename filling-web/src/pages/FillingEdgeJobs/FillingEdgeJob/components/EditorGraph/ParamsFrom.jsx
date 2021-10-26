@@ -3,7 +3,6 @@ import { Button, message, Select, Switch } from 'antd';
 import {
   DrawerForm,
   ProFormText,
-  ProFormTextArea,
   ProFormDigit,
   ProFormRadio,
   ProFormSelect
@@ -17,7 +16,7 @@ import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-javascript';
 import "ace-builds/src-noconflict/theme-terminal";
 
-import { Tabs, Radio, Space, Collapse, Form } from 'antd';
+import { Tabs, Collapse, Form } from 'antd';
 
 const { Panel } = Collapse;
 
@@ -75,16 +74,16 @@ class ParamsFrom extends Component {
 
     configDefinitions.map((item) => {
       if (item.name == Object.keys(values)[0]) {
+        console.log('-');
         item.defaultValue = Object.values(values)[0];
       }
     })
-
-    console.log("initialValues", initialValues01);
-
     this.setState({
       initialValues: initialValues01,
       configDefinitions: configDefinitions
     })
+
+    console.log('configDefinitions', configDefinitions, values);
   }
 
   changeType = (value) => {
@@ -225,8 +224,8 @@ class ParamsFrom extends Component {
         )
       case "BOOLEAN":
         return (
-
           <Form.Item
+            key={_idx}
             name={_item.name}
             label={_item.label}
             defaultValue={_item.defaultValue}
@@ -238,7 +237,7 @@ class ParamsFrom extends Component {
       default:
         console.log("default: ", _item);
 
-        return (<a> {_item.type} </a>);
+        return (<a key={_idx}> {_item.type} </a>);
     }
   }
 
@@ -249,25 +248,17 @@ class ParamsFrom extends Component {
     let configDefinitions = this.state.configDefinitions;
     let data = this.state.data;
 
-    // if (pluginOptions) {
     if (this.state.data != undefined) {
       // 编辑
       initialValues = data;
       console.log('编辑', initialValues);
     } else {
       // 新建
-      console.log('configDefinitions', configDefinitions);
       configDefinitions.forEach((options) => {
         initialValues[options.name] = options['defaultValue'];
       })
 
-      console.log('新建');
     }
-    console.log('window.jobRunStatus', window.jobRunStatus);
-
-    console.log('initialValues', initialValues);
-
-    console.log('configGroupDefinition', this.state.configGroupDefinition);
     // }
     let Universal = () => {
       if (this.state.configGroupDefinition)

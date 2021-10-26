@@ -17,16 +17,9 @@ import {
 import React, { Component, useState } from 'react';
 import './index.less';
 import { Button, message } from 'antd';
-import ProForm, {
-    ModalForm,
-    ProFormText,
-    ProFormTextArea,
-    ProFormSelect,
-    ProFormDigit,
-    ProFormGroup
-} from '@ant-design/pro-form';
-import { planFillingJobs, startFillingJobs, stopFillingJobs, addFillingJobs, updateFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
+import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
 import { history } from 'umi';
+import Preview from '../PreviewConfiguration';
 class EditorToolbar extends Component {
     constructor(props) {
         super(props);
@@ -81,6 +74,8 @@ class EditorToolbar extends Component {
         const data = window.canvas.getDataMap();
         console.log(this.deCodeDataMap(data));
         console.log(JSON.stringify(this.deCodeDataMap(data)));
+
+        previewFillingEdgeJob(1, { data: { jobText: JSON.stringify(this.deCodeDataMap(data)), id: 1 } });
     }
 
     save = async (entity) => {
@@ -97,11 +92,13 @@ class EditorToolbar extends Component {
         }
         try {
             if (this.state.jobId) {
-                await patchFillingJobs(this.state.jobId, { data: entity });
+                await patchFillingEdgeJob(this.state.jobId, { data: entity });
             } else {
-                const job = await addFillingJobs({ data: entity });
+                const job = await addFillingEdgeJob({ data: entity });
+
+                console.log('job: {}', job);
                 this.state.jobId = job.id;
-                history.push('/butterfly-dag/' + job.id);
+                history.push('/FillingEdgeJobs/FillingEdgeJob/' + job.id);
             }
             hide();
             message.success('保存成功');
@@ -231,40 +228,6 @@ class EditorToolbar extends Component {
         if (!initialValues.confProp) {
             initialValues.confProp = '{"execution.parallelism": 2}';
         }
-        const appEdit = (<>
-            <ModalForm
-                title="编辑基础信息"
-                trigger={
-                    <FormOutlined title="编辑基础信息" />
-                }
-                modalProps={{
-                    onCancel: () => console.log('run'),
-                }}
-                onFinish={async (values) => {
-                    await this.save(values);
-                    message.success('提交成功');
-                    return true;
-                }}
-                initialValues={initialValues}
-                width="40%"
-            >
-                <ProFormText
-                    width="xl"
-                    name="name"
-                    label="任务名称"
-                    tooltip="最长为 24 位"
-                    placeholder="请输入名称"
-                />
-
-                <ProFormGroup label="任务参数">
-                    <ProFormTextArea width="xl" name="confProp" label="" />
-                </ProFormGroup>
-
-
-
-                <ProFormTextArea width="xl" name="description" label="说明" />
-            </ModalForm>
-        </>);
 
         return (
             <div className="main">
@@ -283,8 +246,7 @@ class EditorToolbar extends Component {
 
                 <DownloadOutlined title="下载" />
                 <SelectOutlined title="另存为" />
-
-                {appEdit}
+                <Preview />
             </div>
         );
     }

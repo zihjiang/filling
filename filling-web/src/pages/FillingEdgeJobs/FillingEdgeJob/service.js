@@ -56,3 +56,13 @@ export async function patchFillingEdgeJob(id, options) {
     ...(options || {})
   });
 }
+
+/** 预览任务 PATCH /api/filling-edge-jobs/{id}/preview */
+
+export async function previewFillingEdgeJob(id, options) {
+  options.data.id = id;
+  return request('/api/filling-edge-jobs/' + id + '/preview', {
+    method: 'POST',
+    ...(options || {})
+  });
+}

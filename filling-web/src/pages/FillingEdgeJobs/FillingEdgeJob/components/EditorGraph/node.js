@@ -41,7 +41,6 @@ class BaseNode extends Node {
     //   container.append(this.widEndpointDom);
     // }
 
-    console.log('data', data);
     container.append(`<span class='text'>${data.options.label}</span>`);
     container.append(`<img class='image' src=${data.options.icon}></img>`);
 

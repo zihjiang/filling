@@ -1,5 +1,8 @@
 package com.filling.domain;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
@@ -332,5 +335,55 @@ public class FillingEdgeJobs implements Serializable {
             ", creator='" + getCreator() + "'" +
             ", lastModifier='" + getLastModifier() + "'" +
             "}";
+    }
+
+
+    public String getJobString() {
+
+        JSONObject result = new JSONObject();
+        JSONArray stages = new JSONArray();
+
+        JSONArray orgJobTextNodes = JSONObject.parseObject(jobText).getJSONArray("nodes");
+
+        orgJobTextNodes.stream().forEach(d -> {
+            JSONArray configuration = new JSONArray();
+            JSONObject jsonObject = JSON.parseObject(d.toString());
+
+            JSONObject node = new JSONObject();
+
+            JSONObject data = jsonObject.getJSONObject("data");
+
+            data.keySet().forEach(_d -> {
+                JSONObject _data = new JSONObject();
+                _data.put("name", _d);
+                _data.put("value", data.get(_d));
+                configuration.add(_data);
+            });
+
+            node.put("library", jsonObject.get("library"));
+            node.put("stageName", jsonObject.get("stageName"));
+            node.put("stageVersion", jsonObject.get("stageVersion"));
+            node.put("inputLanes", jsonObject.get("inputLanes"));
+            node.put("outputLanes", jsonObject.get("outputLanes"));
+            node.put("configuration", configuration);
+
+            stages.add(node);
+        });
+
+
+        result.put("schemaVersion", new JSONObject());
+        result.put("version", new JSONObject());
+        result.put("title", title);
+        result.put("description", description);
+        result.put("uuid", uuid);
+        result.put("uiInfo", new JSONObject());
+        result.put("errorStage", new JSONObject());
+        result.put("statsAggregatorStage", new JSONObject());
+        result.put("previewable", new JSONObject());
+        result.put("info", new JSONObject());
+
+        result.put("pipelineId", pipelineId);
+        result.put("stages", stages);
+        return result.toJSONString();
     }
 }
