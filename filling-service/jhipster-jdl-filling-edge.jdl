@@ -21,6 +21,8 @@ entity FillingEdgeJobs(filling_edge_jobs) {
     metadata String,
     ctlVersion String,
     ctlId String,
+    uiInfo String,
+    info String,
     jobText String,
     status String,
     description String,

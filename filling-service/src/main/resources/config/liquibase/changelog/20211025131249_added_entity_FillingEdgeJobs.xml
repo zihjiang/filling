@@ -38,6 +38,12 @@
             <column name="ctl_id" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="ui_info" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="info" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="job_text" type="text">
                 <constraints nullable="true" />
             </column>
@@ -92,6 +98,8 @@
             <column name="metadata" type="string"/>
             <column name="ctl_version" type="string"/>
             <column name="ctl_id" type="string"/>
+            <column name="ui_info" type="string"/>
+            <column name="info" type="string"/>
             <column name="job_text" type="string"/>
             <column name="status" type="string"/>
             <column name="description" type="string"/>

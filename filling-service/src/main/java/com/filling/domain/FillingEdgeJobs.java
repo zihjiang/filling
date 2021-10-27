@@ -45,6 +45,12 @@ public class FillingEdgeJobs implements Serializable {
   @Column(name = "ctl_id")
   private String ctlId;
 
+  @Column(name = "ui_info")
+  private String uiInfo;
+
+  @Column(name = "info")
+  private String info;
+
   @Column(name = "job_text")
   private String jobText;
 
@@ -191,6 +197,32 @@ public class FillingEdgeJobs implements Serializable {
     this.ctlId = ctlId;
   }
 
+  public String getUiInfo() {
+    return this.uiInfo;
+  }
+
+  public FillingEdgeJobs uiInfo(String uiInfo) {
+    this.uiInfo = uiInfo;
+    return this;
+  }
+
+  public void setUiInfo(String uiInfo) {
+    this.uiInfo = uiInfo;
+  }
+
+  public String getInfo() {
+    return this.info;
+  }
+
+  public FillingEdgeJobs info(String info) {
+    this.info = info;
+    return this;
+  }
+
+  public void setInfo(String info) {
+    this.info = info;
+  }
+
   public String getJobText() {
     return this.jobText;
   }
@@ -327,6 +359,8 @@ public class FillingEdgeJobs implements Serializable {
             ", metadata='" + getMetadata() + "'" +
             ", ctlVersion='" + getCtlVersion() + "'" +
             ", ctlId='" + getCtlId() + "'" +
+            ", uiInfo='" + getUiInfo() + "'" +
+            ", info='" + getInfo() + "'" +
             ", jobText='" + getJobText() + "'" +
             ", status='" + getStatus() + "'" +
             ", description='" + getDescription() + "'" +
@@ -336,7 +370,6 @@ public class FillingEdgeJobs implements Serializable {
             ", lastModifier='" + getLastModifier() + "'" +
             "}";
     }
-
 
     public String getJobString() {
 

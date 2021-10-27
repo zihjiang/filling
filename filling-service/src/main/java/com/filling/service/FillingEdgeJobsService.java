@@ -86,6 +86,12 @@ public class FillingEdgeJobsService {
           if (fillingEdgeJobs.getCtlId() != null) {
             existingFillingEdgeJobs.setCtlId(fillingEdgeJobs.getCtlId());
           }
+          if (fillingEdgeJobs.getUiInfo() != null) {
+            existingFillingEdgeJobs.setUiInfo(fillingEdgeJobs.getUiInfo());
+          }
+          if (fillingEdgeJobs.getInfo() != null) {
+            existingFillingEdgeJobs.setInfo(fillingEdgeJobs.getInfo());
+          }
           if (fillingEdgeJobs.getJobText() != null) {
             existingFillingEdgeJobs.setJobText(fillingEdgeJobs.getJobText());
           }

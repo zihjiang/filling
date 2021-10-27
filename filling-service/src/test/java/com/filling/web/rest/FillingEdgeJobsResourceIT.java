@@ -55,6 +55,12 @@ class FillingEdgeJobsResourceIT {
   private static final String DEFAULT_CTL_ID = "AAAAAAAAAA";
   private static final String UPDATED_CTL_ID = "BBBBBBBBBB";
 
+  private static final String DEFAULT_UI_INFO = "AAAAAAAAAA";
+  private static final String UPDATED_UI_INFO = "BBBBBBBBBB";
+
+  private static final String DEFAULT_INFO = "AAAAAAAAAA";
+  private static final String UPDATED_INFO = "BBBBBBBBBB";
+
   private static final String DEFAULT_JOB_TEXT = "AAAAAAAAAA";
   private static final String UPDATED_JOB_TEXT = "BBBBBBBBBB";
 
@@ -115,6 +121,8 @@ class FillingEdgeJobsResourceIT {
       .metadata(DEFAULT_METADATA)
       .ctlVersion(DEFAULT_CTL_VERSION)
       .ctlId(DEFAULT_CTL_ID)
+      .uiInfo(DEFAULT_UI_INFO)
+      .info(DEFAULT_INFO)
       .jobText(DEFAULT_JOB_TEXT)
       .status(DEFAULT_STATUS)
       .description(DEFAULT_DESCRIPTION)
@@ -141,6 +149,8 @@ class FillingEdgeJobsResourceIT {
       .metadata(UPDATED_METADATA)
       .ctlVersion(UPDATED_CTL_VERSION)
       .ctlId(UPDATED_CTL_ID)
+      .uiInfo(UPDATED_UI_INFO)
+      .info(UPDATED_INFO)
       .jobText(UPDATED_JOB_TEXT)
       .status(UPDATED_STATUS)
       .description(UPDATED_DESCRIPTION)
@@ -185,6 +195,8 @@ class FillingEdgeJobsResourceIT {
     assertThat(testFillingEdgeJobs.getCtlVersion())
       .isEqualTo(DEFAULT_CTL_VERSION);
     assertThat(testFillingEdgeJobs.getCtlId()).isEqualTo(DEFAULT_CTL_ID);
+    assertThat(testFillingEdgeJobs.getUiInfo()).isEqualTo(DEFAULT_UI_INFO);
+    assertThat(testFillingEdgeJobs.getInfo()).isEqualTo(DEFAULT_INFO);
     assertThat(testFillingEdgeJobs.getJobText()).isEqualTo(DEFAULT_JOB_TEXT);
     assertThat(testFillingEdgeJobs.getStatus()).isEqualTo(DEFAULT_STATUS);
     assertThat(testFillingEdgeJobs.getDescription())
@@ -247,6 +259,8 @@ class FillingEdgeJobsResourceIT {
         jsonPath("$.[*].ctlVersion").value(hasItem(DEFAULT_CTL_VERSION))
       )
       .andExpect(jsonPath("$.[*].ctlId").value(hasItem(DEFAULT_CTL_ID)))
+      .andExpect(jsonPath("$.[*].uiInfo").value(hasItem(DEFAULT_UI_INFO)))
+      .andExpect(jsonPath("$.[*].info").value(hasItem(DEFAULT_INFO)))
       .andExpect(jsonPath("$.[*].jobText").value(hasItem(DEFAULT_JOB_TEXT)))
       .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
       .andExpect(
@@ -285,6 +299,8 @@ class FillingEdgeJobsResourceIT {
       .andExpect(jsonPath("$.metadata").value(DEFAULT_METADATA))
       .andExpect(jsonPath("$.ctlVersion").value(DEFAULT_CTL_VERSION))
       .andExpect(jsonPath("$.ctlId").value(DEFAULT_CTL_ID))
+      .andExpect(jsonPath("$.uiInfo").value(DEFAULT_UI_INFO))
+      .andExpect(jsonPath("$.info").value(DEFAULT_INFO))
       .andExpect(jsonPath("$.jobText").value(DEFAULT_JOB_TEXT))
       .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
       .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
@@ -328,6 +344,8 @@ class FillingEdgeJobsResourceIT {
       .metadata(UPDATED_METADATA)
       .ctlVersion(UPDATED_CTL_VERSION)
       .ctlId(UPDATED_CTL_ID)
+      .uiInfo(UPDATED_UI_INFO)
+      .info(UPDATED_INFO)
       .jobText(UPDATED_JOB_TEXT)
       .status(UPDATED_STATUS)
       .description(UPDATED_DESCRIPTION)
@@ -360,6 +378,8 @@ class FillingEdgeJobsResourceIT {
     assertThat(testFillingEdgeJobs.getCtlVersion())
       .isEqualTo(UPDATED_CTL_VERSION);
     assertThat(testFillingEdgeJobs.getCtlId()).isEqualTo(UPDATED_CTL_ID);
+    assertThat(testFillingEdgeJobs.getUiInfo()).isEqualTo(UPDATED_UI_INFO);
+    assertThat(testFillingEdgeJobs.getInfo()).isEqualTo(UPDATED_INFO);
     assertThat(testFillingEdgeJobs.getJobText()).isEqualTo(UPDATED_JOB_TEXT);
     assertThat(testFillingEdgeJobs.getStatus()).isEqualTo(UPDATED_STATUS);
     assertThat(testFillingEdgeJobs.getDescription())
@@ -449,10 +469,12 @@ class FillingEdgeJobsResourceIT {
       .pipelineId(UPDATED_PIPELINE_ID)
       .title(UPDATED_TITLE)
       .metadata(UPDATED_METADATA)
+      .uiInfo(UPDATED_UI_INFO)
+      .info(UPDATED_INFO)
       .jobText(UPDATED_JOB_TEXT)
       .status(UPDATED_STATUS)
-      .description(UPDATED_DESCRIPTION)
-      .created(UPDATED_CREATED)
+      .lastModified(UPDATED_LAST_MODIFIED)
+      .creator(UPDATED_CREATOR)
       .lastModifier(UPDATED_LAST_MODIFIER);
 
     restFillingEdgeJobsMockMvc
@@ -481,14 +503,16 @@ class FillingEdgeJobsResourceIT {
     assertThat(testFillingEdgeJobs.getCtlVersion())
       .isEqualTo(DEFAULT_CTL_VERSION);
     assertThat(testFillingEdgeJobs.getCtlId()).isEqualTo(DEFAULT_CTL_ID);
+    assertThat(testFillingEdgeJobs.getUiInfo()).isEqualTo(UPDATED_UI_INFO);
+    assertThat(testFillingEdgeJobs.getInfo()).isEqualTo(UPDATED_INFO);
     assertThat(testFillingEdgeJobs.getJobText()).isEqualTo(UPDATED_JOB_TEXT);
     assertThat(testFillingEdgeJobs.getStatus()).isEqualTo(UPDATED_STATUS);
     assertThat(testFillingEdgeJobs.getDescription())
-      .isEqualTo(UPDATED_DESCRIPTION);
-    assertThat(testFillingEdgeJobs.getCreated()).isEqualTo(UPDATED_CREATED);
+      .isEqualTo(DEFAULT_DESCRIPTION);
+    assertThat(testFillingEdgeJobs.getCreated()).isEqualTo(DEFAULT_CREATED);
     assertThat(testFillingEdgeJobs.getLastModified())
-      .isEqualTo(DEFAULT_LAST_MODIFIED);
-    assertThat(testFillingEdgeJobs.getCreator()).isEqualTo(DEFAULT_CREATOR);
+      .isEqualTo(UPDATED_LAST_MODIFIED);
+    assertThat(testFillingEdgeJobs.getCreator()).isEqualTo(UPDATED_CREATOR);
     assertThat(testFillingEdgeJobs.getLastModifier())
       .isEqualTo(UPDATED_LAST_MODIFIER);
   }
@@ -514,6 +538,8 @@ class FillingEdgeJobsResourceIT {
       .metadata(UPDATED_METADATA)
       .ctlVersion(UPDATED_CTL_VERSION)
       .ctlId(UPDATED_CTL_ID)
+      .uiInfo(UPDATED_UI_INFO)
+      .info(UPDATED_INFO)
       .jobText(UPDATED_JOB_TEXT)
       .status(UPDATED_STATUS)
       .description(UPDATED_DESCRIPTION)
@@ -548,6 +574,8 @@ class FillingEdgeJobsResourceIT {
     assertThat(testFillingEdgeJobs.getCtlVersion())
       .isEqualTo(UPDATED_CTL_VERSION);
     assertThat(testFillingEdgeJobs.getCtlId()).isEqualTo(UPDATED_CTL_ID);
+    assertThat(testFillingEdgeJobs.getUiInfo()).isEqualTo(UPDATED_UI_INFO);
+    assertThat(testFillingEdgeJobs.getInfo()).isEqualTo(UPDATED_INFO);
     assertThat(testFillingEdgeJobs.getJobText()).isEqualTo(UPDATED_JOB_TEXT);
     assertThat(testFillingEdgeJobs.getStatus()).isEqualTo(UPDATED_STATUS);
     assertThat(testFillingEdgeJobs.getDescription())

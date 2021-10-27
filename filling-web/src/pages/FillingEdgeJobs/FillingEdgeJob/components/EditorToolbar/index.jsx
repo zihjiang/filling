@@ -19,7 +19,7 @@ import './index.less';
 import { Button, message } from 'antd';
 import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
 import { history } from 'umi';
-import Preview from '../PreviewConfiguration';
+import { PreviewConfiguration } from '../PreviewConfiguration';
 class EditorToolbar extends Component {
     constructor(props) {
         super(props);
@@ -229,6 +229,9 @@ class EditorToolbar extends Component {
             initialValues.confProp = '{"execution.parallelism": 2}';
         }
 
+        let uiInfo = this.state.data.uiInfo || {};
+        console.log("this.state.data", this.state.data);
+
         return (
             <div className="main">
                 <DeleteFilled onClick={this.deleteNodeAndEdge} title="删除" />
@@ -246,7 +249,7 @@ class EditorToolbar extends Component {
 
                 <DownloadOutlined title="下载" />
                 <SelectOutlined title="另存为" />
-                <Preview />
+                <PreviewConfiguration deCodeDataMap={this.deCodeDataMap } uiInfo={uiInfo} />
             </div>
         );
     }
