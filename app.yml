@@ -1,4 +1,4 @@
-version: '2'
+version: '2.2'
 services:
   filling:
     build:
@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     image: filling:latest
     container_name: filling
+    depends_on:
+      - jobmanager
+      - taskmanager
     environment:
       - _JAVA_OPTIONS=-Xmx1g -Xms1g
       - JHIPSTER_SLEEP=10 # gives time for the JHipster Registry to boot before the application
