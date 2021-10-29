@@ -9,21 +9,36 @@ import ProForm, {
     ProFormSwitch
 } from '@ant-design/pro-form';
 import { BugFilled } from '@ant-design/icons';
+import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
 class PreviewConfiguration extends Component {
     constructor(props) {
         super(props);
         this.state = {
             initialValues: props.uiInfo.previewConfig
         };
+        this.uiInfo = props.uiInfo;
+        this.deCodeDataMap = props.deCodeDataMap;
     }
 
     // 更新node的数据
-    updateData = (values) => {
-        console.log(values);
+    updateData = async (values) => {
+        console.log(123123);
+
+        this.uiInfo.previewConfig = values;
+        this.uiInfo.displayMode = "ADVANCED";
+        const data = window.canvas.getDataMap();
+        await previewFillingEdgeJob(1, {
+            data: {
+                uiInfo: JSON.stringify(this.uiInfo),
+                jobText: JSON.stringify(this.deCodeDataMap(data)),
+                id: 1
+            }
+        });
+        console.log(this.uiInfo);
     }
 
     render() {
-        let initialValues = this.state.initialValues;
+        let initialValues = this.state.initialValues == undefined ? { testOrigin: true, batchSize: 10, skipTargets: true, rememberConfig: true, skipLifecycleEvents: true } : this.state.initialValues;
         const waitTime = (time = 100) => {
             return new Promise((resolve) => {
                 setTimeout(() => {
@@ -44,11 +59,20 @@ class PreviewConfiguration extends Component {
                 onFinish={async (values) => {
                     await waitTime(10);
                     console.log(values);
-                    this.updateData(values);
+                    const data = window.canvas.getDataMap();
+                    console.log(this.deCodeDataMap(data));
+                    await this.updateData(values);
                     message.success('提交成功');
                     return true;
                 }}
                 width='35%'
+                submitter={{
+                    // 配置按钮文本
+                    searchConfig: {
+                        resetText: '取消',
+                        submitText: '运行',
+                    }
+                }}
             >
                 <ProForm.Group>
                     <ProFormSelect

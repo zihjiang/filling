@@ -2,7 +2,12 @@ package com.filling.service;
 
 import com.filling.domain.FillingEdgeJobs;
 import com.filling.repository.FillingEdgeJobsRepository;
+
+import java.io.IOException;
+import java.time.Instant;
 import java.util.Optional;
+
+import com.filling.utils.EdgeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -106,19 +111,12 @@ public class FillingEdgeJobsService {
           if (fillingEdgeJobs.getCreated() != null) {
             existingFillingEdgeJobs.setCreated(fillingEdgeJobs.getCreated());
           }
-          if (fillingEdgeJobs.getLastModified() != null) {
-            existingFillingEdgeJobs.setLastModified(
-              fillingEdgeJobs.getLastModified()
-            );
-          }
+
           if (fillingEdgeJobs.getCreator() != null) {
             existingFillingEdgeJobs.setCreator(fillingEdgeJobs.getCreator());
           }
-          if (fillingEdgeJobs.getLastModifier() != null) {
-            existingFillingEdgeJobs.setLastModifier(
-              fillingEdgeJobs.getLastModifier()
-            );
-          }
+            existingFillingEdgeJobs.setLastModifier(Instant.now().toString());
+            existingFillingEdgeJobs.setLastModified(Instant.now());
 
           return existingFillingEdgeJobs;
         }
@@ -158,5 +156,16 @@ public class FillingEdgeJobsService {
   public void delete(Long id) {
     log.debug("Request to delete FillingEdgeJobs : {}", id);
     fillingEdgeJobsRepository.deleteById(id);
+  }
+
+  @Transactional(readOnly = true)
+  public String saveAndPreview(FillingEdgeJobs fillingEdgeJobs) throws IOException {
+      FillingEdgeJobs fillingEdgeJob = save(fillingEdgeJobs);
+      EdgeUtils.save("http://localhost:18633", "123", fillingEdgeJob.getJobString());
+      EdgeUtils.update("http://localhost:18633", "123", fillingEdgeJob.getJobString());
+
+      return EdgeUtils.preview("http://localhost:18633", "123");
+
+
   }
 }

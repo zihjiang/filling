@@ -4,8 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.filling.web.rest.FillingEdgeJobsResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 import javax.persistence.*;
 
 /**
@@ -14,6 +19,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "filling_edge_jobs")
 public class FillingEdgeJobs implements Serializable {
+
+//    private final Logger log = LoggerFactory.getLogger(FillingEdgeJobs.class);
 
   private static final long serialVersionUID = 1L;
 
@@ -25,7 +32,7 @@ public class FillingEdgeJobs implements Serializable {
   private String name;
 
   @Column(name = "pipeline_id")
-  private String pipelineId;
+  private String pipelineId = UUID.randomUUID().toString();
 
   @Column(name = "title")
   private String title;
@@ -393,6 +400,8 @@ public class FillingEdgeJobs implements Serializable {
                 configuration.add(_data);
             });
 
+            node.put("instanceName", UUID.randomUUID());
+
             node.put("library", jsonObject.get("library"));
             node.put("stageName", jsonObject.get("stageName"));
             node.put("stageVersion", jsonObject.get("stageVersion"));
@@ -404,19 +413,22 @@ public class FillingEdgeJobs implements Serializable {
         });
 
 
-        result.put("schemaVersion", new JSONObject());
-        result.put("version", new JSONObject());
+        result.put("schemaVersion", 1);
+        result.put("version", 1);
         result.put("title", title);
         result.put("description", description);
         result.put("uuid", uuid);
-        result.put("uiInfo", new JSONObject());
+        result.put("uiInfo", JSONObject.parseObject(uiInfo));
         result.put("errorStage", new JSONObject());
         result.put("statsAggregatorStage", new JSONObject());
-        result.put("previewable", new JSONObject());
+        result.put("previewable", true);
         result.put("info", new JSONObject());
 
         result.put("pipelineId", pipelineId);
         result.put("stages", stages);
+
+//        log.debug("getJobString: {}", result.toJSONString());
+
         return result.toJSONString();
     }
 }

@@ -16,7 +16,7 @@ import {
 } from '@ant-design/icons';
 import React, { Component, useState } from 'react';
 import './index.less';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
 import { history } from 'umi';
 import { PreviewConfiguration } from '../PreviewConfiguration';

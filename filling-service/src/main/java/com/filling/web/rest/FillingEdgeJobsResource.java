@@ -5,6 +5,8 @@ import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingEdgeJobsRepository;
 import com.filling.service.FillingEdgeJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -263,10 +265,11 @@ public class FillingEdgeJobsResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the FillingEdgeJobs, or with status {@code 404 (Not Found)}.
      */
     @PostMapping("/filling-edge-jobs/{id}/preview")
-    public String previewFillingJobs(@PathVariable Long id, @RequestBody FillingEdgeJobs fillingEdgeJobs) {
+    public String previewFillingJobs(@PathVariable Long id, @RequestBody FillingEdgeJobs fillingEdgeJobs) throws IOException {
         log.debug("REST request to get FillingEdgeJobs : {}", id);
 
-        System.out.println("fillingEdgeJobs.getJobString(): "+ fillingEdgeJobs.getJobString());
-        return fillingEdgeJobs.getJobString();
+//        System.out.println("fillingEdgeJobs.getJobString(): "+ fillingEdgeJobs.getJobString());
+
+        return  fillingEdgeJobsService.saveAndPreview(fillingEdgeJobs);
     }
 }
