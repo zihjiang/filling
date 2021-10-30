@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.testcontainers.shaded.okhttp3.*;
 
 import java.io.IOException;
+import java.time.Duration;
 
 
 /**
@@ -15,7 +16,9 @@ import java.io.IOException;
  */
 public class EdgeUtils {
 
-    private final static Logger log = LoggerFactory.getLogger(EdgeUtils.class );
+    private final static Logger log = LoggerFactory.getLogger(EdgeUtils.class);
+
+    private static Integer TIMEOUT = 60;
 
     /**
      * 新增edge任务
@@ -27,7 +30,11 @@ public class EdgeUtils {
      * @throws IOException
      */
     public static String save(String edgeHttpUrl, String pipelineId, String bodyStr) throws IOException {
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        OkHttpClient client = new OkHttpClient.Builder()
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .readTimeout(Duration.ofSeconds(TIMEOUT))
+            .build();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, bodyStr);
         Request request = new Request.Builder()
@@ -55,9 +62,15 @@ public class EdgeUtils {
      * @throws IOException
      */
     public static String update(String edgeHttpUrl, String pipelineId, String bodyStr) throws IOException {
-        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        OkHttpClient client = new OkHttpClient.Builder()
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .readTimeout(Duration.ofSeconds(TIMEOUT))
+            .build();
+
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(mediaType, bodyStr);
+        log.debug("update edge job body: {}", JSONObject.parseObject(bodyStr).toJSONString());
         Request request = new Request.Builder()
             .url(edgeHttpUrl + "/rest/v1/pipeline/" + pipelineId)
             .method("POST", body)
@@ -82,12 +95,16 @@ public class EdgeUtils {
      * @throws IOException
      */
     public static String preview(String edgeHttpUrl, String pipelineId) throws IOException {
-        OkHttpClient client = new OkHttpClient().newBuilder()
+        OkHttpClient client = new OkHttpClient.Builder()
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .readTimeout(Duration.ofSeconds(TIMEOUT))
             .build();
+
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, "");
         Request request = new Request.Builder()
-            .url(edgeHttpUrl + "/rest/v1/pipeline/" + pipelineId + "/preview?batchSize=10&skipTargets=true&testOrigin=false&timeout=30000&batches=1")
+            .url(edgeHttpUrl + "/rest/v1/pipeline/" + pipelineId + "/preview")
             .method("POST", body)
             .build();
         Response response = client.newCall(request).execute();

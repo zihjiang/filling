@@ -5,7 +5,9 @@ import {
   ProFormText,
   ProFormDigit,
   ProFormRadio,
-  ProFormSelect
+  ProFormSelect,
+  ProFormField,
+  ProFormDependency
 
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
@@ -15,8 +17,11 @@ import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-javascript';
 import "ace-builds/src-noconflict/theme-terminal";
+import ProForm from '@ant-design/pro-form';
 
 import { Tabs, Collapse, Form } from 'antd';
+
+import { EditableProTable } from '@ant-design/pro-table';
 
 const { Panel } = Collapse;
 
@@ -232,8 +237,85 @@ class ParamsFrom extends Component {
             valuePropName="checked">
             <Switch />
           </Form.Item>
-
         )
+      case "MAP":
+        const columns = [
+          {
+            title: 'key',
+            key: 'state',
+            dataIndex: 'key',
+            formItemProps: (form, { rowIndex }) => {
+              return {
+                rules: rowIndex > 2 ? [{ required: true, message: '此项为必填项' }] : [],
+              };
+            },
+            width: '35%',
+          },
+          {
+            title: 'value',
+            key: 'value',
+            dataIndex: 'value',
+            width: '35%',
+          },
+          {
+            title: '操作',
+            valueType: 'option',
+            width: "30%",
+            render: (text, record, _, action) => [
+              <a
+                key="editable"
+                onClick={() => {
+                  action?.startEditable?.(record.id);
+                }}
+              >
+                编辑
+              </a>,
+              <a
+                key="delete"
+                onClick={() => { }}
+              >
+                删除
+              </a>,
+            ],
+          },
+        ];
+        return (
+          <Form.Item
+          key={_idx}
+            name={_item.name}
+            label={_item.label}
+            defaultValue={_item.defaultValue}
+            valuePropName="checked"
+          >
+            <EditableProTable
+              rowKey={_idx}
+              headerTitle={_item.label}
+              maxLength={5}
+
+              columns={columns}
+              editable={{
+                type: 'multiple',
+                onSave: async (rowKey, data, row) => {
+                  console.log(rowKey, data, row);
+                }
+              }}
+            />
+          </Form.Item>
+          // <ProFormField>
+          //   <EditableProTable
+          //     key={_idx}
+          //     rowKey={_idx}
+          //     headerTitle={_item.label}
+          //     maxLength={5}
+          //     name={_item.name}
+          //     columns={columns}
+          //     editable={{
+          //       type: 'multiple'
+          //       // onChange: setEditableRowKeys,
+          //     }}
+          //   />
+          // </ProFormField>
+        );
       default:
         console.log("default: ", _item);
 

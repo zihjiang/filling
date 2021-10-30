@@ -38,7 +38,7 @@ class PreviewConfiguration extends Component {
     }
 
     render() {
-        let initialValues = this.state.initialValues == undefined ? { testOrigin: true, batchSize: 10, skipTargets: true, rememberConfig: true, skipLifecycleEvents: true } : this.state.initialValues;
+        let initialValues = this.state.initialValues == undefined ? { testOrigin: true, batchSize: 10, skipTargets: true, rememberConfig: true, skipLifecycleEvents: true, timeout: 30000 } : this.state.initialValues;
         const waitTime = (time = 100) => {
             return new Promise((resolve) => {
                 setTimeout(() => {
@@ -90,6 +90,10 @@ class PreviewConfiguration extends Component {
 
                 <ProForm.Group>
                     <ProFormDigit width="xl" name="batchSize" label="Preview Batch Size" placeholder="Preview Batch Size" />
+                </ProForm.Group>
+
+                <ProForm.Group>
+                    <ProFormDigit width="xl" name="timeout" label="预览超时" placeholder="预览超时" />
                 </ProForm.Group>
 
                 <ProForm.Group>
