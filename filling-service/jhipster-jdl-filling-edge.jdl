@@ -1,16 +1,19 @@
 entity FillingEdgeNodes(filling_edge_nodes) {
     name String,
     title String,
-    uuid String,
-    valid Boolean,
-    metadata String,
-    host String,
-    url String,
+    baseHttpUrl String,
+    goGoVersion String,
+    baseHttpUrl String,
+    goGoOS String,
+    goGoArch String,
+    goBuildDate String,
+    goRepoSha String,
     description String,
     created Instant,
     lastModified Instant,
     creator String,
-    lastModifier String
+    lastModifier String,
+    uuid String unique
 }
 entity FillingEdgeJobs(filling_edge_jobs) {
     name String,
@@ -23,7 +26,7 @@ entity FillingEdgeJobs(filling_edge_jobs) {
     ctlId String,
     uiInfo String,
     info String,
-    jobText String,
+    jobText String maxlength(99999),
     status String,
     description String,
     created Instant,
@@ -36,12 +39,13 @@ entity NodeLabel {
     title String,
     color String
 }
-
-relationship OneToMany {
-	FillingEdgeNodes to FillingEdgeJobs
-    FillingEdgeNodes to NodeLabel
+relationship ManyToOne {
+	FillingEdgeJobs to FillingEdgeNodes
+    NodeLabel to FillingEdgeNodes
 }
+
 service FillingEdgeJobs with serviceClass
+service FillingEdgeNodes with serviceClass
 paginate FillingEdgeJobs with pagination
 
 paginate FillingEdgeNodes with pagination

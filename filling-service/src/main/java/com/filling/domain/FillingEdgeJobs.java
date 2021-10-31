@@ -82,10 +82,7 @@ public class FillingEdgeJobs implements Serializable {
     private String lastModifier;
 
     @ManyToOne
-    @JsonIgnoreProperties(
-        value = {"fillingEdgeJobs", "nodeLabels"},
-        allowSetters = true
-    )
+    @JsonIgnoreProperties(value = {"fillingEdgeJobs", "nodeLabels"}, allowSetters = true)
     private FillingEdgeNodes fillingEdgeNodes;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -415,7 +412,6 @@ public class FillingEdgeJobs implements Serializable {
             node.put("inputLanes", jsonObject.get("inputLanes"));
             node.put("outputLanes", jsonObject.get("outputLanes"));
             node.put("configuration", configuration);
-
 
 
             node.put("uiInfo", getDefaultStageUiInfo(stageType, left, top));

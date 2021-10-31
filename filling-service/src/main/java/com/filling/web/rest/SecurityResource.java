@@ -2,6 +2,9 @@ package com.filling.web.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.filling.service.FillingEdgeJobsService;
+import com.filling.service.FillingEdgeNodesService;
+import com.filling.web.rest.vm.EdgeRegistrationVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.URISyntaxException;
 
 /**
  * REST controller for managing the current user's account.
@@ -21,12 +25,10 @@ public class SecurityResource {
     @Autowired
     HttpServletRequest request;
 
-    private static class AccountResourceException extends RuntimeException {
+    @Autowired
+    FillingEdgeNodesService fillingEdgeNodesService;
 
-        private AccountResourceException(String message) {
-            super(message);
-        }
-    }
+    static String FULLAUTHTOKEN = "123456789";
 
     private final Logger log = LoggerFactory.getLogger(SecurityResource.class);
 
@@ -67,37 +69,17 @@ public class SecurityResource {
 
     /**
      *
-     * @param obj
-     * @return {"authToken":"123456789","componentId":"7991c301-5168-4925-85ed-fbad5532e138","attributes":{"baseHttpUrl":"http://MrJiangs-MacBook-Pro.local:18633","sdc2goGoVersion":"go1.17","sdc2goGoOS":"darwin","sdc2goGoArch":"arm64","sdc2goBuildDate":"","sdc2goRepoSha":"","sdc2goVersion":""}}
-     */
-    @PostMapping("/public-rest/v1/components/registration")
-    public JSONObject test04(@Valid @RequestBody Object obj) {
-        log.debug(request.getRequestURI());
-        System.out.println(JSONObject.toJSONString(obj));
-        JSONArray jsonArray = new JSONArray();
-        JSONObject result = new JSONObject();
-        result.put("fullAuthToken", "123456789");
-        jsonArray.add(result);
-        return result;
-    }
-
-    /**
-     *
-     * @param obj
+     * @param edgeRegistrationVM {"authToken":"123456789","componentId":"7991c301-5168-4925-85ed-fbad5532e138","attributes":{"baseHttpUrl":"http://MrJiangs-MacBook-Pro.local:18633","sdc2goGoVersion":"go1.17","sdc2goGoOS":"darwin","sdc2goGoArch":"arm64","sdc2goBuildDate":"","sdc2goRepoSha":"","sdc2goVersion":""}}
      * @return
      */
-    @RequestMapping("/**/**")
-    @ResponseStatus(HttpStatus.CREATED)
-    public JSONArray test05(@Valid @RequestBody Object obj) {
+    @PostMapping("/public-rest/v1/components/registration")
+    public JSONObject test04(@Valid @RequestBody EdgeRegistrationVM edgeRegistrationVM) throws URISyntaxException {
         log.debug(request.getRequestURI());
-        System.out.println(JSONObject.toJSONString(obj));
-
-        JSONArray jsonArray = new JSONArray();
         JSONObject result = new JSONObject();
+
+        fillingEdgeNodesService.saveByUuid(edgeRegistrationVM.getEdgeNodes());
         result.put("fullAuthToken", "123456789");
-        jsonArray.add(result);
-        return jsonArray;
+
+        return result;
     }
-
-
 }

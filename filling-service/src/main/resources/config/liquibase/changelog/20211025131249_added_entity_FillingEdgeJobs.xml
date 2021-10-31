@@ -44,7 +44,7 @@
             <column name="info" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="job_text" type="text">
+            <column name="job_text" type="varchar(99999)">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">

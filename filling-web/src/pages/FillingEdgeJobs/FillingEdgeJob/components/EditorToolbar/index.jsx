@@ -25,9 +25,12 @@ class EditorToolbar extends Component {
         super(props);
         this.state = {
             jobId: props.data.id,
+            nodeId: props.nodeId,
             data: props.data,
             status: (props.data.status == undefined) ? 1 : props.data.status
         }
+
+        console.log("props: ", props);
     }
 
     forceJobUpdate = (job) => {
@@ -98,7 +101,7 @@ class EditorToolbar extends Component {
 
                 console.log('job: {}', job);
                 this.state.jobId = job.id;
-                history.push('/FillingEdgeJobs/FillingEdgeJob/' + job.id);
+                history.push("/FillingEdgeJobs/" +this.state.nodeId+ "/FillingEdgeJob/" + job.id);
             }
             hide();
             message.success('保存成功');

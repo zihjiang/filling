@@ -50,55 +50,24 @@ export default () => {
       },
     },
     {
-      title: '任务类型',
-      dataIndex: 'type'
+      title: '操作类型',
+      dataIndex: 'goGoOS'
     },
     {
-      title: '状态',
-      dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        1: {
-          text: '未运行',
-          status: 'Created',
-        },
-        2: {
-          text: '运行中',
-          status: 'Processing',
-        },
-        3: {
-          text: '完成',
-          status: 'Success',
-        },
-        4: {
-          text: '失败',
-          status: 'Error',
-        },
-        5: {
-          text: '停止',
-          status: 'normal',
-        },
-        6: {
-          text: '失败',
-          status: 'Error',
-        },
-        7: {
-          text: '取消中',
-          status: 'Canceling',
-        },
-        8: {
-          text: '重启中',
-          status: 'Restarting',
-        }
-      },
+      title: '架构',
+      dataIndex: 'goGoArch'
+    },
+    {
+      title: '编译版本',
+      dataIndex: 'goGoVersion'
     },
     {
       title: '最后修改时间',
-      dataIndex: 'updatetime',
+      dataIndex: 'lastModified',
       valueType: "dateTime"
     },
     {
-      title: 'description',
+      title: '说明',
       sorter: true,
       dataIndex: 'description',
       valueType: 'textarea',
@@ -112,7 +81,7 @@ export default () => {
         let result = [];
         // 修改
         result.push(
-          <Link key="id" to={"/FillingEdgeJobs/FillingEdgeJob/" + record.id} > 修改 </Link>
+          <Link key="id" to={"/FillingEdgeJobs/" +record.id+ "/FillingEdgeJob/"} > 修改 </Link>
         );
         // 删除
         if (record.status != 2) {

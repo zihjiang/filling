@@ -43,7 +43,9 @@
     },
     {
       "fieldName": "jobText",
-      "fieldType": "String"
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "99999"
     },
     {
       "fieldName": "status",

@@ -15,8 +15,10 @@ class EditorFlow extends Component {
     super(props);
     this.state = {
       id: this.props.match.params.id,
+      nodeId: this.props.match.params.nodeId,
       data: {}
     };
+
   }
 
   getJob = () => {
@@ -72,6 +74,7 @@ class EditorFlow extends Component {
         }
       })
     }
+
     return (
       <PageContainer header={{
         title: this.state.data.name || '未命名'
@@ -80,7 +83,7 @@ class EditorFlow extends Component {
           <Row className={styles.editorHd}>
             <Col lg={20} xxl={22}>
               {/* FlowToolbar  */}
-              <EditorToolbar data={this.state.data} forceJobUpdate={this.forceJobUpdate} />
+              <EditorToolbar data={this.state.data} forceJobUpdate={this.forceJobUpdate} nodeId={this.state.nodeId} />
             </Col>
           </Row>
           <Row className={styles.editorBd}>

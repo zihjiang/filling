@@ -1,13 +1,12 @@
 package com.filling.domain;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 /**
  * A FillingEdgeNodes.
@@ -28,20 +27,23 @@ public class FillingEdgeNodes implements Serializable {
   @Column(name = "title")
   private String title;
 
-  @Column(name = "uuid")
-  private String uuid;
+  @Column(name = "base_http_url")
+  private String baseHttpUrl;
 
-  @Column(name = "valid")
-  private Boolean valid;
+  @Column(name = "go_go_version")
+  private String goGoVersion;
 
-  @Column(name = "metadata")
-  private String metadata;
+  @Column(name = "go_go_os")
+  private String goGoOS;
 
-  @Column(name = "host")
-  private String host;
+  @Column(name = "go_go_arch")
+  private String goGoArch;
 
-  @Column(name = "url")
-  private String url;
+  @Column(name = "go_build_date")
+  private String goBuildDate;
+
+  @Column(name = "go_repo_sha")
+  private String goRepoSha;
 
   @Column(name = "description")
   private String description;
@@ -57,6 +59,9 @@ public class FillingEdgeNodes implements Serializable {
 
   @Column(name = "last_modifier")
   private String lastModifier;
+
+  @Column(name = "uuid", unique = true)
+  private String uuid;
 
   @OneToMany(mappedBy = "fillingEdgeNodes")
   @JsonIgnoreProperties(value = { "fillingEdgeNodes" }, allowSetters = true)
@@ -106,69 +111,82 @@ public class FillingEdgeNodes implements Serializable {
     this.title = title;
   }
 
-  public String getUuid() {
-    return this.uuid;
+  public String getBaseHttpUrl() {
+    return this.baseHttpUrl;
   }
 
-  public FillingEdgeNodes uuid(String uuid) {
-    this.uuid = uuid;
+  public FillingEdgeNodes baseHttpUrl(String baseHttpUrl) {
+    this.baseHttpUrl = baseHttpUrl;
     return this;
   }
 
-  public void setUuid(String uuid) {
-    this.uuid = uuid;
+  public void setBaseHttpUrl(String baseHttpUrl) {
+    this.baseHttpUrl = baseHttpUrl;
   }
 
-  public Boolean getValid() {
-    return this.valid;
+  public String getGoGoVersion() {
+    return this.goGoVersion;
   }
 
-  public FillingEdgeNodes valid(Boolean valid) {
-    this.valid = valid;
+  public FillingEdgeNodes goGoVersion(String goGoVersion) {
+    this.goGoVersion = goGoVersion;
     return this;
   }
 
-  public void setValid(Boolean valid) {
-    this.valid = valid;
+  public void setGoGoVersion(String goGoVersion) {
+    this.goGoVersion = goGoVersion;
   }
 
-  public String getMetadata() {
-    return this.metadata;
+  public String getGoGoOS() {
+    return this.goGoOS;
   }
 
-  public FillingEdgeNodes metadata(String metadata) {
-    this.metadata = metadata;
+  public FillingEdgeNodes goGoOS(String goGoOS) {
+    this.goGoOS = goGoOS;
     return this;
   }
 
-  public void setMetadata(String metadata) {
-    this.metadata = metadata;
+  public void setGoGoOS(String goGoOS) {
+    this.goGoOS = goGoOS;
   }
 
-  public String getHost() {
-    return this.host;
+  public String getGoGoArch() {
+    return this.goGoArch;
   }
 
-  public FillingEdgeNodes host(String host) {
-    this.host = host;
+  public FillingEdgeNodes goGoArch(String goGoArch) {
+    this.goGoArch = goGoArch;
     return this;
   }
 
-  public void setHost(String host) {
-    this.host = host;
+  public void setGoGoArch(String goGoArch) {
+    this.goGoArch = goGoArch;
   }
 
-  public String getUrl() {
-    return this.url;
+  public String getGoBuildDate() {
+    return this.goBuildDate;
   }
 
-  public FillingEdgeNodes url(String url) {
-    this.url = url;
+  public FillingEdgeNodes goBuildDate(String goBuildDate) {
+    this.goBuildDate = goBuildDate;
     return this;
   }
 
-  public void setUrl(String url) {
-    this.url = url;
+  public void setGoBuildDate(String goBuildDate) {
+    this.goBuildDate = goBuildDate;
+  }
+
+  public String getGoRepoSha() {
+    return this.goRepoSha;
+  }
+
+  public FillingEdgeNodes goRepoSha(String goRepoSha) {
+    this.goRepoSha = goRepoSha;
+    return this;
+  }
+
+  public void setGoRepoSha(String goRepoSha) {
+    this.goRepoSha = goRepoSha;
   }
 
   public String getDescription() {
@@ -234,6 +252,19 @@ public class FillingEdgeNodes implements Serializable {
 
   public void setLastModifier(String lastModifier) {
     this.lastModifier = lastModifier;
+  }
+
+  public String getUuid() {
+    return this.uuid;
+  }
+
+  public FillingEdgeNodes uuid(String uuid) {
+    this.uuid = uuid;
+    return this;
+  }
+
+  public void setUuid(String uuid) {
+    this.uuid = uuid;
   }
 
   public Set<FillingEdgeJobs> getFillingEdgeJobs() {
@@ -328,16 +359,18 @@ public class FillingEdgeNodes implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", title='" + getTitle() + "'" +
-            ", uuid='" + getUuid() + "'" +
-            ", valid='" + getValid() + "'" +
-            ", metadata='" + getMetadata() + "'" +
-            ", host='" + getHost() + "'" +
-            ", url='" + getUrl() + "'" +
+            ", baseHttpUrl='" + getBaseHttpUrl() + "'" +
+            ", goGoVersion='" + getGoGoVersion() + "'" +
+            ", goGoOS='" + getGoGoOS() + "'" +
+            ", goGoArch='" + getGoGoArch() + "'" +
+            ", goBuildDate='" + getGoBuildDate() + "'" +
+            ", goRepoSha='" + getGoRepoSha() + "'" +
             ", description='" + getDescription() + "'" +
             ", created='" + getCreated() + "'" +
             ", lastModified='" + getLastModified() + "'" +
             ", creator='" + getCreator() + "'" +
             ", lastModifier='" + getLastModifier() + "'" +
+            ", uuid='" + getUuid() + "'" +
             "}";
     }
 }

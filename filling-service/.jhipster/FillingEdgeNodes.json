@@ -10,23 +10,27 @@
       "fieldType": "String"
     },
     {
-      "fieldName": "uuid",
+      "fieldName": "baseHttpUrl",
       "fieldType": "String"
     },
     {
-      "fieldName": "valid",
-      "fieldType": "Boolean"
-    },
-    {
-      "fieldName": "metadata",
+      "fieldName": "goGoVersion",
       "fieldType": "String"
     },
     {
-      "fieldName": "host",
+      "fieldName": "goGoOS",
       "fieldType": "String"
     },
     {
-      "fieldName": "url",
+      "fieldName": "goGoArch",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "goBuildDate",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "goRepoSha",
       "fieldType": "String"
     },
     {
@@ -48,6 +52,11 @@
     {
       "fieldName": "lastModifier",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "uuid",
+      "fieldType": "String",
+      "fieldValidateRules": ["unique"]
     }
   ],
   "relationships": [
@@ -67,7 +76,7 @@
   "entityTableName": "filling_edge_nodes",
   "dto": "no",
   "pagination": "pagination",
-  "service": "no",
+  "service": "serviceClass",
   "jpaMetamodelFiltering": false,
   "fluentMethods": true,
   "readOnly": false,

@@ -68,7 +68,7 @@ export default [
   {
     name: '编辑边缘任务',
     icon: 'smile',
-    path: '/FillingEdgeJobs/FillingEdgeJob/:id?',
+    path: '/FillingEdgeJobs/:nodeId/FillingEdgeJob/:id?',
     hideInMenu: true,
     component: './FillingEdgeJobs/FillingEdgeJob',
   },

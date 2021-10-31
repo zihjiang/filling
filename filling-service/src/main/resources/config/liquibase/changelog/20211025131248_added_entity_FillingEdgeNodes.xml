@@ -20,19 +20,22 @@
             <column name="title" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="uuid" type="varchar(255)">
+            <column name="base_http_url" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="valid" type="boolean">
+            <column name="go_go_version" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="metadata" type="varchar(255)">
+            <column name="go_go_os" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="host" type="varchar(255)">
+            <column name="go_go_arch" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="url" type="varchar(255)">
+            <column name="go_build_date" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="go_repo_sha" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="description" type="varchar(255)">
@@ -49,6 +52,9 @@
             </column>
             <column name="last_modifier" type="varchar(255)">
                 <constraints nullable="true" />
+            </column>
+            <column name="uuid" type="varchar(255)">
+                <constraints nullable="true" unique="true" uniqueConstraintName="ux_filling_edge_nodes__uuid" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
@@ -74,16 +80,18 @@
             <column name="id" type="numeric"/>
             <column name="name" type="string"/>
             <column name="title" type="string"/>
-            <column name="uuid" type="string"/>
-            <column name="valid" type="boolean"/>
-            <column name="metadata" type="string"/>
-            <column name="host" type="string"/>
-            <column name="url" type="string"/>
+            <column name="base_http_url" type="string"/>
+            <column name="go_go_version" type="string"/>
+            <column name="go_go_os" type="string"/>
+            <column name="go_go_arch" type="string"/>
+            <column name="go_build_date" type="string"/>
+            <column name="go_repo_sha" type="string"/>
             <column name="description" type="string"/>
             <column name="created" type="${datetimeType}"/>
             <column name="last_modified" type="${datetimeType}"/>
             <column name="creator" type="string"/>
             <column name="last_modifier" type="string"/>
+            <column name="uuid" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

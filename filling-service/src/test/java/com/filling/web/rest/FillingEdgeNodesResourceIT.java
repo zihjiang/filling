@@ -37,20 +37,23 @@ class FillingEdgeNodesResourceIT {
   private static final String DEFAULT_TITLE = "AAAAAAAAAA";
   private static final String UPDATED_TITLE = "BBBBBBBBBB";
 
-  private static final String DEFAULT_UUID = "AAAAAAAAAA";
-  private static final String UPDATED_UUID = "BBBBBBBBBB";
+  private static final String DEFAULT_BASE_HTTP_URL = "AAAAAAAAAA";
+  private static final String UPDATED_BASE_HTTP_URL = "BBBBBBBBBB";
 
-  private static final Boolean DEFAULT_VALID = false;
-  private static final Boolean UPDATED_VALID = true;
+  private static final String DEFAULT_GO_GO_VERSION = "AAAAAAAAAA";
+  private static final String UPDATED_GO_GO_VERSION = "BBBBBBBBBB";
 
-  private static final String DEFAULT_METADATA = "AAAAAAAAAA";
-  private static final String UPDATED_METADATA = "BBBBBBBBBB";
+  private static final String DEFAULT_GO_GO_OS = "AAAAAAAAAA";
+  private static final String UPDATED_GO_GO_OS = "BBBBBBBBBB";
 
-  private static final String DEFAULT_HOST = "AAAAAAAAAA";
-  private static final String UPDATED_HOST = "BBBBBBBBBB";
+  private static final String DEFAULT_GO_GO_ARCH = "AAAAAAAAAA";
+  private static final String UPDATED_GO_GO_ARCH = "BBBBBBBBBB";
 
-  private static final String DEFAULT_URL = "AAAAAAAAAA";
-  private static final String UPDATED_URL = "BBBBBBBBBB";
+  private static final String DEFAULT_GO_BUILD_DATE = "AAAAAAAAAA";
+  private static final String UPDATED_GO_BUILD_DATE = "BBBBBBBBBB";
+
+  private static final String DEFAULT_GO_REPO_SHA = "AAAAAAAAAA";
+  private static final String UPDATED_GO_REPO_SHA = "BBBBBBBBBB";
 
   private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
   private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -70,6 +73,9 @@ class FillingEdgeNodesResourceIT {
 
   private static final String DEFAULT_LAST_MODIFIER = "AAAAAAAAAA";
   private static final String UPDATED_LAST_MODIFIER = "BBBBBBBBBB";
+
+  private static final String DEFAULT_UUID = "AAAAAAAAAA";
+  private static final String UPDATED_UUID = "BBBBBBBBBB";
 
   private static final String ENTITY_API_URL = "/api/filling-edge-nodes";
   private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -100,16 +106,18 @@ class FillingEdgeNodesResourceIT {
     FillingEdgeNodes fillingEdgeNodes = new FillingEdgeNodes()
       .name(DEFAULT_NAME)
       .title(DEFAULT_TITLE)
-      .uuid(DEFAULT_UUID)
-      .valid(DEFAULT_VALID)
-      .metadata(DEFAULT_METADATA)
-      .host(DEFAULT_HOST)
-      .url(DEFAULT_URL)
+      .baseHttpUrl(DEFAULT_BASE_HTTP_URL)
+      .goGoVersion(DEFAULT_GO_GO_VERSION)
+      .goGoOS(DEFAULT_GO_GO_OS)
+      .goGoArch(DEFAULT_GO_GO_ARCH)
+      .goBuildDate(DEFAULT_GO_BUILD_DATE)
+      .goRepoSha(DEFAULT_GO_REPO_SHA)
       .description(DEFAULT_DESCRIPTION)
       .created(DEFAULT_CREATED)
       .lastModified(DEFAULT_LAST_MODIFIED)
       .creator(DEFAULT_CREATOR)
-      .lastModifier(DEFAULT_LAST_MODIFIER);
+      .lastModifier(DEFAULT_LAST_MODIFIER)
+      .uuid(DEFAULT_UUID);
     return fillingEdgeNodes;
   }
 
@@ -123,16 +131,18 @@ class FillingEdgeNodesResourceIT {
     FillingEdgeNodes fillingEdgeNodes = new FillingEdgeNodes()
       .name(UPDATED_NAME)
       .title(UPDATED_TITLE)
-      .uuid(UPDATED_UUID)
-      .valid(UPDATED_VALID)
-      .metadata(UPDATED_METADATA)
-      .host(UPDATED_HOST)
-      .url(UPDATED_URL)
+      .baseHttpUrl(UPDATED_BASE_HTTP_URL)
+      .goGoVersion(UPDATED_GO_GO_VERSION)
+      .goGoOS(UPDATED_GO_GO_OS)
+      .goGoArch(UPDATED_GO_GO_ARCH)
+      .goBuildDate(UPDATED_GO_BUILD_DATE)
+      .goRepoSha(UPDATED_GO_REPO_SHA)
       .description(UPDATED_DESCRIPTION)
       .created(UPDATED_CREATED)
       .lastModified(UPDATED_LAST_MODIFIED)
       .creator(UPDATED_CREATOR)
-      .lastModifier(UPDATED_LAST_MODIFIER);
+      .lastModifier(UPDATED_LAST_MODIFIER)
+      .uuid(UPDATED_UUID);
     return fillingEdgeNodes;
   }
 
@@ -162,11 +172,17 @@ class FillingEdgeNodesResourceIT {
     );
     assertThat(testFillingEdgeNodes.getName()).isEqualTo(DEFAULT_NAME);
     assertThat(testFillingEdgeNodes.getTitle()).isEqualTo(DEFAULT_TITLE);
-    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(DEFAULT_UUID);
-    assertThat(testFillingEdgeNodes.getValid()).isEqualTo(DEFAULT_VALID);
-    assertThat(testFillingEdgeNodes.getMetadata()).isEqualTo(DEFAULT_METADATA);
-    assertThat(testFillingEdgeNodes.getHost()).isEqualTo(DEFAULT_HOST);
-    assertThat(testFillingEdgeNodes.getUrl()).isEqualTo(DEFAULT_URL);
+    assertThat(testFillingEdgeNodes.getBaseHttpUrl())
+      .isEqualTo(DEFAULT_BASE_HTTP_URL);
+    assertThat(testFillingEdgeNodes.getGoGoVersion())
+      .isEqualTo(DEFAULT_GO_GO_VERSION);
+    assertThat(testFillingEdgeNodes.getGoGoOS()).isEqualTo(DEFAULT_GO_GO_OS);
+    assertThat(testFillingEdgeNodes.getGoGoArch())
+      .isEqualTo(DEFAULT_GO_GO_ARCH);
+    assertThat(testFillingEdgeNodes.getGoBuildDate())
+      .isEqualTo(DEFAULT_GO_BUILD_DATE);
+    assertThat(testFillingEdgeNodes.getGoRepoSha())
+      .isEqualTo(DEFAULT_GO_REPO_SHA);
     assertThat(testFillingEdgeNodes.getDescription())
       .isEqualTo(DEFAULT_DESCRIPTION);
     assertThat(testFillingEdgeNodes.getCreated()).isEqualTo(DEFAULT_CREATED);
@@ -175,6 +191,7 @@ class FillingEdgeNodesResourceIT {
     assertThat(testFillingEdgeNodes.getCreator()).isEqualTo(DEFAULT_CREATOR);
     assertThat(testFillingEdgeNodes.getLastModifier())
       .isEqualTo(DEFAULT_LAST_MODIFIER);
+    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(DEFAULT_UUID);
   }
 
   @Test
@@ -215,13 +232,20 @@ class FillingEdgeNodesResourceIT {
       )
       .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
       .andExpect(jsonPath("$.[*].title").value(hasItem(DEFAULT_TITLE)))
-      .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID)))
       .andExpect(
-        jsonPath("$.[*].valid").value(hasItem(DEFAULT_VALID.booleanValue()))
+        jsonPath("$.[*].baseHttpUrl").value(hasItem(DEFAULT_BASE_HTTP_URL))
       )
-      .andExpect(jsonPath("$.[*].metadata").value(hasItem(DEFAULT_METADATA)))
-      .andExpect(jsonPath("$.[*].host").value(hasItem(DEFAULT_HOST)))
-      .andExpect(jsonPath("$.[*].url").value(hasItem(DEFAULT_URL)))
+      .andExpect(
+        jsonPath("$.[*].goGoVersion").value(hasItem(DEFAULT_GO_GO_VERSION))
+      )
+      .andExpect(jsonPath("$.[*].goGoOS").value(hasItem(DEFAULT_GO_GO_OS)))
+      .andExpect(jsonPath("$.[*].goGoArch").value(hasItem(DEFAULT_GO_GO_ARCH)))
+      .andExpect(
+        jsonPath("$.[*].goBuildDate").value(hasItem(DEFAULT_GO_BUILD_DATE))
+      )
+      .andExpect(
+        jsonPath("$.[*].goRepoSha").value(hasItem(DEFAULT_GO_REPO_SHA))
+      )
       .andExpect(
         jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION))
       )
@@ -235,7 +259,8 @@ class FillingEdgeNodesResourceIT {
       .andExpect(jsonPath("$.[*].creator").value(hasItem(DEFAULT_CREATOR)))
       .andExpect(
         jsonPath("$.[*].lastModifier").value(hasItem(DEFAULT_LAST_MODIFIER))
-      );
+      )
+      .andExpect(jsonPath("$.[*].uuid").value(hasItem(DEFAULT_UUID)));
   }
 
   @Test
@@ -252,18 +277,20 @@ class FillingEdgeNodesResourceIT {
       .andExpect(jsonPath("$.id").value(fillingEdgeNodes.getId().intValue()))
       .andExpect(jsonPath("$.name").value(DEFAULT_NAME))
       .andExpect(jsonPath("$.title").value(DEFAULT_TITLE))
-      .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID))
-      .andExpect(jsonPath("$.valid").value(DEFAULT_VALID.booleanValue()))
-      .andExpect(jsonPath("$.metadata").value(DEFAULT_METADATA))
-      .andExpect(jsonPath("$.host").value(DEFAULT_HOST))
-      .andExpect(jsonPath("$.url").value(DEFAULT_URL))
+      .andExpect(jsonPath("$.baseHttpUrl").value(DEFAULT_BASE_HTTP_URL))
+      .andExpect(jsonPath("$.goGoVersion").value(DEFAULT_GO_GO_VERSION))
+      .andExpect(jsonPath("$.goGoOS").value(DEFAULT_GO_GO_OS))
+      .andExpect(jsonPath("$.goGoArch").value(DEFAULT_GO_GO_ARCH))
+      .andExpect(jsonPath("$.goBuildDate").value(DEFAULT_GO_BUILD_DATE))
+      .andExpect(jsonPath("$.goRepoSha").value(DEFAULT_GO_REPO_SHA))
       .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
       .andExpect(jsonPath("$.created").value(DEFAULT_CREATED.toString()))
       .andExpect(
         jsonPath("$.lastModified").value(DEFAULT_LAST_MODIFIED.toString())
       )
       .andExpect(jsonPath("$.creator").value(DEFAULT_CREATOR))
-      .andExpect(jsonPath("$.lastModifier").value(DEFAULT_LAST_MODIFIER));
+      .andExpect(jsonPath("$.lastModifier").value(DEFAULT_LAST_MODIFIER))
+      .andExpect(jsonPath("$.uuid").value(DEFAULT_UUID));
   }
 
   @Test
@@ -292,16 +319,18 @@ class FillingEdgeNodesResourceIT {
     updatedFillingEdgeNodes
       .name(UPDATED_NAME)
       .title(UPDATED_TITLE)
-      .uuid(UPDATED_UUID)
-      .valid(UPDATED_VALID)
-      .metadata(UPDATED_METADATA)
-      .host(UPDATED_HOST)
-      .url(UPDATED_URL)
+      .baseHttpUrl(UPDATED_BASE_HTTP_URL)
+      .goGoVersion(UPDATED_GO_GO_VERSION)
+      .goGoOS(UPDATED_GO_GO_OS)
+      .goGoArch(UPDATED_GO_GO_ARCH)
+      .goBuildDate(UPDATED_GO_BUILD_DATE)
+      .goRepoSha(UPDATED_GO_REPO_SHA)
       .description(UPDATED_DESCRIPTION)
       .created(UPDATED_CREATED)
       .lastModified(UPDATED_LAST_MODIFIED)
       .creator(UPDATED_CREATOR)
-      .lastModifier(UPDATED_LAST_MODIFIER);
+      .lastModifier(UPDATED_LAST_MODIFIER)
+      .uuid(UPDATED_UUID);
 
     restFillingEdgeNodesMockMvc
       .perform(
@@ -319,11 +348,17 @@ class FillingEdgeNodesResourceIT {
     );
     assertThat(testFillingEdgeNodes.getName()).isEqualTo(UPDATED_NAME);
     assertThat(testFillingEdgeNodes.getTitle()).isEqualTo(UPDATED_TITLE);
-    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(UPDATED_UUID);
-    assertThat(testFillingEdgeNodes.getValid()).isEqualTo(UPDATED_VALID);
-    assertThat(testFillingEdgeNodes.getMetadata()).isEqualTo(UPDATED_METADATA);
-    assertThat(testFillingEdgeNodes.getHost()).isEqualTo(UPDATED_HOST);
-    assertThat(testFillingEdgeNodes.getUrl()).isEqualTo(UPDATED_URL);
+    assertThat(testFillingEdgeNodes.getBaseHttpUrl())
+      .isEqualTo(UPDATED_BASE_HTTP_URL);
+    assertThat(testFillingEdgeNodes.getGoGoVersion())
+      .isEqualTo(UPDATED_GO_GO_VERSION);
+    assertThat(testFillingEdgeNodes.getGoGoOS()).isEqualTo(UPDATED_GO_GO_OS);
+    assertThat(testFillingEdgeNodes.getGoGoArch())
+      .isEqualTo(UPDATED_GO_GO_ARCH);
+    assertThat(testFillingEdgeNodes.getGoBuildDate())
+      .isEqualTo(UPDATED_GO_BUILD_DATE);
+    assertThat(testFillingEdgeNodes.getGoRepoSha())
+      .isEqualTo(UPDATED_GO_REPO_SHA);
     assertThat(testFillingEdgeNodes.getDescription())
       .isEqualTo(UPDATED_DESCRIPTION);
     assertThat(testFillingEdgeNodes.getCreated()).isEqualTo(UPDATED_CREATED);
@@ -332,6 +367,7 @@ class FillingEdgeNodesResourceIT {
     assertThat(testFillingEdgeNodes.getCreator()).isEqualTo(UPDATED_CREATOR);
     assertThat(testFillingEdgeNodes.getLastModifier())
       .isEqualTo(UPDATED_LAST_MODIFIER);
+    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(UPDATED_UUID);
   }
 
   @Test
@@ -408,10 +444,10 @@ class FillingEdgeNodesResourceIT {
 
     partialUpdatedFillingEdgeNodes
       .title(UPDATED_TITLE)
-      .valid(UPDATED_VALID)
-      .url(UPDATED_URL)
-      .description(UPDATED_DESCRIPTION)
-      .creator(UPDATED_CREATOR);
+      .goGoVersion(UPDATED_GO_GO_VERSION)
+      .goBuildDate(UPDATED_GO_BUILD_DATE)
+      .goRepoSha(UPDATED_GO_REPO_SHA)
+      .lastModified(UPDATED_LAST_MODIFIED);
 
     restFillingEdgeNodesMockMvc
       .perform(
@@ -431,19 +467,26 @@ class FillingEdgeNodesResourceIT {
     );
     assertThat(testFillingEdgeNodes.getName()).isEqualTo(DEFAULT_NAME);
     assertThat(testFillingEdgeNodes.getTitle()).isEqualTo(UPDATED_TITLE);
-    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(DEFAULT_UUID);
-    assertThat(testFillingEdgeNodes.getValid()).isEqualTo(UPDATED_VALID);
-    assertThat(testFillingEdgeNodes.getMetadata()).isEqualTo(DEFAULT_METADATA);
-    assertThat(testFillingEdgeNodes.getHost()).isEqualTo(DEFAULT_HOST);
-    assertThat(testFillingEdgeNodes.getUrl()).isEqualTo(UPDATED_URL);
+    assertThat(testFillingEdgeNodes.getBaseHttpUrl())
+      .isEqualTo(DEFAULT_BASE_HTTP_URL);
+    assertThat(testFillingEdgeNodes.getGoGoVersion())
+      .isEqualTo(UPDATED_GO_GO_VERSION);
+    assertThat(testFillingEdgeNodes.getGoGoOS()).isEqualTo(DEFAULT_GO_GO_OS);
+    assertThat(testFillingEdgeNodes.getGoGoArch())
+      .isEqualTo(DEFAULT_GO_GO_ARCH);
+    assertThat(testFillingEdgeNodes.getGoBuildDate())
+      .isEqualTo(UPDATED_GO_BUILD_DATE);
+    assertThat(testFillingEdgeNodes.getGoRepoSha())
+      .isEqualTo(UPDATED_GO_REPO_SHA);
     assertThat(testFillingEdgeNodes.getDescription())
-      .isEqualTo(UPDATED_DESCRIPTION);
+      .isEqualTo(DEFAULT_DESCRIPTION);
     assertThat(testFillingEdgeNodes.getCreated()).isEqualTo(DEFAULT_CREATED);
     assertThat(testFillingEdgeNodes.getLastModified())
-      .isEqualTo(DEFAULT_LAST_MODIFIED);
-    assertThat(testFillingEdgeNodes.getCreator()).isEqualTo(UPDATED_CREATOR);
+      .isEqualTo(UPDATED_LAST_MODIFIED);
+    assertThat(testFillingEdgeNodes.getCreator()).isEqualTo(DEFAULT_CREATOR);
     assertThat(testFillingEdgeNodes.getLastModifier())
       .isEqualTo(DEFAULT_LAST_MODIFIER);
+    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(DEFAULT_UUID);
   }
 
   @Test
@@ -461,16 +504,18 @@ class FillingEdgeNodesResourceIT {
     partialUpdatedFillingEdgeNodes
       .name(UPDATED_NAME)
       .title(UPDATED_TITLE)
-      .uuid(UPDATED_UUID)
-      .valid(UPDATED_VALID)
-      .metadata(UPDATED_METADATA)
-      .host(UPDATED_HOST)
-      .url(UPDATED_URL)
+      .baseHttpUrl(UPDATED_BASE_HTTP_URL)
+      .goGoVersion(UPDATED_GO_GO_VERSION)
+      .goGoOS(UPDATED_GO_GO_OS)
+      .goGoArch(UPDATED_GO_GO_ARCH)
+      .goBuildDate(UPDATED_GO_BUILD_DATE)
+      .goRepoSha(UPDATED_GO_REPO_SHA)
       .description(UPDATED_DESCRIPTION)
       .created(UPDATED_CREATED)
       .lastModified(UPDATED_LAST_MODIFIED)
       .creator(UPDATED_CREATOR)
-      .lastModifier(UPDATED_LAST_MODIFIER);
+      .lastModifier(UPDATED_LAST_MODIFIER)
+      .uuid(UPDATED_UUID);
 
     restFillingEdgeNodesMockMvc
       .perform(
@@ -490,11 +535,17 @@ class FillingEdgeNodesResourceIT {
     );
     assertThat(testFillingEdgeNodes.getName()).isEqualTo(UPDATED_NAME);
     assertThat(testFillingEdgeNodes.getTitle()).isEqualTo(UPDATED_TITLE);
-    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(UPDATED_UUID);
-    assertThat(testFillingEdgeNodes.getValid()).isEqualTo(UPDATED_VALID);
-    assertThat(testFillingEdgeNodes.getMetadata()).isEqualTo(UPDATED_METADATA);
-    assertThat(testFillingEdgeNodes.getHost()).isEqualTo(UPDATED_HOST);
-    assertThat(testFillingEdgeNodes.getUrl()).isEqualTo(UPDATED_URL);
+    assertThat(testFillingEdgeNodes.getBaseHttpUrl())
+      .isEqualTo(UPDATED_BASE_HTTP_URL);
+    assertThat(testFillingEdgeNodes.getGoGoVersion())
+      .isEqualTo(UPDATED_GO_GO_VERSION);
+    assertThat(testFillingEdgeNodes.getGoGoOS()).isEqualTo(UPDATED_GO_GO_OS);
+    assertThat(testFillingEdgeNodes.getGoGoArch())
+      .isEqualTo(UPDATED_GO_GO_ARCH);
+    assertThat(testFillingEdgeNodes.getGoBuildDate())
+      .isEqualTo(UPDATED_GO_BUILD_DATE);
+    assertThat(testFillingEdgeNodes.getGoRepoSha())
+      .isEqualTo(UPDATED_GO_REPO_SHA);
     assertThat(testFillingEdgeNodes.getDescription())
       .isEqualTo(UPDATED_DESCRIPTION);
     assertThat(testFillingEdgeNodes.getCreated()).isEqualTo(UPDATED_CREATED);
@@ -503,6 +554,7 @@ class FillingEdgeNodesResourceIT {
     assertThat(testFillingEdgeNodes.getCreator()).isEqualTo(UPDATED_CREATOR);
     assertThat(testFillingEdgeNodes.getLastModifier())
       .isEqualTo(UPDATED_LAST_MODIFIER);
+    assertThat(testFillingEdgeNodes.getUuid()).isEqualTo(UPDATED_UUID);
   }
 
   @Test

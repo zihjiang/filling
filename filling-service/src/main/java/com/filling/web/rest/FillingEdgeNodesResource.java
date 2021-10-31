@@ -2,6 +2,7 @@ package com.filling.web.rest;
 
 import com.filling.domain.FillingEdgeNodes;
 import com.filling.repository.FillingEdgeNodesRepository;
+import com.filling.service.FillingEdgeNodesService;
 import com.filling.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -18,7 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -30,7 +30,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api")
-@Transactional
 public class FillingEdgeNodesResource {
 
   private final Logger log = LoggerFactory.getLogger(
@@ -42,11 +41,15 @@ public class FillingEdgeNodesResource {
   @Value("${jhipster.clientApp.name}")
   private String applicationName;
 
+  private final FillingEdgeNodesService fillingEdgeNodesService;
+
   private final FillingEdgeNodesRepository fillingEdgeNodesRepository;
 
   public FillingEdgeNodesResource(
+    FillingEdgeNodesService fillingEdgeNodesService,
     FillingEdgeNodesRepository fillingEdgeNodesRepository
   ) {
+    this.fillingEdgeNodesService = fillingEdgeNodesService;
     this.fillingEdgeNodesRepository = fillingEdgeNodesRepository;
   }
 
@@ -69,7 +72,7 @@ public class FillingEdgeNodesResource {
         "idexists"
       );
     }
-    FillingEdgeNodes result = fillingEdgeNodesRepository.save(fillingEdgeNodes);
+    FillingEdgeNodes result = fillingEdgeNodesService.save(fillingEdgeNodes);
     return ResponseEntity
       .created(new URI("/api/filling-edge-nodes/" + result.getId()))
       .headers(
@@ -122,7 +125,7 @@ public class FillingEdgeNodesResource {
       );
     }
 
-    FillingEdgeNodes result = fillingEdgeNodesRepository.save(fillingEdgeNodes);
+    FillingEdgeNodes result = fillingEdgeNodesService.save(fillingEdgeNodes);
     return ResponseEntity
       .ok()
       .headers(
@@ -179,59 +182,9 @@ public class FillingEdgeNodesResource {
       );
     }
 
-    Optional<FillingEdgeNodes> result = fillingEdgeNodesRepository
-      .findById(fillingEdgeNodes.getId())
-      .map(
-        existingFillingEdgeNodes -> {
-          if (fillingEdgeNodes.getName() != null) {
-            existingFillingEdgeNodes.setName(fillingEdgeNodes.getName());
-          }
-          if (fillingEdgeNodes.getTitle() != null) {
-            existingFillingEdgeNodes.setTitle(fillingEdgeNodes.getTitle());
-          }
-          if (fillingEdgeNodes.getUuid() != null) {
-            existingFillingEdgeNodes.setUuid(fillingEdgeNodes.getUuid());
-          }
-          if (fillingEdgeNodes.getValid() != null) {
-            existingFillingEdgeNodes.setValid(fillingEdgeNodes.getValid());
-          }
-          if (fillingEdgeNodes.getMetadata() != null) {
-            existingFillingEdgeNodes.setMetadata(
-              fillingEdgeNodes.getMetadata()
-            );
-          }
-          if (fillingEdgeNodes.getHost() != null) {
-            existingFillingEdgeNodes.setHost(fillingEdgeNodes.getHost());
-          }
-          if (fillingEdgeNodes.getUrl() != null) {
-            existingFillingEdgeNodes.setUrl(fillingEdgeNodes.getUrl());
-          }
-          if (fillingEdgeNodes.getDescription() != null) {
-            existingFillingEdgeNodes.setDescription(
-              fillingEdgeNodes.getDescription()
-            );
-          }
-          if (fillingEdgeNodes.getCreated() != null) {
-            existingFillingEdgeNodes.setCreated(fillingEdgeNodes.getCreated());
-          }
-          if (fillingEdgeNodes.getLastModified() != null) {
-            existingFillingEdgeNodes.setLastModified(
-              fillingEdgeNodes.getLastModified()
-            );
-          }
-          if (fillingEdgeNodes.getCreator() != null) {
-            existingFillingEdgeNodes.setCreator(fillingEdgeNodes.getCreator());
-          }
-          if (fillingEdgeNodes.getLastModifier() != null) {
-            existingFillingEdgeNodes.setLastModifier(
-              fillingEdgeNodes.getLastModifier()
-            );
-          }
-
-          return existingFillingEdgeNodes;
-        }
-      )
-      .map(fillingEdgeNodesRepository::save);
+    Optional<FillingEdgeNodes> result = fillingEdgeNodesService.partialUpdate(
+      fillingEdgeNodes
+    );
 
     return ResponseUtil.wrapOrNotFound(
       result,
@@ -255,11 +208,12 @@ public class FillingEdgeNodesResource {
     Pageable pageable
   ) {
     log.debug("REST request to get a page of FillingEdgeNodes");
-    Page<FillingEdgeNodes> page = fillingEdgeNodesRepository.findAll(pageable);
+    Page<FillingEdgeNodes> page = fillingEdgeNodesService.findAll(pageable);
     HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(
       ServletUriComponentsBuilder.fromCurrentRequest(),
       page
     );
+
       ResultVM resultVM = new ResultVM();
       resultVM.setData(page.getContent());
       resultVM.setCurrent(page.getNumber());
@@ -268,7 +222,7 @@ public class FillingEdgeNodesResource {
       resultVM.setSuccess(true);
       resultVM.setData(page.getContent());
 
-    return ResponseEntity.ok().headers(headers).body(resultVM);
+      return ResponseEntity.ok().headers(headers).body(resultVM);
   }
 
   /**
@@ -282,7 +236,7 @@ public class FillingEdgeNodesResource {
     @PathVariable Long id
   ) {
     log.debug("REST request to get FillingEdgeNodes : {}", id);
-    Optional<FillingEdgeNodes> fillingEdgeNodes = fillingEdgeNodesRepository.findById(
+    Optional<FillingEdgeNodes> fillingEdgeNodes = fillingEdgeNodesService.findOne(
       id
     );
     return ResponseUtil.wrapOrNotFound(fillingEdgeNodes);
@@ -297,7 +251,7 @@ public class FillingEdgeNodesResource {
   @DeleteMapping("/filling-edge-nodes/{id}")
   public ResponseEntity<Void> deleteFillingEdgeNodes(@PathVariable Long id) {
     log.debug("REST request to delete FillingEdgeNodes : {}", id);
-    fillingEdgeNodesRepository.deleteById(id);
+    fillingEdgeNodesService.delete(id);
     return ResponseEntity
       .noContent()
       .headers(
