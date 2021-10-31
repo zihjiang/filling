@@ -7,7 +7,8 @@ import {
   ProFormRadio,
   ProFormSelect,
   ProFormField,
-  ProFormDependency
+  ProFormSwitch,
+  ProFormList
 
 } from '@ant-design/pro-form';
 import { PlusOutlined } from '@ant-design/icons';
@@ -181,28 +182,51 @@ class ParamsFrom extends Component {
           />
         )
       case "MODEL":
-        return (
-          <ProFormSelect
-            key={_idx}
-            name={_item.name}
-            label={_item.label}
-            tooltip={_item.description}
-            placeholder={_item.description}
-            style={{ _item: _item.display }}
-            defaultValue={_item.defaultValue}
-            options={conver_options(_item.model)}
-            formItemProps={
-              {
-                rules: [
-                  {
-                    required: _item.required,
-                    message: `${_item.label}是必须的`,
-                  },
-                ],
+
+        // 如果是LIST_BEAN
+        if (_item.model && _item.model.modelType == 'LIST_BEAN') {
+
+          return (
+            <ProFormList
+              key={_idx}
+              name={_item.name}
+              title={_item.label}
+            >
+              {_item.model.configDefinitions.map((__item, i) => {
+                return this.generationFromItem(__item, _idx + i);
+              })}
+
+            </ProFormList>
+          );
+          // let element = [];
+          // for (let i = 0; i < _item.model.configDefinitions.length; i++) {
+          //   element.push(this.generationFromItem(_item.model.configDefinitions[i], _idx + i));
+          // }
+          // return element;
+        } else {
+          return (
+            <ProFormSelect
+              key={_idx}
+              name={_item.name}
+              label={_item.label}
+              tooltip={_item.description}
+              placeholder={_item.description}
+              style={{ _item: _item.display }}
+              defaultValue={_item.defaultValue}
+              options={conver_options(_item.model)}
+              formItemProps={
+                {
+                  rules: [
+                    {
+                      required: _item.required,
+                      message: `${_item.label}是必须的`,
+                    },
+                  ],
+                }
               }
-            }
-          />
-        )
+            />
+          )
+        }
       case "NUMBER":
         return (
           <ProFormDigit
@@ -235,14 +259,14 @@ class ParamsFrom extends Component {
             label={_item.label}
             defaultValue={_item.defaultValue}
             valuePropName="checked">
-            <Switch />
+            <ProFormSwitch />
           </Form.Item>
         )
       case "MAP":
         const columns = [
           {
             title: 'key',
-            key: 'state',
+            key: 'key',
             dataIndex: 'key',
             formItemProps: (form, { rowIndex }) => {
               return {
@@ -281,17 +305,17 @@ class ParamsFrom extends Component {
         ];
         return (
           <Form.Item
-          key={_idx}
+            key={_idx}
             name={_item.name}
             label={_item.label}
             defaultValue={_item.defaultValue}
-            valuePropName="checked"
+            valuePropName="ss"
           >
             <EditableProTable
+              key={_idx}
               rowKey={_idx}
               headerTitle={_item.label}
-              maxLength={5}
-
+              maxLength={10}
               columns={columns}
               editable={{
                 type: 'multiple',
@@ -301,20 +325,6 @@ class ParamsFrom extends Component {
               }}
             />
           </Form.Item>
-          // <ProFormField>
-          //   <EditableProTable
-          //     key={_idx}
-          //     rowKey={_idx}
-          //     headerTitle={_item.label}
-          //     maxLength={5}
-          //     name={_item.name}
-          //     columns={columns}
-          //     editable={{
-          //       type: 'multiple'
-          //       // onChange: setEditableRowKeys,
-          //     }}
-          //   />
-          // </ProFormField>
         );
       default:
         console.log("default: ", _item);

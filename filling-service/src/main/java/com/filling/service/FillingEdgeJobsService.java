@@ -1,5 +1,6 @@
 package com.filling.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.filling.domain.FillingEdgeJobs;
 import com.filling.repository.FillingEdgeJobsRepository;
 
@@ -66,11 +67,11 @@ public class FillingEdgeJobsService {
           if (fillingEdgeJobs.getName() != null) {
             existingFillingEdgeJobs.setName(fillingEdgeJobs.getName());
           }
-          if (fillingEdgeJobs.getPipelineId() != null) {
-            existingFillingEdgeJobs.setPipelineId(
-              fillingEdgeJobs.getPipelineId()
-            );
-          }
+//          if (fillingEdgeJobs.getPipelineId() != null) {
+//            existingFillingEdgeJobs.setPipelineId(
+//              fillingEdgeJobs.getPipelineId()
+//            );
+//          }
           if (fillingEdgeJobs.getTitle() != null) {
             existingFillingEdgeJobs.setTitle(fillingEdgeJobs.getTitle());
           }
@@ -158,14 +159,22 @@ public class FillingEdgeJobsService {
     fillingEdgeJobsRepository.deleteById(id);
   }
 
-  @Transactional(readOnly = true)
-  public String saveAndPreview(FillingEdgeJobs fillingEdgeJobs) throws IOException {
+  public JSONObject saveAndPreview(FillingEdgeJobs fillingEdgeJobs) throws IOException {
       FillingEdgeJobs fillingEdgeJob = save(fillingEdgeJobs);
       EdgeUtils.save("http://localhost:18633", "123", fillingEdgeJob.getJobString());
       EdgeUtils.update("http://localhost:18633", "123", fillingEdgeJob.getJobString());
 
       return EdgeUtils.preview("http://localhost:18633", "123");
-
-
   }
+
+    public JSONObject start(Long id) throws IOException {
+        Optional<FillingEdgeJobs> optionalFillingEdgeJobs = findOne(id);
+        if(optionalFillingEdgeJobs.isPresent()) {
+            FillingEdgeJobs fillingEdgeJob = optionalFillingEdgeJobs.get();
+            EdgeUtils.save("http://localhost:18633", "123", fillingEdgeJob.getJobString());
+            EdgeUtils.update("http://localhost:18633", "123", fillingEdgeJob.getJobString());
+        }
+
+        return EdgeUtils.preview("http://localhost:18633", "123");
+    }
 }

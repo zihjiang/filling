@@ -1,5 +1,6 @@
 package com.filling.web.rest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.filling.domain.FillingEdgeJobs;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingEdgeJobsRepository;
@@ -265,11 +266,8 @@ public class FillingEdgeJobsResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the FillingEdgeJobs, or with status {@code 404 (Not Found)}.
      */
     @PostMapping("/filling-edge-jobs/{id}/preview")
-    public String previewFillingJobs(@PathVariable Long id, @RequestBody FillingEdgeJobs fillingEdgeJobs) throws IOException {
+    public JSONObject previewFillingJobs(@PathVariable Long id, @RequestBody FillingEdgeJobs fillingEdgeJobs) throws IOException {
         log.debug("REST request to get FillingEdgeJobs : {}", id);
-
-//        System.out.println("fillingEdgeJobs.getJobString(): "+ fillingEdgeJobs.getJobString());
-
         return  fillingEdgeJobsService.saveAndPreview(fillingEdgeJobs);
     }
 }

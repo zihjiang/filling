@@ -94,7 +94,7 @@ public class EdgeUtils {
      * @return
      * @throws IOException
      */
-    public static String preview(String edgeHttpUrl, String pipelineId) throws IOException {
+    public static JSONObject preview(String edgeHttpUrl, String pipelineId) throws IOException {
         OkHttpClient client = new OkHttpClient.Builder()
             .callTimeout(Duration.ofSeconds(TIMEOUT))
             .callTimeout(Duration.ofSeconds(TIMEOUT))
@@ -112,7 +112,57 @@ public class EdgeUtils {
         String responseStr = response.body().string();
         log.debug(responseStr);
         if (response.isSuccessful()) {
-            return JSONObject.parseObject(responseStr).getString("previewerId");
+            String previewId = JSONObject.parseObject(responseStr).getString("previewerId");
+
+            return getPreviewData(edgeHttpUrl, pipelineId, previewId);
+        } else {
+            return null;
+        }
+    }
+
+    private static JSONObject getPreviewData(String edgeHttpUrl, String pipelineId, String previewerId) throws IOException {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .readTimeout(Duration.ofSeconds(TIMEOUT))
+            .build();
+
+        Request request = new Request.Builder()
+            .url(edgeHttpUrl + "/rest/v1/pipeline/" + pipelineId + "/preview/" + previewerId + "?edge=true")
+            .method("GET", null)
+            .build();
+        Response response = client.newCall(request).execute();
+        log.debug("getPreviewData edge job");
+        String responseStr = response.body().string();
+        log.debug(responseStr);
+        if (response.isSuccessful()) {
+            return JSONObject.parseObject(responseStr);
+        } else {
+            return null;
+        }
+    }
+
+    public static JSONObject start(String edgeHttpUrl, String pipelineId) throws IOException {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .readTimeout(Duration.ofSeconds(TIMEOUT))
+            .build();
+
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+            .url(edgeHttpUrl + "/rest/v1/pipeline/" + pipelineId + "/start")
+            .method("POST", body)
+            .build();
+        Response response = client.newCall(request).execute();
+        log.debug("start edge job");
+        String responseStr = response.body().string();
+        log.debug(responseStr);
+        if (response.isSuccessful()) {
+            return JSONObject.parseObject(responseStr);
         } else {
             return null;
         }

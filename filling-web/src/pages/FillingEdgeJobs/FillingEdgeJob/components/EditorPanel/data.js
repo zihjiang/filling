@@ -100768,7 +100768,7 @@ const data = [
         "evaluation": "IMPLICIT"
       },
       {
-        "name": "conf.connectionConfig.connection.metadataBrokerList",
+        "name": "conf.metadataBrokerList",
         "type": "STRING",
         "defaultValue": "localhost:9092",
         "min": -9223372036854776000,
