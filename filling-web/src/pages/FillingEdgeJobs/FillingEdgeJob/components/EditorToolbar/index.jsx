@@ -11,7 +11,6 @@ import {
     SaveFilled,
     DownloadOutlined,
     SelectOutlined,
-    FormOutlined,
     PauseCircleFilled
 } from '@ant-design/icons';
 import React, { Component, useState } from 'react';
@@ -78,7 +77,7 @@ class EditorToolbar extends Component {
         console.log(this.deCodeDataMap(data));
         console.log(JSON.stringify(this.deCodeDataMap(data)));
 
-        previewFillingEdgeJob(1, { data: { jobText: JSON.stringify(this.deCodeDataMap(data)), id: 1 } });
+        previewFillingEdgeJob(this.state.jobId, { data: { jobText: JSON.stringify(this.deCodeDataMap(data)), id: this.state.jobId } });
     }
 
     save = async (entity) => {
@@ -93,6 +92,8 @@ class EditorToolbar extends Component {
             const jobText = JSON.stringify(this.deCodeDataMap(data));
             entity = { jobText };
         }
+
+        entity.fillingEdgeNodes = { id: this.state.nodeId };
         try {
             if (this.state.jobId) {
                 await patchFillingEdgeJob(this.state.jobId, { data: entity });
@@ -101,7 +102,7 @@ class EditorToolbar extends Component {
 
                 console.log('job: {}', job);
                 this.state.jobId = job.id;
-                history.push("/FillingEdgeJobs/" +this.state.nodeId+ "/FillingEdgeJob/" + job.id);
+                history.push("/FillingEdgeJobs/" + this.state.nodeId + "/FillingEdgeJob/" + job.id);
             }
             hide();
             message.success('保存成功');
@@ -252,7 +253,7 @@ class EditorToolbar extends Component {
 
                 <DownloadOutlined title="下载" />
                 <SelectOutlined title="另存为" />
-                <PreviewConfiguration deCodeDataMap={this.deCodeDataMap } uiInfo={uiInfo} />
+                <PreviewConfiguration deCodeDataMap={this.deCodeDataMap} uiInfo={uiInfo} jobId={this.state.jobId} data={this.state.data} />
             </div>
         );
     }

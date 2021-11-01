@@ -6,6 +6,7 @@ import com.filling.repository.FillingEdgeJobsRepository;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import com.filling.utils.EdgeUtils;
@@ -176,5 +177,15 @@ public class FillingEdgeJobsService {
         }
 
         return EdgeUtils.preview("http://localhost:18633", "123");
+    }
+
+    /**
+     * 根据nodeId
+     * @param id
+     * @return
+     */
+    public Optional<List<FillingEdgeJobs>> findByFillingEdgeNodesId(Long id) {
+        log.debug("Request to findByFillingEdgeNodesId : {}", id);
+        return fillingEdgeJobsRepository.findByFillingEdgeNodesId(id);
     }
 }

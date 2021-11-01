@@ -14,7 +14,9 @@ class PreviewConfiguration extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            initialValues: props.uiInfo.previewConfig
+            initialValues: props.uiInfo.previewConfig,
+            jobId: props.jobId,
+            job: props.data
         };
         this.uiInfo = props.uiInfo;
         this.deCodeDataMap = props.deCodeDataMap;
@@ -27,12 +29,10 @@ class PreviewConfiguration extends Component {
         this.uiInfo.previewConfig = values;
         this.uiInfo.displayMode = "ADVANCED";
         const data = window.canvas.getDataMap();
-        await previewFillingEdgeJob(1, {
-            data: {
-                uiInfo: JSON.stringify(this.uiInfo),
-                jobText: JSON.stringify(this.deCodeDataMap(data)),
-                id: 1
-            }
+        this.state.job.uiInfo = JSON.stringify(this.uiInfo);
+        this.state.job.jobText = JSON.stringify(this.deCodeDataMap(data));
+        await previewFillingEdgeJob(this.state.jobId, {
+            data: this.state.job
         });
         console.log(this.uiInfo);
     }

@@ -66,3 +66,9 @@ export async function previewFillingEdgeJob(id, options) {
     ...(options || {})
   });
 }
+// 根据nodeId查找job
+export async function findByFillingEdgeNodesId(id) {
+  return request('/api/filling-edge-jobs/by-node-id/' + id, {
+    method: 'GET'
+  });
+}

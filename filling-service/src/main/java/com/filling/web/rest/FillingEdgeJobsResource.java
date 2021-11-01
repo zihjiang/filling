@@ -270,4 +270,11 @@ public class FillingEdgeJobsResource {
         log.debug("REST request to get FillingEdgeJobs : {}", id);
         return  fillingEdgeJobsService.saveAndPreview(fillingEdgeJobs);
     }
+
+    @GetMapping("/filling-edge-jobs/by-node-id/{id}")
+    public ResponseEntity<List<FillingEdgeJobs>> findByFillingEdgeNodesId(@PathVariable Long id) {
+        log.debug("REST request to get findByFillingEdgeNodesId : {}", id);
+
+        return  ResponseEntity.ok().headers(new HttpHeaders()).body(fillingEdgeJobsService.findByFillingEdgeNodesId(id).get());
+    }
 }

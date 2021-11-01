@@ -7,16 +7,21 @@ import EditorPanel from './components/EditorPanel/index';
 import EditorToolbar from './components/EditorToolbar';
 import { Component } from 'react';
 import BaseNode from './components/EditorGraph/node';
-import { fillingEdgeJobById } from './service';
+import { fillingEdgeJobById, findByFillingEdgeNodesId } from './service';
 import { Spin } from 'antd';
 import rightTools from './components/EditorPanel/data';
+import ProForm, {
+  ProFormSelect
+} from '@ant-design/pro-form';
+import { history } from 'umi';
 class EditorFlow extends Component {
   constructor(props) {
     super(props);
     this.state = {
       id: this.props.match.params.id,
       nodeId: this.props.match.params.nodeId,
-      data: {}
+      data: {},
+      jobs: []
     };
 
   }
@@ -25,7 +30,20 @@ class EditorFlow extends Component {
     return fillingEdgeJobById(this.state.id);
   }
 
+  getjobs = async (id) => {
+
+    return findByFillingEdgeNodesId(id);
+  }
+
   componentDidMount() {
+    if (this.state.jobs.length <= 0) {
+      console.log("加载jobs");
+      this.getjobs(this.state.nodeId).then((jobs) => {
+        this.setState({
+          jobs
+        })
+      })
+    }
     if (this.state.id) {
       console.log("编辑任务");
       this.getJob().then((job) => {
@@ -55,6 +73,7 @@ class EditorFlow extends Component {
 
   }
 
+
   render() {
     if (_.isEqual(this.state.data, {})) return (<Spin />);
     const data = JSON.parse(this.state.data.jobText);
@@ -75,10 +94,43 @@ class EditorFlow extends Component {
       })
     }
 
+    let selectJob = () => {
+      let options = [];
+      for (let i = 0; i < this.state.jobs.length; i++) {
+        const job = this.state.jobs[i];
+        options[i] = {};
+        options[i].value = job.id;
+        options[i].label = job.name || job.pipelineId;
+
+      }
+
+      return (
+        <>
+          <ProForm
+            submitter={false}
+            onValuesChange={(changeValues) => {
+              location.href = `/FillingEdgeJobs/${this.state.nodeId}/FillingEdgeJob/${changeValues.jobId}`;
+              // history.push("/FillingEdgeJobs/" + this.state.nodeId + "/FillingEdgeJob/" + changeValues.jobId)
+            }}
+          >
+            <ProFormSelect
+              options={options}
+              width="xl"
+              name="jobId"
+              initialValue={ this.state.id/1 }
+            />
+          </ProForm>
+        </>
+      );
+    }
+
     return (
-      <PageContainer header={{
-        title: this.state.data.name || '未命名'
-      }} content={this.state.data.description} className={styles.main}>
+      <PageContainer
+        header={{
+          title: selectJob()
+        }}
+        content={this.state.data.description} className={styles.main}
+      >
         <div className={styles.editor}>
           <Row className={styles.editorHd}>
             <Col lg={20} xxl={22}>
