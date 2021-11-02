@@ -81,7 +81,7 @@ export default () => {
         let result = [];
         // 修改
         result.push(
-          <Link key="id" to={"/FillingEdgeJobs/" +record.id+ "/FillingEdgeJob/"} > 修改 </Link>
+          <Link key="id" to={"/FillingEdgeJobs/" +record.id+ "/FillingEdgeJob/"} > 管理 </Link>
         );
         // 删除
         if (record.status != 2) {

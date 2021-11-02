@@ -16,7 +16,7 @@ import {
 import React, { Component, useState } from 'react';
 import './index.less';
 import { message } from 'antd';
-import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
+import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob, startFillingEdgeJob, stopFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
 import { history } from 'umi';
 import { PreviewConfiguration } from '../PreviewConfiguration';
 class EditorToolbar extends Component {
@@ -26,7 +26,7 @@ class EditorToolbar extends Component {
             jobId: props.data.id,
             nodeId: props.nodeId,
             data: props.data,
-            status: (props.data.status == undefined) ? 1 : props.data.status
+            status: (props.data.status == undefined) ? 'STOP' : props.data.status
         }
 
         console.log("props: ", props);
@@ -119,17 +119,17 @@ class EditorToolbar extends Component {
     start = async () => {
         if (this.state.jobId) {
             const hide = message.loading('启动中');
-            const job = await startFillingJobs(this.state.jobId);
+            const job = await startFillingEdgeJob(this.state.jobId);
             console.log("job", job.status);
             switch (job.status) {
-                case "2":
+                case "RUNNING":
                     hide();
                     message.success('启动成功');
                     window.jobRunStatus = true;
                     break;
                 default:
                     hide();
-                    message.error('启动失败, 请查看flink端日志');
+                    message.error('启动失败, 请查看日志');
                     window.jobRunStatus = false;
                     break;
             };
@@ -147,7 +147,7 @@ class EditorToolbar extends Component {
     stop = async () => {
         if (this.state.jobId) {
             const hide = message.loading('停止中');
-            const job = await stopFillingJobs(this.state.jobId);
+            const job = await stopFillingEdgeJob(this.state.jobId);
             this.setState(
                 {
                     status: job.status
@@ -248,8 +248,8 @@ class EditorToolbar extends Component {
                 <SaveFilled title="保存" onClick={() => this.save()} />
                 <CheckCircleFilled title="检查" onClick={() => this.plan()} />
 
-                <PlayCircleFilled title="启动" style={{ display: (this.state.status == 2) ? 'none' : '' }} onClick={() => this.start()} />
-                <PauseCircleFilled title="停止" style={{ display: (this.state.status != 2) ? 'none' : '' }} onClick={() => this.stop()} />
+                <PlayCircleFilled title="启动" style={{ display: (this.state.status == 'RUNNING') ? 'none' : '' }} onClick={() => this.start()} />
+                <PauseCircleFilled title="停止" style={{ display: (this.state.status != 'RUNNING') ? 'none' : '' }} onClick={() => this.stop()} />
 
                 <DownloadOutlined title="下载" />
                 <SelectOutlined title="另存为" />

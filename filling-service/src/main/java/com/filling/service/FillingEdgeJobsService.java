@@ -162,21 +162,36 @@ public class FillingEdgeJobsService {
 
   public JSONObject saveAndPreview(FillingEdgeJobs fillingEdgeJobs) throws IOException {
       FillingEdgeJobs fillingEdgeJob = save(fillingEdgeJobs);
-      EdgeUtils.save("http://localhost:18633", "123", fillingEdgeJob.getJobString());
-      EdgeUtils.update("http://localhost:18633", "123", fillingEdgeJob.getJobString());
+      EdgeUtils.save(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId(), fillingEdgeJob.getJobString());
+      EdgeUtils.update(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId(), fillingEdgeJob.getJobString());
 
-      return EdgeUtils.preview("http://localhost:18633", "123");
+      return EdgeUtils.preview(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId());
   }
 
     public JSONObject start(Long id) throws IOException {
+        JSONObject result = new JSONObject();
         Optional<FillingEdgeJobs> optionalFillingEdgeJobs = findOne(id);
         if(optionalFillingEdgeJobs.isPresent()) {
             FillingEdgeJobs fillingEdgeJob = optionalFillingEdgeJobs.get();
-            EdgeUtils.save("http://localhost:18633", "123", fillingEdgeJob.getJobString());
-            EdgeUtils.update("http://localhost:18633", "123", fillingEdgeJob.getJobString());
-        }
+            EdgeUtils.save(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId(), fillingEdgeJob.getJobString());
+            EdgeUtils.update(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId(), fillingEdgeJob.getJobString());
 
-        return EdgeUtils.preview("http://localhost:18633", "123");
+            result =  EdgeUtils.start(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId());
+
+        }
+        return result;
+    }
+
+    public JSONObject stop(Long id) throws IOException {
+        JSONObject result = new JSONObject();
+        Optional<FillingEdgeJobs> optionalFillingEdgeJobs = findOne(id);
+        if(optionalFillingEdgeJobs.isPresent()) {
+            FillingEdgeJobs fillingEdgeJob = optionalFillingEdgeJobs.get();
+
+            result =  EdgeUtils.stop(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId());
+
+        }
+        return result;
     }
 
     /**

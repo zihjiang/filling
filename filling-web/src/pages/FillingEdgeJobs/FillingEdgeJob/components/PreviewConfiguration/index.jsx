@@ -18,13 +18,14 @@ class PreviewConfiguration extends Component {
             jobId: props.jobId,
             job: props.data
         };
-        this.uiInfo = props.uiInfo;
+        this.uiInfo = props.uiInfo ? {} : JSON.parse(props.uiInfo);
         this.deCodeDataMap = props.deCodeDataMap;
+
     }
 
     // 更新node的数据
     updateData = async (values) => {
-        console.log(123123);
+        console.log(this.uiInfo);
 
         this.uiInfo.previewConfig = values;
         this.uiInfo.displayMode = "ADVANCED";

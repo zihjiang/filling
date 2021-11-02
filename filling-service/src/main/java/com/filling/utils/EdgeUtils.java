@@ -143,6 +143,13 @@ public class EdgeUtils {
         }
     }
 
+    /**
+     * 启动一个edge任务
+     * @param edgeHttpUrl edge地址. 不带/
+     * @param pipelineId  pipelineid
+     * @return
+     * @throws IOException
+     */
     public static JSONObject start(String edgeHttpUrl, String pipelineId) throws IOException {
 
         OkHttpClient client = new OkHttpClient.Builder()
@@ -159,6 +166,38 @@ public class EdgeUtils {
             .build();
         Response response = client.newCall(request).execute();
         log.debug("start edge job");
+        String responseStr = response.body().string();
+        log.debug(responseStr);
+        if (response.isSuccessful()) {
+            return JSONObject.parseObject(responseStr);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 停止一个edge任务
+     * @param edgeHttpUrl edge地址. 不带/
+     * @param pipelineId  pipelineid
+     * @return
+     * @throws IOException
+     */
+    public static JSONObject stop(String edgeHttpUrl, String pipelineId) throws IOException {
+
+        OkHttpClient client = new OkHttpClient.Builder()
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .callTimeout(Duration.ofSeconds(TIMEOUT))
+            .readTimeout(Duration.ofSeconds(TIMEOUT))
+            .build();
+
+        MediaType mediaType = MediaType.parse("text/plain");
+        RequestBody body = RequestBody.create(mediaType, "");
+        Request request = new Request.Builder()
+            .url(edgeHttpUrl + "/rest/v1/pipeline/" + pipelineId + "/stop")
+            .method("POST", body)
+            .build();
+        Response response = client.newCall(request).execute();
+        log.debug("stop edge job");
         String responseStr = response.body().string();
         log.debug(responseStr);
         if (response.isSuccessful()) {

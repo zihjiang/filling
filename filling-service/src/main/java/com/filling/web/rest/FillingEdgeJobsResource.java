@@ -271,6 +271,30 @@ public class FillingEdgeJobsResource {
         return  fillingEdgeJobsService.saveAndPreview(fillingEdgeJobs);
     }
 
+    /**
+     * {@code GET  /filling-jobs/:id/start} : start the "id" FillingEdgeJobs.
+     *
+     * @param id the id of the FillingEdgeJobs to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the FillingEdgeJobs, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/filling-edge-jobs/{id}/start")
+    public JSONObject startFillingJobs(@PathVariable Long id) throws IOException {
+        log.debug("REST request to start FillingEdgeJobs : {}", id);
+        return fillingEdgeJobsService.start(id);
+    }
+
+    /**
+     * {@code GET  /filling-jobs/:id/start} : start the "id" FillingEdgeJobs.
+     *
+     * @param id the id of the FillingEdgeJobs to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the FillingEdgeJobs, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/filling-edge-jobs/{id}/stop")
+    public JSONObject stopFillingJobs(@PathVariable Long id) throws IOException {
+        log.debug("REST request to start FillingEdgeJobs : {}", id);
+        return fillingEdgeJobsService.stop(id);
+    }
+
     @GetMapping("/filling-edge-jobs/by-node-id/{id}")
     public ResponseEntity<List<FillingEdgeJobs>> findByFillingEdgeNodesId(@PathVariable Long id) {
         log.debug("REST request to get findByFillingEdgeNodesId : {}", id);

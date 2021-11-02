@@ -72,3 +72,15 @@ export async function findByFillingEdgeNodesId(id) {
     method: 'GET'
   });
 }
+
+export async function startFillingEdgeJob(id) {
+  return request('/api/filling-edge-jobs/' + id + '/start', {
+    method: 'GET'
+  });
+}
+
+export async function stopFillingEdgeJob(id) {
+  return request('/api/filling-edge-jobs/' + id + '/stop', {
+    method: 'GET'
+  });
+}

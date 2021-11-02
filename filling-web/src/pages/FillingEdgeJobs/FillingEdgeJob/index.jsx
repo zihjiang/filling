@@ -13,7 +13,6 @@ import rightTools from './components/EditorPanel/data';
 import ProForm, {
   ProFormSelect
 } from '@ant-design/pro-form';
-import { history } from 'umi';
 class EditorFlow extends Component {
   constructor(props) {
     super(props);
@@ -109,6 +108,7 @@ class EditorFlow extends Component {
           <ProForm
             submitter={false}
             onValuesChange={(changeValues) => {
+
               location.href = `/FillingEdgeJobs/${this.state.nodeId}/FillingEdgeJob/${changeValues.jobId}`;
               // history.push("/FillingEdgeJobs/" + this.state.nodeId + "/FillingEdgeJob/" + changeValues.jobId)
             }}
@@ -117,7 +117,7 @@ class EditorFlow extends Component {
               options={options}
               width="xl"
               name="jobId"
-              initialValue={ this.state.id/1 }
+              initialValue={ this.state.id ? this.state.id/1 : null }
             />
           </ProForm>
         </>
