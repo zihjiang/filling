@@ -178,6 +178,9 @@ public class FillingEdgeJobsService {
 
             result =  EdgeUtils.start(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId());
 
+            fillingEdgeJob.setStatus(result.getString("status"));
+            save(fillingEdgeJob);
+
         }
         return result;
     }
@@ -190,6 +193,8 @@ public class FillingEdgeJobsService {
 
             result =  EdgeUtils.stop(fillingEdgeJob.getFillingEdgeNodes().getBaseHttpUrl(), fillingEdgeJob.getPipelineId());
 
+            fillingEdgeJob.setStatus(result.getString("status"));
+            save(fillingEdgeJob);
         }
         return result;
     }

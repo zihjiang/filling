@@ -191,6 +191,10 @@ class ParamsFrom extends Component {
               key={_idx}
               name={_item.name}
               title={_item.label}
+              creatorButtonProps={{
+                creatorButtonText: '增加',
+              }}
+              placeholder={_item.description}
             >
               {_item.model.configDefinitions.map((__item, i) => {
                 return this.generationFromItem(__item, _idx + i);
