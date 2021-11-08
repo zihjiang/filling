@@ -6,15 +6,16 @@ import com.filling.client.ClusterClient;
 import com.filling.config.ApplicationProperties;
 import com.filling.utils.Base64Utils;
 import com.filling.web.rest.AccountResource;
+import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.testcontainers.shaded.okhttp3.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -63,6 +64,7 @@ public class StandaloneClusterClient implements ClusterClient {
         log.info("submit job url: {}", url);
         log.info("args is: {}", Base64Utils.encode(jobText));
         OkHttpClient client = new OkHttpClient().newBuilder()
+            .callTimeout(Duration.ofSeconds(60))
             .build();
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, bodyJson.toJSONString());
@@ -166,6 +168,7 @@ public class StandaloneClusterClient implements ClusterClient {
 
         try {
             OkHttpClient client = new OkHttpClient().newBuilder()
+                .callTimeout(Duration.ofSeconds(120))
                 .build();
             RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("jarfile", jarfile.getName(),
