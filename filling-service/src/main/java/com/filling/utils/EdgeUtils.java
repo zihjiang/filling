@@ -1,10 +1,9 @@
 package com.filling.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.filling.web.rest.FillingEdgeJobsResource;
+import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.shaded.okhttp3.*;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -145,6 +144,7 @@ public class EdgeUtils {
 
     /**
      * 启动一个edge任务
+     *
      * @param edgeHttpUrl edge地址. 不带/
      * @param pipelineId  pipelineid
      * @return
@@ -168,15 +168,13 @@ public class EdgeUtils {
         log.debug("start edge job");
         String responseStr = response.body().string();
         log.debug(responseStr);
-        if (response.isSuccessful()) {
-            return JSONObject.parseObject(responseStr);
-        } else {
-            return null;
-        }
+
+        return JSONObject.parseObject(responseStr);
     }
 
     /**
      * 停止一个edge任务
+     *
      * @param edgeHttpUrl edge地址. 不带/
      * @param pipelineId  pipelineid
      * @return
