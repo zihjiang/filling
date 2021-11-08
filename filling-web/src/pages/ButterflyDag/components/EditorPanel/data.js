@@ -1509,6 +1509,28 @@ const sink = [
                 "type": "text"
             },
             {
+                "name": "username",
+                "text": "用户名称",
+                "defaultValue": "",
+                "required": false,
+                "paramsDesc": "用户名称, 选填",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "password",
+                "text": "用户密码",
+                "defaultValue": "",
+                "required": false,
+                "paramsDesc": "用户密码, 选填",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
                 "name": "query",
                 "text": "insert语句, 用?表示占位符",
                 "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
