@@ -16,6 +16,7 @@ import selectIocn from './images/selected.svg';
 
 import BaseEndpoint from '../EditorGraph/endpoint';
 import ClickHouseIcon from './images/clickhouse.svg';
+import MysqlIcon from './images/mysql.svg';
 
 import _ from 'lodash';
 const source = [
@@ -1544,7 +1545,7 @@ const sink = [
             {
                 "name": "params",
                 "text": "insert语句, 的参数, 与query数量必须保持一致",
-                "defaultValue": ["id", "host", "MetricsName", "value", "host", "source", "_time"],
+                "defaultValue": [],
                 "required": true,
                 "paramsDesc": "params",
                 "desc": " ",
@@ -1572,6 +1573,135 @@ const sink = [
             color: 'system-green'
         }],
         content: ClickHouseIcon,
+        height: 90,
+        width: "100%"
+    },
+
+    {
+        id: 'MysqlSink',
+        text: 'MysqlSink',
+        type: 'png',
+        Data: {},
+        pluginType: 'sink',
+        pluginName: "MysqlSink",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "Mysql-sink",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "JdbcSink",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "text"
+            },{
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": true,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            },
+            {
+                "name": "driver",
+                "text": "driver",
+                "defaultValue": "com.mysql.jdbc.Driver",
+                "required": true,
+                "paramsDesc": "Mysql驱动地址",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "url",
+                "text": "url地址, jdbc链接字符串",
+                "defaultValue": "jdbc:mysql://127.0.0.1:3306/cmdb?useSSL=false&rewriteBatchedStatements=true",
+                "required": true,
+                "paramsDesc": "url",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "username",
+                "text": "用户名称",
+                "defaultValue": "",
+                "required": false,
+                "paramsDesc": "用户名称, 选填",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "password",
+                "text": "用户密码",
+                "defaultValue": "",
+                "required": false,
+                "paramsDesc": "用户密码, 选填",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "query",
+                "text": "insert语句, 用?表示占位符",
+                "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
+                "required": true,
+                "paramsDesc": "query",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            },
+            {
+                "name": "params",
+                "text": "insert语句, 的参数, 与query数量必须保持一致",
+                "defaultValue": [],
+                "required": true,
+                "paramsDesc": "params",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "array"
+            },
+            {
+                "name": "batch_size",
+                "text": "每个批次多少条数据",
+                "defaultValue": "20000",
+                "required": true,
+                "paramsDesc": "params",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            }
+        ],
+        endpoints: [{
+            id: 'mysqlSink_source_table_name',
+            orientation: [-1, 0],
+            pos: [0, 0.5],
+            Class: BaseEndpoint,
+            color: 'system-green'
+        }],
+        content: MysqlIcon,
         height: 90,
         width: "100%"
     }
