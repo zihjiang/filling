@@ -65,6 +65,7 @@ public class StandaloneClusterClient implements ClusterClient {
         log.info("args is: {}", Base64Utils.encode(jobText));
         OkHttpClient client = new OkHttpClient().newBuilder()
             .callTimeout(Duration.ofSeconds(60))
+            .readTimeout(Duration.ofSeconds(60))
             .build();
         MediaType mediaType = MediaType.parse("text/plain");
         RequestBody body = RequestBody.create(mediaType, bodyJson.toJSONString());
@@ -169,6 +170,7 @@ public class StandaloneClusterClient implements ClusterClient {
         try {
             OkHttpClient client = new OkHttpClient().newBuilder()
                 .callTimeout(Duration.ofSeconds(120))
+                .readTimeout(Duration.ofSeconds(120))
                 .build();
             RequestBody body = new MultipartBody.Builder().setType(MultipartBody.FORM)
                 .addFormDataPart("jarfile", jarfile.getName(),
