@@ -257,14 +257,17 @@ class ParamsFrom extends Component {
         )
       case "BOOLEAN":
         return (
-          <Form.Item
+          <ProFormSwitch
             key={_idx}
             name={_item.name}
             label={_item.label}
+            tooltip={_item.description}
+            placeholder={_item.description}
+            style={{ _item: _item.display }}
             defaultValue={_item.defaultValue}
-            valuePropName="checked">
-            <ProFormSwitch />
-          </Form.Item>
+            checked={_item.defaultValue}
+            defaultChecked={_item.defaultValue}
+          />
         )
       case "MAP":
         const columns = [
@@ -358,7 +361,7 @@ class ParamsFrom extends Component {
     // }
     let Universal = () => {
       if (this.state.configGroupDefinition)
-        return ( this.state.configGroupDefinition.groupNameToLabelMapList).map((item, idx) => {
+        return (this.state.configGroupDefinition.groupNameToLabelMapList).map((item, idx) => {
           return (
             <TabPane tab={item.label} key={idx}>
               {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
