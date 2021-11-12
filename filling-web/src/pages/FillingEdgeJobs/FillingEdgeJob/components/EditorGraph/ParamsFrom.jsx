@@ -6,7 +6,6 @@ import {
   ProFormDigit,
   ProFormRadio,
   ProFormSelect,
-  ProFormField,
   ProFormSwitch,
   ProFormList
 
@@ -47,11 +46,67 @@ class ParamsFrom extends Component {
 
   handleUpdate = () => {
 
+    let configGroupDefinition = window.selectNode.options.configGroupDefinition ? JSON.parse(window.selectNode.options.configGroupDefinition) : { groupNameToLabelMapList: [] };
+    let configDefinitions = window.selectNode.options.configDefinitions ? JSON.parse(window.selectNode.options.configDefinitions) : {};
+    // 初始化通用配置
+    configGroupDefinition.groupNameToLabelMapList.unshift(
+      {
+        "name": "General",
+        "label": "基本信息"
+      }
+    );
+
+    configDefinitions.push(
+      {
+        "name": "name",
+        "type": "STRING",
+        "defaultValue": null,
+        "dependsOnMap": {},
+        "dependsOn": "",
+        "group": "General",
+        "upload": "NO",
+        "lines": 0,
+        "triggeredByValues": null,
+        "displayPosition": 1000,
+        "connectionType": "",
+        "displayMode": "BASIC",
+        "label": "算子名称",
+        "fieldName": "instanceName",
+        "model": null,
+        "required": true,
+        "description": "",
+        "mode": "text/plain",
+        "elDefs": null,
+        "evaluation": "IMPLICIT"
+      },
+      {
+        "name": "description",
+        "type": "TEXT",
+        "defaultValue": null,
+        "dependsOnMap": {},
+        "dependsOn": "",
+        "group": "General",
+        "upload": "NO",
+        "lines": 0,
+        "triggeredByValues": null,
+        "displayPosition": 1000,
+        "connectionType": "",
+        "displayMode": "BASIC",
+        "label": "说明",
+        "fieldName": "description",
+        "model": null,
+        "required": true,
+        "description": "",
+        "mode": "text/plain",
+        "elDefs": null,
+        "evaluation": "IMPLICIT"
+      }
+    );
     this.setState({
       data: window.selectNode.options.data,
       pluginName: window.selectNode.options.pluginName,
-      configGroupDefinition: window.selectNode.options.configGroupDefinition ? JSON.parse(window.selectNode.options.configGroupDefinition) : { groupNameToLabelMapList: [] },
-      configDefinitions: window.selectNode.options.configDefinitions ? JSON.parse(window.selectNode.options.configDefinitions) : {}
+      configGroupDefinition: configGroupDefinition,
+      configDefinitions: configDefinitions
     });
 
     // this._forceUpdate({1: 1});
@@ -363,25 +418,25 @@ class ParamsFrom extends Component {
       if (this.state.configGroupDefinition)
         return (this.state.configGroupDefinition.groupNameToLabelMapList).map((item, idx) => {
           return (
-            <TabPane tab={item.label} key={idx}>
-              {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
-                if (_item.displayMode == "BASIC" && this.dependsShow(_item, initialValues)) {
-                  // this.isDepends(_item, initialValues);
-                  return this.generationFromItem(_item, _idx);
-                }
-              })}
+              <TabPane tab={item.label} key={idx}>
+                {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
+                  if (_item.displayMode == "BASIC" && this.dependsShow(_item, initialValues)) {
+                    // this.isDepends(_item, initialValues);
+                    return this.generationFromItem(_item, _idx);
+                  }
+                })}
 
-              <Collapse >
-                <Panel header="高级选项" key="1">
-                  {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
-                    if (_item.displayMode != "BASIC" && this.dependsShow(_item, initialValues)) {
-                      // this.isDepends(_item, initialValues);
-                      return this.generationFromItem(_item, _idx);
-                    }
-                  })}
-                </Panel>
-              </Collapse>
-            </TabPane>
+                <Collapse >
+                  <Panel header="高级选项" key="1">
+                    {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
+                      if (_item.displayMode != "BASIC" && this.dependsShow(_item, initialValues)) {
+                        // this.isDepends(_item, initialValues);
+                        return this.generationFromItem(_item, _idx);
+                      }
+                    })}
+                  </Panel>
+                </Collapse>
+              </TabPane>
           )
         })
     };

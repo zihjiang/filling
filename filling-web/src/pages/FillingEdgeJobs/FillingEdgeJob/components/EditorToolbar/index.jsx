@@ -203,6 +203,8 @@ class EditorToolbar extends Component {
             _node['inputLanes'] = options.inputLanes;
             _node['outputLanes'] = options.outputLanes;
             _node['data'] = options.data;
+            _node['description'] = options.data['description'];
+            _node['instanceName'] = options.data['name'];
             _node['stageName'] = options.stageName;
             _node['library'] = options.library;
             _node['stageVersion'] = options.stageVersion;

@@ -404,7 +404,7 @@ public class FillingEdgeJobs implements Serializable {
                 configuration.add(_data);
             });
 
-            node.put("instanceName", UUID.randomUUID());
+            node.put("instanceName", jsonObject.get("instanceName"));
 
             node.put("library", jsonObject.get("library"));
             node.put("stageName", jsonObject.get("stageName"));
