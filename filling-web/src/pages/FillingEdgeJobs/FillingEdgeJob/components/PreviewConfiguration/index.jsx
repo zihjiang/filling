@@ -2,8 +2,6 @@ import { React, Component } from 'react';
 import { Button, message } from 'antd';
 import ProForm, {
     ModalForm,
-    ProFormText,
-    ProFormDateRangePicker,
     ProFormSelect,
     ProFormDigit,
     ProFormSwitch
@@ -20,6 +18,7 @@ class PreviewConfiguration extends Component {
         };
         this.uiInfo = props.uiInfo ? {} : JSON.parse(props.uiInfo);
         this.deCodeDataMap = props.deCodeDataMap;
+        console.log("prop: ", props);
 
     }
 
@@ -32,10 +31,11 @@ class PreviewConfiguration extends Component {
         const data = window.canvas.getDataMap();
         this.state.job.uiInfo = JSON.stringify(this.uiInfo);
         this.state.job.jobText = JSON.stringify(this.deCodeDataMap(data));
-        await previewFillingEdgeJob(this.state.jobId, {
+        const previewData = await previewFillingEdgeJob(this.state.jobId, {
             data: this.state.job
         });
-        console.log(this.uiInfo);
+        window.previewData = previewData;
+        console.log("previewData: ", previewData);
     }
 
     render() {

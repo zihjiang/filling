@@ -35,7 +35,7 @@ class EditorGraph extends Component {
 
     // 默认以node id为result_table_name
     if (sourceNode.options.PluginType != 'TARGET')
-    sourceNode.options['outputLanes'] = [ this.generateTableName(sourceNode.id) ];
+      sourceNode.options['outputLanes'] = [this.generateTableName(sourceNode.id)];
 
     if (targetNode.options.data == undefined) {
       // init data
@@ -57,7 +57,7 @@ class EditorGraph extends Component {
 
     // 默认以node id为source_table_name
     if (targetNode.options.PluginType != 'SOURCE')
-      targetNode.options['inputLanes'] = [ this.generateTableName(sourceNode.id) ];
+      targetNode.options['inputLanes'] = [this.generateTableName(sourceNode.id)];
 
     // pluginName为DataSelector时, 特殊处理
     if (sourceNode.options.pluginName == 'DataSelector') {

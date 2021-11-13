@@ -28,8 +28,6 @@ class EditorToolbar extends Component {
             data: props.data,
             status: (props.data.status == undefined) ? 'STOP' : props.data.status
         }
-
-        console.log("props: ", props);
     }
 
     forceJobUpdate = (job) => {

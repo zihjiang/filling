@@ -198,7 +198,7 @@ class ParamsFrom extends Component {
             valuePropName="value">
 
             <AceEditor
-              placeholder="Placeholder Text"
+              placeholder=""
               mode={_item.mode == 'text/javascript' ? 'javascript' : 'json'}
               name="data"
               theme="terminal"

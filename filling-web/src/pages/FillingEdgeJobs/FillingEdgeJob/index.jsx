@@ -1,6 +1,7 @@
 import { Col, Row } from 'antd';
 import { PageContainer } from '@ant-design/pro-layout';
 import styles from './index.less';
+import { EditorDebug } from './components/EditorDebug/index';
 import { EditorGraph } from './components/EditorGraph/EditorGraph';
 
 import EditorPanel from './components/EditorPanel/index';
@@ -117,7 +118,7 @@ class EditorFlow extends Component {
               options={options}
               width="xl"
               name="jobId"
-              initialValue={ this.state.id ? this.state.id/1 : null }
+              initialValue={this.state.id ? this.state.id / 1 : null}
             />
           </ProForm>
         </>
@@ -141,6 +142,7 @@ class EditorFlow extends Component {
           <Row className={styles.editorBd}>
             <Col lg={20} xxl={22} className={styles.editorContent}>
               <EditorGraph data={data} />
+              <EditorDebug />
             </Col>
             <Col lg={4} xxl={2} className={styles.editorSidebar}>
               {/* FlowItemPanel */}
