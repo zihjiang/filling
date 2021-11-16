@@ -7,6 +7,7 @@ import ProForm, {
     ProFormSwitch
 } from '@ant-design/pro-form';
 import { BugFilled } from '@ant-design/icons';
+import $ from 'jquery';
 import { previewFillingEdgeJob, patchFillingEdgeJob, addFillingEdgeJob } from '@/pages/FillingEdgeJobs/FillingEdgeJob/service';
 class PreviewConfiguration extends Component {
     constructor(props) {
@@ -19,7 +20,6 @@ class PreviewConfiguration extends Component {
         this.uiInfo = props.uiInfo ? {} : JSON.parse(props.uiInfo);
         this.deCodeDataMap = props.deCodeDataMap;
         console.log("prop: ", props);
-
     }
 
     // 更新node的数据
@@ -36,6 +36,8 @@ class PreviewConfiguration extends Component {
         });
         window.previewData = previewData;
         console.log("previewData: ", previewData);
+
+        $("#EditorDebug span").click();
     }
 
     render() {
