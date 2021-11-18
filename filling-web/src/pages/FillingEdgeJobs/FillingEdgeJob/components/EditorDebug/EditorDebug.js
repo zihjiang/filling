@@ -31,6 +31,116 @@ class EditorDebug extends Component {
 
   }
 
+  getFieldPaths(record, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue) {
+    var keys;
+    if (record.type === 'LIST') {
+      _.forEach(record.value, function (value) {
+        if (value.type === 'MAP' || value.type === 'LIST' || value.type === 'LIST_MAP') {
+          if (!nonListAndMap && value.sqpath) {
+            fieldPaths.push(value.sqpath);
+            dFieldPaths.push(value.dqpath);
+            cvalue.push(value.value);
+
+            if (fieldPathsType) {
+              fieldPathsType.push(value.type);
+            }
+          }
+          (value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue) => getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
+        } else if (value.sqpath) {
+          fieldPaths.push(value.sqpath);
+          dFieldPaths.push(value.dqpath);
+          cvalue.push(value.value);
+
+          if (fieldPathsType) {
+            fieldPathsType.push(value.type);
+          }
+        }
+      });
+    } else if (record.type === 'MAP') {
+      if (record.value) {
+        keys = Object.keys(record.value).sort();
+        _.forEach(keys, function (key) {
+          var value = record.value[key];
+          if (value.type === 'MAP' || value.type === 'LIST' || value.type === 'LIST_MAP') {
+            if (!nonListAndMap && value.sqpath) {
+              fieldPaths.push(value.sqpath);
+              dFieldPaths.push(value.dqpath);
+            }
+
+            (value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue) => getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
+            // if (value.type === 'MAP') {
+            //   var d = {};
+            //   d[key] = value.value;
+            //   cvalue.push(d);
+
+            //   console.log("record.type: ", d);
+            // }
+
+            if (fieldPathsType) {
+              fieldPathsType.push(value.type);
+            }
+          } else if (value.sqpath) {
+            fieldPaths.push(value.sqpath);
+            dFieldPaths.push(value.dqpath);
+
+            var d = {};
+            d[key] = value.value;
+            cvalue.push(d);
+
+            if (fieldPathsType) {
+              fieldPathsType.push(value.type);
+            }
+          }
+        });
+      }
+    } else if (record.type === 'LIST_MAP') {
+      _.forEach(record.value, function (value, index) {
+        if (value.type === 'MAP' || value.type === 'LIST' || value.type === 'LIST_MAP') {
+          if (!nonListAndMap && value.sqpath) {
+            fieldPaths.push(value.sqpath);
+            dFieldPaths.push(value.dqpath);
+
+
+            if (fieldPathsType) {
+              fieldPathsType.push(value.type);
+            }
+          }
+
+          if (value.type === 'MAP') {
+            var d = {};
+            d[key] = value.value;
+            cvalue.push(d);
+          }
+          getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
+        } else if (value.sqpath) {
+          fieldPaths.push(value.sqpath);
+          dFieldPaths.push(value.dqpath);
+          var d = {};
+          d[key] = value.value;
+          cvalue.push(d);
+
+          if (!nonListAndMap) {
+            fieldPaths.push('[' + index + ']');
+            dFieldPaths.push('[' + index + ']');
+          }
+
+          if (fieldPathsType) {
+            fieldPathsType.push(value.type);
+          }
+        }
+      });
+    } else {
+      // fieldPaths.push(pipelineConstant.NON_LIST_MAP_ROOT);
+      // dFieldPaths.push(pipelineConstant.NON_LIST_MAP_ROOT);
+      console.log("record: ", record);
+
+      if (fieldPathsType) {
+        fieldPathsType.push(record.type);
+      }
+    }
+
+  }
+
   // 点击Collapse事件
   getpreviewData = () => {
     let previewData = window.previewData || {};
@@ -47,20 +157,35 @@ class EditorDebug extends Component {
   }
 
   getSelectContent = (selectStage) => {
-    console.log(selectStage);
+
+    var preViewData = (currentData) => {
+      let cvalue = [];
+      for (let index = 0; index < currentData.length; index++) {
+        let fieldPaths = [], fieldPathsType = [], dFieldPaths = [];
+        const element = currentData[index].value;
+
+        this.getFieldPaths(element, fieldPaths, false, fieldPathsType, dFieldPaths, cvalue);
+      }
+
+      return {fieldPaths, fieldPathsType, dFieldPaths, cvalue};
+    }
     let batchesOutput = window.previewData.batchesOutput[0] || { instanceName: null };
     let currentIndex = _.findIndex(batchesOutput, d => d.instanceName == selectStage);
 
-    let beforeData = this.getPreviewDataForStage(batchesOutput, batchesOutput[currentIndex - 1]).output || {};
-    let currentData = this.getPreviewDataForStage(batchesOutput, batchesOutput[currentIndex]).output || {};
+    let beforeData = this.getPreviewDataForStage(batchesOutput, batchesOutput[currentIndex - 1]).output || [];
+    let currentData = this.getPreviewDataForStage(batchesOutput, batchesOutput[currentIndex]).output || [];
+
+
+    let fieldPaths = [], fieldPathsType = [], dFieldPaths = [], cvalue = [];
+    
+    // preViewData(beforeData);
+    // preViewData(currentData);
 
     this.setState({
-      beforeData,
-      currentData
+      beforeData: preViewData(beforeData).cvalue,
+      currentData: preViewData(currentData).cvalue
     });
-    // console.log("current: ", current);
-    console.log("this.preData(batchesOutput[currentIndex]): ", this.preData(batchesOutput[currentIndex]));
-    
+
   }
 
   preData = (data) => {
@@ -91,8 +216,6 @@ class EditorDebug extends Component {
     };
 
     _.forEach(batchData, function (stageOutput) {
-      console.log("stageOutput: ", stageOutput);
-      console.log("stageInstance: ", stageInstance);
       if (stageOutput.instanceName === stageInstance.instanceName) {
         _.forEach(stageOutput.output, function (outputs, laneName) {
           _.forEach(outputs, function (output, index) {
