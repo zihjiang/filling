@@ -47,7 +47,7 @@ class EditorPanel extends Component {
                     canvas: this.canvas,
                     // type: 'basic',
                     height: 90,
-                    data: _.filter(data, (d) => { return (d.text.indexOf(values["filterString"]) >= 0 || (d.pluginType == values["selectMode"] || values["selectMode"] == "all")) }),
+                    data: _.filter(data, (d) => { return (d.label.indexOf(values["filterString"]) >= 0 || (d.type == values["selectMode"] || values["selectMode"] == "all")) }),
                 },
             ], () => {
                 console.log('finish')
@@ -71,9 +71,9 @@ class EditorPanel extends Component {
                         <ProFormSelect
                             valueEnum={{
                                 all: '全部',
-                                source: '源',
-                                transform: '算子',
-                                sink: '目标'
+                                SOURCE: '源',
+                                PROCESSOR: '算子',
+                                TARGET: '目标'
                             }}
                             style={{
                                 margin: 16,
