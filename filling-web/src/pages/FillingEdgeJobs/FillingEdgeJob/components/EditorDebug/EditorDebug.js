@@ -67,14 +67,12 @@ class EditorDebug extends Component {
               dFieldPaths.push(value.dqpath);
             }
 
-            (value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue) => getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
-            // if (value.type === 'MAP') {
-            //   var d = {};
-            //   d[key] = value.value;
-            //   cvalue.push(d);
+            var d = {};
+            d[key] = value.value;
+            cvalue.push(d);
+            console.log("record.type: ", value.value);
 
-            //   console.log("record.type: ", d);
-            // }
+            (value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue) => getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
 
             if (fieldPathsType) {
               fieldPathsType.push(value.type);
@@ -111,7 +109,7 @@ class EditorDebug extends Component {
             d[key] = value.value;
             cvalue.push(d);
           }
-          getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
+          (value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue) => getFieldPaths(value, fieldPaths, nonListAndMap, fieldPathsType, dFieldPaths, cvalue);
         } else if (value.sqpath) {
           fieldPaths.push(value.sqpath);
           dFieldPaths.push(value.dqpath);
@@ -139,6 +137,7 @@ class EditorDebug extends Component {
       }
     }
 
+    console.log("record: ", record);
   }
 
   // 点击Collapse事件
@@ -167,7 +166,7 @@ class EditorDebug extends Component {
         this.getFieldPaths(element, fieldPaths, false, fieldPathsType, dFieldPaths, cvalue);
       }
 
-      return {fieldPaths, fieldPathsType, dFieldPaths, cvalue};
+      return { fieldPaths, fieldPathsType, dFieldPaths, cvalue };
     }
     let batchesOutput = window.previewData.batchesOutput[0] || { instanceName: null };
     let currentIndex = _.findIndex(batchesOutput, d => d.instanceName == selectStage);
@@ -177,7 +176,7 @@ class EditorDebug extends Component {
 
 
     let fieldPaths = [], fieldPathsType = [], dFieldPaths = [], cvalue = [];
-    
+
     // preViewData(beforeData);
     // preViewData(currentData);
 

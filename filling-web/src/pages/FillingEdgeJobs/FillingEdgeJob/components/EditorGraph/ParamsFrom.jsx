@@ -180,7 +180,7 @@ class ParamsFrom extends Component {
   generationFromItem = (_item, _idx) => {
     const conver_options = (options) => {
       let _options = [];
-      if (options.labels) {
+      if (options.labels != null && options.labels) {
         for (let i = 0; i < options.labels.length; i++) {
           _options.push({ value: options.values[i], label: options.labels[i] });
         }
@@ -198,7 +198,7 @@ class ParamsFrom extends Component {
             valuePropName="value">
 
             <AceEditor
-              placeholder=""
+              placeholder={_item.description}
               mode={_item.mode == 'text/javascript' ? 'javascript' : 'json'}
               name="data"
               theme="terminal"
@@ -241,6 +241,7 @@ class ParamsFrom extends Component {
         // 如果是LIST_BEAN
         if (_item.model && _item.model.modelType == 'LIST_BEAN') {
 
+          console.log("_item: ", _item);
           return (
             <ProFormList
               key={_idx}
@@ -263,6 +264,7 @@ class ParamsFrom extends Component {
           // }
           // return element;
         } else {
+          console.log("_item: ", _item);
           return (
             <ProFormSelect
               key={_idx}
