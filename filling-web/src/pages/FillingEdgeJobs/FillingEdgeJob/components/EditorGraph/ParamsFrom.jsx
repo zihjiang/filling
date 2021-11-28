@@ -60,7 +60,7 @@ class ParamsFrom extends Component {
       {
         "name": "name",
         "type": "STRING",
-        "defaultValue": null,
+        "defaultValue": "",
         "dependsOnMap": {},
         "dependsOn": "",
         "group": "General",
@@ -241,7 +241,6 @@ class ParamsFrom extends Component {
         // 如果是LIST_BEAN
         if (_item.model && _item.model.modelType == 'LIST_BEAN') {
 
-          console.log("_item: ", _item);
           return (
             <ProFormList
               key={_idx}

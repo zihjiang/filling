@@ -40,7 +40,7 @@ const source = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "consumer.group.id",
                 "text": "消费组",
@@ -50,7 +50,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "topics",
                 "text": "订阅组",
@@ -60,7 +60,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "schema",
                 "text": "简单数据",
@@ -89,8 +89,8 @@ const source = [
                         "value": "csv",
                         "label": "csv"
                     }, {
-                        "value": "text",
-                        "label": "text"
+                        "value": "string",
+                        "label": "string"
                     }
                 ]
             }, {
@@ -124,7 +124,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "parallelism",
                 "text": "并行度",
@@ -146,7 +146,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }
         ],
         endpoints: [{
@@ -174,7 +174,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -184,7 +184,7 @@ const source = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "driver",
                 "text": "驱动",
@@ -194,7 +194,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "url",
                 "text": "链接字符串",
@@ -204,7 +204,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "username",
                 "text": "用户名",
@@ -214,7 +214,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "password",
                 "text": "密码",
@@ -224,7 +224,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "query",
                 "text": "查询语句",
@@ -234,7 +234,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "fetch_size",
                 "text": "拉取数量",
@@ -244,7 +244,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "parallelism",
                 "text": "并行度",
@@ -328,7 +328,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -338,7 +338,7 @@ const source = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "schema",
                 "text": "简单数据",
@@ -358,7 +358,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "number-of-rows",
                 "text": "一共生成行数",
@@ -368,7 +368,7 @@ const source = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "parallelism",
                 "text": "并行度",
@@ -411,7 +411,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -421,7 +421,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "rowtime.watermark.field",
                 "text": "时间字段",
@@ -430,7 +430,7 @@ const transform = [
                 "paramsDesc": "时间字段, 必须是13位时间戳类型",
                 "desc": " ",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "rowtime.watermark.tumble.ms",
                 "text": "翻滚窗口的大小(毫秒)",
@@ -450,7 +450,7 @@ const transform = [
                 "paramsDesc": "允许数据迟到时间, 单位是毫秒",
                 "desc": " ",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "group.fields",
                 "text": "分组的字段, 回车选择",
@@ -525,7 +525,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -535,7 +535,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "source_field",
                 "text": "源字段名",
@@ -545,7 +545,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "target_field",
                 "text": "目标字段名",
@@ -555,7 +555,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -602,7 +602,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -612,7 +612,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "source_field",
                 "text": "源字段名",
@@ -622,7 +622,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "target_field",
                 "text": "目标字段名",
@@ -632,7 +632,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -679,7 +679,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -689,7 +689,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "join.source_table_name",
                 "text": "需要join的表",
@@ -699,7 +699,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "join.secondary.where",
                 "text": "join的条件",
@@ -709,7 +709,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "join.secondary.type",
                 "text": "关联类型",
@@ -781,7 +781,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -791,7 +791,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "select.result_table_name",
                 "text": "生成的流",
@@ -874,7 +874,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -884,7 +884,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "target_field_type",
                 "text": "目标字段类型",
@@ -965,7 +965,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -975,7 +975,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "target_field",
                 "text": "目标字段",
@@ -985,7 +985,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "script",
                 "text": "表达式(支持sql函数)",
@@ -995,7 +995,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "parallelism",
@@ -1044,7 +1044,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1054,7 +1054,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "sql",
                 "text": "sql语句(用{source_table_name}表示上个算子的表名) ",
@@ -1064,7 +1064,8 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "text"
+                "type": "text",
+                "mode": "sql"
             },
             {
                 "name": "parallelism",
@@ -1113,7 +1114,7 @@ const transform = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1123,7 +1124,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "field",
                 "text": "需要保留的字段",
@@ -1185,7 +1186,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1195,7 +1196,7 @@ const sink = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -1236,7 +1237,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1246,7 +1247,7 @@ const sink = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -1278,7 +1279,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "index_id_field",
@@ -1289,7 +1290,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "es.bulk.flush.max.actions",
@@ -1333,7 +1334,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "es.bulk.flush.backoff.delay",
@@ -1389,7 +1390,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1399,7 +1400,7 @@ const sink = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -1420,7 +1421,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "topics",
@@ -1431,7 +1432,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }
         ],
         endpoints: [{
@@ -1465,7 +1466,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1475,7 +1476,7 @@ const sink = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -1496,7 +1497,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "url",
@@ -1507,7 +1508,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "username",
@@ -1518,7 +1519,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "password",
@@ -1529,7 +1530,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "query",
@@ -1540,7 +1541,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "params",
@@ -1594,7 +1595,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             }, {
                 "name": "plugin_name",
                 "text": "插件名称",
@@ -1604,7 +1605,7 @@ const sink = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": true,
-                "type": "text"
+                "type": "string"
             },{
                 "name": "parallelism",
                 "text": "并行度",
@@ -1625,7 +1626,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "url",
@@ -1636,7 +1637,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "username",
@@ -1647,7 +1648,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "password",
@@ -1658,7 +1659,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "query",
@@ -1669,7 +1670,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "text"
+                "type": "string"
             },
             {
                 "name": "params",
