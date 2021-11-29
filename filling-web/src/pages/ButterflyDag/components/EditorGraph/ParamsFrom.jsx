@@ -14,7 +14,10 @@ import _ from 'lodash';
 import AceEditor from "react-ace";
 
 import 'ace-builds/src-noconflict/mode-json';
+import 'ace-builds/src-noconflict/mode-sql';
 import "ace-builds/src-noconflict/theme-terminal";
+
+import { Form } from 'antd';
 
 
 class ParamsFrom extends Component {
@@ -119,7 +122,7 @@ class ParamsFrom extends Component {
     let Universal = () => (
       this.state.pluginOptions.map((item, idx) => {
         switch (item.type) {
-          case "text":
+          case "string":
             return <ProFormText
               key={idx}
               name={item.name}
@@ -139,6 +142,32 @@ class ParamsFrom extends Component {
                 }
               }
             />
+          case "text":
+            return (
+              <Form.Item
+                key={idx}
+                name={item.name}
+                label={item.label}
+                defaultValue={item.defaultValue}
+                valuePropName="value">
+                <AceEditor
+                  placeholder={item.description}
+                  mode={item.mode == 'sql' ? 'sql' : 'json'}
+                  name="data"
+                  theme="terminal"
+                  fontSize={12}
+                  showPrintMargin={true}
+                  showGutter={true}
+                  highlightActiveLine={true}
+                  width='100%'
+                  setOptions={{
+                    enableBasicAutocompletion: true,
+                    enableLiveAutocompletion: true,
+                    enableSnippets: true,
+                    showLineNumbers: true,
+                    tabSize: 2,
+                  }} />
+              </Form.Item>);
           case "textArea":
             return <ProFormTextArea
               key={idx}
@@ -146,8 +175,8 @@ class ParamsFrom extends Component {
               label={item.text}
               tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
-              style={{ display: item.display}}
-              disabled={item.readOnly || window.jobRunStatus }
+              style={{ display: item.display }}
+              disabled={item.readOnly || window.jobRunStatus}
             />
           case "digit":
             return <ProFormDigit
@@ -156,10 +185,10 @@ class ParamsFrom extends Component {
               label={item.text}
               tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
-              style={{ display: item.display  }}
+              style={{ display: item.display }}
               min={item.digitMin}
               max={item.digitMax}
-              disabled={item.readOnly|| window.jobRunStatus}
+              disabled={item.readOnly || window.jobRunStatus}
             />
 
           case "select":
@@ -169,8 +198,8 @@ class ParamsFrom extends Component {
               label={item.text}
               tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
-              style={{ display: item.display}}
-              disabled={item.readOnly || window.jobRunStatus }
+              style={{ display: item.display }}
+              disabled={item.readOnly || window.jobRunStatus}
               options={item.selectOptions}>
             </ProFormSelect>
 
@@ -183,7 +212,7 @@ class ParamsFrom extends Component {
               tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
               style={{ display: item.display }}
-              disabled={item.readOnly|| window.jobRunStatus}
+              disabled={item.readOnly || window.jobRunStatus}
               options={item.selectOptions}>
 
             </ProFormSelect>
