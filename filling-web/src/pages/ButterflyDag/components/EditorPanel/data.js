@@ -910,7 +910,7 @@ const transform = [
             },{
                 "name": "source_field",
                 "text": "源字段名称",
-                "defaultValue": "",
+                "defaultValue": [],
                 "required": true,
                 "paramsDesc": "源字段名称",
                 "desc": " ",
