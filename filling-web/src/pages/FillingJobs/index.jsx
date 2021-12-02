@@ -5,11 +5,11 @@ import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
 import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import UpdateForm from './components/UpdateForm';
 import { fillingJobs, addFillingJobs, updateFillingJobs, removeFillingJobs } from './service';
 import { Link } from 'react-router-dom';
 import { startFillingJobs, stopFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
-
+import CreateForm from './components/CreateForm';
+import lodash from 'lodash';
 
 const handleRemove = async (selectedRow) => {
   const hide = message.loading('正在删除');
@@ -33,6 +33,12 @@ const handleRemove = async (selectedRow) => {
 const handleMonitor = async (selectedRow) => {
 
   window.open(`/api/filling-jobs/overview/${selectedRow.id}`);
+}
+
+const handleCopy = () => {
+  return (
+    <></>
+  );
 }
 
 // 启动任务
@@ -166,7 +172,7 @@ const TableList = () => {
         if (record.status != 2) {
 
           result.push(
-            <a key="id" onClick={() => {
+            <a key="delete" onClick={() => {
               handleRemove(record);
               setSelectedRows([]);
               actionRef.current?.reloadAndRest?.();
@@ -175,7 +181,7 @@ const TableList = () => {
             </a>
           );
           result.push(
-            <a key="id" onClick={() => {
+            <a key="start" onClick={() => {
               start(record).then(() => {
                 setSelectedRows([]);
                 actionRef.current?.reloadAndRest?.();
@@ -188,7 +194,7 @@ const TableList = () => {
         // 监控
         if (record.status == 2) {
           result.push(
-            <a key="id" onClick={() => {
+            <a key="monitor" onClick={() => {
               handleMonitor(record);
               setSelectedRows([]);
             }}>
@@ -196,7 +202,7 @@ const TableList = () => {
             </a>
           );
           result.push(
-            <a key="id" onClick={() => {
+            <a key="stop" onClick={() => {
               stop(record).then(() => {
                 setSelectedRows([]);
                 actionRef.current?.reloadAndRest?.();
@@ -206,15 +212,39 @@ const TableList = () => {
               停止
             </a>
           )
-        }
-
+        };
+        result.push(
+          <a key="copy">
+            <ModalForm
+              title="复制"
+              trigger={
+                <div>复制</div>
+              }
+              modalProps={{
+                onCancel: () => console.log('run'),
+              }}
+              onFinish={async (values) => {
+                
+                let entity = lodash.assign(record, values);
+                entity.id = undefined;
+                entity.applicationId = undefined;
+                entity.status = 1;
+                const job = await addFillingJobs({ data: entity });
+                // actionRef.current?.reloadAndRest?.();
+                message.success('提交成功');
+                return true;
+              }}
+              initialValues={record}
+            >
+              <CreateForm />
+            </ModalForm>
+          </a>
+        );
         result.push(
           <TableDropdown
             key="actionGroup"
-            onSelect={() => action?.reload()}
             menus={[
-              { key: 'copy', name: '复制' },
-              { key: 'delete', name: '删除' },
+              { key: 'delete', name: '删除' }
             ]}
           />
         )
@@ -239,7 +269,7 @@ const TableList = () => {
         request={fillingJobs}
         columns={columns}
         rowSelection={{
-          onChange: (_, selectedRows) => {
+          onChange: (__, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
