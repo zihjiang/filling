@@ -168,7 +168,7 @@ const source = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "kafka-source",
+                "defaultValue": "jdbc-source",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -209,8 +209,8 @@ const source = [
                 "name": "username",
                 "text": "用户名",
                 "defaultValue": "root",
-                "required": true,
-                "paramsDesc": "链接数据库用户名",
+                "required": false,
+                "paramsDesc": "连接数据库用户名(选填)",
                 "desc": " ",
 
                 "readOnly": false,
@@ -219,8 +219,8 @@ const source = [
                 "name": "password",
                 "text": "密码",
                 "defaultValue": "root",
-                "required": true,
-                "paramsDesc": "链接数据库密码",
+                "required": false,
+                "paramsDesc": "连接数据库密码(选填)",
                 "desc": " ",
 
                 "readOnly": false,
