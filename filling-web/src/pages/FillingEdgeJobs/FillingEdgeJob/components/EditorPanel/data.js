@@ -1,4 +1,4 @@
-import influxdbIcon from './images/influxdb.svg';
+import influxdbIcon from './images/Influxdb.svg';
 import tensorflowIcon from './images/tensorflow.png';
 import kafkaIcon from './images/kafka.svg';
 import filterIcon from './images/filter.svg';
