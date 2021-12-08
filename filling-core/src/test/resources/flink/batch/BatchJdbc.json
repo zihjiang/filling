@@ -1,0 +1,24 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "JdbcSource",
+      "driver": "com.mysql.jdbc.Driver",
+      "result_table_name": "JdbcSourceTable",
+      "url": "jdbc:mysql://10.10.14.17:3306/tmp",
+      "username": "aiops",
+      "password": "aiops",
+      "query": "select * from t_group"
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "JdbcSourceTable",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

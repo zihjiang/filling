@@ -1,0 +1,30 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "JdbcSource",
+      "driver": "ru.yandex.clickhouse.ClickHouseDriver",
+      "result_table_name": "JdbcSourceTable",
+      "url": "jdbc:clickhouse://192.168.100.15:8123/aiops",
+      "query": "select * from host_metric08",
+      "fetch_size": 1000
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "JdbcSourceTable",
+      "plugin_name": "ClickHouseSink",
+      "driver": "ru.yandex.clickhouse.ClickHouseDriver",
+      "url": "jdbc:clickhouse://192.168.100.15:8123/aiops",
+      "query": "insert into host_metric10(host, metric, value, system, instance, _time) values(?,?,?,?,?,?)",
+      "batch_size": "2000",
+      "params": ["host", "metric", "value", "system", "instance", "_time"],
+      "parallelism": 5,
+      "name": "mytest"
+    }
+  ]
+}

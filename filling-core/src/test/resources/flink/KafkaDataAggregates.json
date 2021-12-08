@@ -1,0 +1,52 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop6",
+      "topics": "batchSend",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":\"49\",\"_time\":1626571020000}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "192.168.100.189:9092"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "DataAggregates_01",
+      "plugin_name": "DataAggregates",
+      "rowtime.watermark.field": "_time",
+      "rowtime.watermark.tumble.ms": 600000,
+      "rowtime.watermark.tumble.delay.ms": 1000,
+      "group.fields": [
+        "host", "source", "MetricsName"
+      ],
+      "group.host.function": ["count"],
+      "group.source.function": ["count"],
+      "group.MetricsName.function": ["count"],
+      "custom.fields": ["max_value", "min_value"],
+      "custom.field.max_value.script": "max(value)",
+      "custom.field.min_value.script": "min(value)"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "DataAggregates_01",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "192.168.1.204:9200"
+      ],
+      "index": "dataselector_fix"
+    },
+    {
+      "source_table_name": "DataAggregates_01",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

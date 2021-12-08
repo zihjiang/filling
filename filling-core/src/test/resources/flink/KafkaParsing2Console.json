@@ -1,0 +1,114 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling06",
+      "topics": "nginx",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"name\":\"@message\",\"value\":\"2019/07/16 05:53:13 [error] 30458#0: *11610 open() \\\"/opt/visdata/webapps/DataVisApp/404.html\\\" failed (2: No such file or directory), client: 134.175.102.205, server: *.visdata.com.cn, request: \\\"POST /App.php?_=1562687d3707a HTTP/1.1\"}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "10.10.14.43:9092",
+      "parallelism": 1,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name":"KafkaTableStreamTable",
+      "result_table_name":"DataParsing_p",
+      "plugin_name":"DataParsing",
+      "source_field":"value",
+      "fields":[
+        {
+          "index_id":0,
+          "type":"string",
+          "pattern":"",
+          "format":"^(\\d+\\.\\d+\\.\\d+\\.\\d+)\\s",
+          "name":"clientip",
+          "title":"客户端地址",
+          "ref":"@message"
+        },
+        {
+          "index_id":1,
+          "type":"datetime",
+          "pattern":"yyyy/MM/dd HH:mm:ss",
+          "format":"\\d+\\/\\d+\\/\\d+ \\d+:\\d+:\\d+",
+          "name":"timestamp",
+          "title":"时间戳",
+          "ref":"@message"
+        },
+        {
+          "index_id":2,
+          "type":"string",
+          "pattern":"",
+          "format":"\\]\\s\"(\\w+)\\s",
+          "name":"verb",
+          "title":"请求类型",
+          "ref":"@message"
+        },
+        {
+          "index_id":3,
+          "type":"string",
+          "pattern":"",
+          "format":"\\]\\s\\\"\\w+\\s(.*)\\sHTTP",
+          "name":"request",
+          "title":"请求地址",
+          "ref":"@message"
+        },
+        {
+          "index_id":4,
+          "type":"string",
+          "pattern":"",
+          "format":"HTTP\\/[\\d\\.]",
+          "name":"rspcode",
+          "title":"返回码",
+          "ref":"@message"
+        },
+        {
+          "index_id":5,
+          "type":"number",
+          "pattern":"bigint",
+          "format":"HTTP\/[\\d\\.]+\\\"\\s\\d+\\s(\\d+)\\s",
+          "name":"bytes",
+          "title":"字节数",
+          "ref":"@message"
+        },
+        {
+          "index_id":6,
+          "type":"string",
+          "pattern":"",
+          "format":"\\\"\\s\"(.*)\\\"$",
+          "name":"agent",
+          "title":"浏览器",
+          "ref":"@message"
+        }
+      ]
+    },
+    {
+      "source_table_name": "DataParsing_p",
+      "result_table_name": "sql_table27",
+      "plugin_name": "FieldSelect",
+      "field": [
+        "`timestamp`",
+        "rspcode",
+        "clientip",
+        "request",
+        "verb"
+      ]
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "sql_table27",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

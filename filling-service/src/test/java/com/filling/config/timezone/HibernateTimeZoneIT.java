@@ -1,13 +1,8 @@
 package com.filling.config.timezone;
 
-import static java.lang.String.format;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import com.filling.IntegrationTest;
 import com.filling.repository.timezone.DateTimeWrapper;
 import com.filling.repository.timezone.DateTimeWrapperRepository;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +10,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+
+import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Integration tests for the ZoneId Hibernate configuration.

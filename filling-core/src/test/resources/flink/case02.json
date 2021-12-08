@@ -1,0 +1,36 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling06",
+      "topics": "json",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"instance\":\"192.168.1.13_cpu2_PP1A\",\"system\":\"PP1A\",\"metric\":\"cpu2\",\"host\":\"192.168.1.13\",\"value\":1.1,\"_time\":\"2021-06-01 23:19:00\"}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "192.168.1.218:9092",
+      "parallelism": 2,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldOperation",
+      "target_field": "ts",
+      "script": "FROM_UNIXTIME(FLOOR(UNIX_TIMESTAMP(_time)/300)*300)"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "FieldOperation_time",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

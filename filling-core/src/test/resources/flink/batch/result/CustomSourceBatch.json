@@ -1,0 +1,35 @@
+[
+  {
+    "column": [
+      {
+        "metric": "STRING"
+      },
+      {
+        "auth": "STRING"
+      },
+      {
+        "hostid": "STRING"
+      },
+      {
+        "value": "INT"
+      }
+    ],
+    "data": [
+      [
+        "cpu_user",
+        "1|2|3|4|5",
+        "host01",
+        "13"
+      ],
+      [
+        "cpu_user",
+        "1|2|3|4|5",
+        "host01",
+        "13"
+      ]
+    ],
+    "status": "0",
+    "tableName": "FileSourceTable",
+    "type": "source"
+  }
+]

@@ -1,0 +1,117 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "log.dir": "/tmp/log",
+    "web.log.path": "/tmp/log"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop12",
+      "offset.reset": "specific",
+      "topics": "aiops-pufa-test-01",
+      "offset.reset.specific": "{0:0}",
+      "result_table_name": "originalStreamTable",
+      "format.type": "json",
+      "schema": "{\"ProviderId\" : \"0508\",\"ColSrcFlag\" : \"1\",\"MsgId\" : \"02002011250007104148029681\",\"DtgrmRl\" : \"1\",\"unix_ts\" : 1606272108269,\"ts\" : \"2020-11-25 10:41:48.269\", \"TranCode\": \"9995\", \"ReturnCode\": \"000000000000\"}",
+      "consumer.bootstrap.servers": "10.10.14.46:9092"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "originalStreamTable",
+      "result_table_name": "sql_filter",
+      "plugin_name": "Sql",
+      "sql": "select * from originalStreamTable where `ProviderId` = '1000'"
+    },
+    {
+      "source_table_name": "sql_filter",
+      "result_table_name": "FieldOperation_tss",
+      "plugin_name": "FieldOperation",
+      "target_field": "tss",
+      "script": "unix_ts"
+    },
+    {
+      "source_table_name": "FieldOperation_tss",
+      "result_table_name": "DataAggregates_01",
+      "plugin_name": "DataAggregates",
+      "rowtime.watermark.field": "unix_ts",
+      "rowtime.watermark.tumble.ms": 60000,
+      "rowtime.watermark.tumble.delay.ms": 10000,
+      "group.fields": [
+        "MsgId", "DtgrmRl", "ReturnCode","TranCode"
+      ],
+      "group.MsgId.function": ["count"],
+      "group.DtgrmRl.function": ["count"],
+      "group.ReturnCode.function": ["count"],
+      "group.TranCode.function": ["count"],
+      "custom.fields": ["rtime"],
+      "custom.field.rtime.script": "max(tss)"
+    },
+    {
+      "source_table_name": "DataAggregates_01",
+      "result_table_name": "DataSelector_02",
+      "plugin_name": "DataSelector",
+      "select.result_table_name": [
+        "dataSelector_1",
+        "dataSelector_4"
+      ],
+      "select.dataSelector_1.where": " DtgrmRl='1'",
+      "select.dataSelector_4.where": " DtgrmRl='4'"
+    },
+    {
+      "source_table_name": "dataSelector_1",
+      "result_table_name": "sql_rename01",
+      "plugin_name": "FieldSelect",
+      "field": [
+        "ReturnCode as t1_ReturnCode",
+        "rtime as t1_rtime",
+        "TranCode as t1_TranCode",
+        "MsgId as t1_MsgId",
+        "TranCode_count as t1_TranCode_count"
+      ]
+    },
+    {
+      "source_table_name": "dataSelector_4",
+      "result_table_name": "sql_rename04",
+      "plugin_name": "FieldSelect",
+      "field": [
+        "ReturnCode as t4_ReturnCode",
+        "rtime as t4_rtime",
+        "TranCode as t4_TranCode",
+        "MsgId as t4_MsgId",
+        "TranCode_count as t4_TranCode_count"
+      ]
+    },
+    {
+      "source_table_name": "sql_rename01",
+      "result_table_name": "DataJoin_01",
+      "plugin_name": "DataJoin",
+      "join.source_table_name": [
+        "sql_rename04"
+      ],
+      "join.sql_rename04.where": "t1_MsgId = t4_MsgId",
+      "join.sql_rename04.type": "left"
+    },
+    {
+      "source_table_name": "DataJoin_01",
+      "result_table_name": "sql_result",
+      "plugin_name": "FieldSelect",
+      "field": [
+        "t4_MsgId as MsgId",
+        "t4_TranCode_count as TranCode_count",
+        "t4_TranCode as TranCode",
+        "t4_ReturnCode as ReturnCode",
+        "t1_rtime as begin_time",
+        "t4_rtime as end_time",
+        "(cast(t4_rtime as bigint) - cast(t1_rtime as bigint)) as Duration"
+      ]
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "sql_result",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

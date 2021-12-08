@@ -1,6 +1,5 @@
 package com.filling.web.rest.vm;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.filling.domain.FillingEdgeNodes;
 
 import java.util.Objects;

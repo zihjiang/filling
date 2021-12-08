@@ -10,12 +10,6 @@ import com.filling.service.dto.AdminUserDTO;
 import com.filling.web.rest.errors.BadRequestAlertException;
 import com.filling.web.rest.errors.EmailAlreadyUsedException;
 import com.filling.web.rest.errors.LoginAlreadyUsedException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.*;
-import java.util.Collections;
-import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +25,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for managing users.

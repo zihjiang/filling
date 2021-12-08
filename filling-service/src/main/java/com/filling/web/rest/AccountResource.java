@@ -7,18 +7,20 @@ import com.filling.service.MailService;
 import com.filling.service.UserService;
 import com.filling.service.dto.AdminUserDTO;
 import com.filling.service.dto.PasswordChangeDTO;
-import com.filling.service.dto.UserDTO;
-import com.filling.web.rest.errors.*;
+import com.filling.web.rest.errors.EmailAlreadyUsedException;
+import com.filling.web.rest.errors.InvalidPasswordException;
+import com.filling.web.rest.errors.LoginAlreadyUsedException;
 import com.filling.web.rest.vm.KeyAndPasswordVM;
 import com.filling.web.rest.vm.ManagedUserVM;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * REST controller for managing the current user's account.

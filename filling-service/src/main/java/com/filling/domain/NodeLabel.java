@@ -1,8 +1,9 @@
 package com.filling.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import java.io.Serializable;
+
 import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * A NodeLabel.

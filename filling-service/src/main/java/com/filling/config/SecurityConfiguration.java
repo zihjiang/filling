@@ -1,7 +1,8 @@
 package com.filling.config;
 
-import com.filling.security.*;
-import com.filling.security.jwt.*;
+import com.filling.security.AuthoritiesConstants;
+import com.filling.security.jwt.JWTConfigurer;
+import com.filling.security.jwt.TokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;

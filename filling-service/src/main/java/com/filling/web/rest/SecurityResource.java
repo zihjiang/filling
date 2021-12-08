@@ -2,7 +2,6 @@ package com.filling.web.rest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.filling.service.FillingEdgeJobsService;
 import com.filling.service.FillingEdgeNodesService;
 import com.filling.web.rest.vm.EdgeRegistrationVM;
 import org.slf4j.Logger;

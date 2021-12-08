@@ -1,0 +1,60 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling10",
+      "topics": ["zihjiang"],
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"instance\":\"192.168.1.13_cpu2_PP1A\",\"system\":\"PP1A\",\"metric\":\"cpu2\",\"host\":\"192.168.1.13\",\"value\":1,\"_time\":\"2021-06-01 23:19:00\"}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "192.168.1.218:9092",
+      "consumer.enable.auto.commit": "true",
+      "consumer.auto.commit.interval.ms": "1000",
+      "parallelism": 1,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "sql01",
+      "plugin_name": "Sql",
+      "sql": "select * from KafkaTableStreamTable where instance not like '192.168.12.%'"
+    },
+    {
+      "source_table_name": "sql01",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldOperation",
+      "target_field": "ts",
+      "script": "UNIX_TIMESTAMP(_time)*1000"
+    },
+    {
+      "source_table_name": "FieldOperation_time",
+      "result_table_name": "DataAggregates_01",
+      "plugin_name": "DataAggregates",
+      "rowtime.watermark.field": "ts",
+      "rowtime.watermark.tumble.ms": 300000,
+      "rowtime.watermark.tumble.delay.ms": 1000,
+      "group.fields": [
+        "instance"
+      ],
+      "group.instance.function": ["count"],
+      "custom.fields": ["max_value", "min_value", "avg_value"],
+      "custom.field.max_value.script": "max(value)",
+      "custom.field.min_value.script": "min(value)",
+      "custom.field.avg_value.script": "avg(value)"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

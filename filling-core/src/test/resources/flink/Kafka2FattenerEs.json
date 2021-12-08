@@ -1,0 +1,32 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop50",
+      "topics": "filling-Nested02",
+      "offset.reset": "earliest",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"index\":\"filling-data-time02\",\"type\":\"doc\",\"id\":\"CUBQCHwBcGMuhZq5JzW\",\"score\":1,\"source\":{\"hostName\":\"dm-host-1\",\"host\":\"1\",\"id\":\"3820\",\"source\":\"fad48e01ed\",\"MetricsName\":\"e958c39189\",\"value\":\"6\",\"time\":\"1632227091000\"}, \"arrayt\": [{\"name\": \"jzh\"}], \"arrayf\": [1,2,3]}",
+      "consumer.bootstrap.servers": "10.10.14.43:9092"
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "10.10.14.51:9200"
+      ],
+      "index": "test001"
+    }
+  ]
+}

@@ -2,8 +2,6 @@ package com.filling.web.rest;
 
 import com.filling.service.UserService;
 import com.filling.service.dto.UserDTO;
-import java.util.*;
-import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,9 +10,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.PaginationUtil;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")

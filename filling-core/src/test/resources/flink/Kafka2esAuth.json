@@ -1,0 +1,45 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop50",
+      "topics": "aiops-test",
+      "offset.reset": "earliest",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"trans_time\":0.105,\"ts\": 1575215715666, \"@filename\":\"TRADEINFO_G00_2019-1201_1.trd\",\"@filepath\":\"/opt/datas/afa-trade/TRADEINFO_G00_2019-1201_1.trd\",\"@hostname\":\"filling-15\",\"@linenum\":\"27458\",\"@message\":\"G00 PID:9240950 T000019_510412.pyc  清单打印 P510412_D1017_C0_Q0_N58@32.3.34.1.log 000019 20171017 未知 未知 未知 未知 36208640 36208640 0 36118528 36118528 0 2017/10/17 BGN:11:16:02.187 END:11:16:02.292 USE:0.105\",\"@rule_alias\":\"afa_trade\",\"@rule_name\":\"afa_trade\",\"@store_name\":\"afa-trade\",\"@timestamp\":\"2019-12-01\",\"date\":\"20171017\",\"description\":\" 清单打印\",\"end_time\":\"2017-10-17T11:16:02.292Z\",\"host_time\":\"未知\",\"logname\":\"P510412_D1017_C0_Q0_N58@32.3.34.1.log\",\"mem_1\":36208640,\"mem_2\":36208640,\"mem_3\":0,\"mem_4\":36118528,\"mem_5\":36118528,\"mem_6\":0,\"pid\":\"9240950\",\"pycname\":\"T000019_510412.pyc\",\"serial_no\":\"未知\",\"sysid\":\"000019\",\"third_time\":\"未知\",\"timestamp\":\"2019-12-01T11:16:02.187Z\",\"trade_type\":\"未知\",\"workgroup\":\"G00\" }",
+      "format.field-delimiter": ";",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "consumer.zookeeper.connect": "10.10.14.45:2181",
+      "consumer.bootstrap.servers": "10.10.14.46:9092",
+      "rowtime.field": "ts",
+      "watermark": 1000
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "10.10.14.204:9200"
+      ],
+      "index": "waterdrop",
+      "es.bulk.flush.max.actions": 1000,
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.interval.ms": 1000,
+      "es.bulk.flush.backoff.enable": true,
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": 8,
+      "es.username": "elastic",
+      "es.password": "elastic"
+    }
+  ]
+}

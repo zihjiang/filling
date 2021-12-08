@@ -1,0 +1,50 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling06",
+      "topics": "arcana",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"host\":\"f0e31d4cd63b\",\"@timestamp\":\"2021-08-12T03:27:57.316Z\",\"path\":\"/sample_data/apache_access_logs_1000w_02\",\"message\":\"127.0.0.1 - - [19/Jun/1998:23:12:52 +0000] \\\"GET /images/logo_cfo.gif HTTP/1.0\\\" 304 0\",\"@version\":\"1\"}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "192.168.1.70:9092",
+      "parallelism": 2,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldOperation",
+      "target_field": "_time",
+      "script": "UNIX_TIMESTAMP(REGEXP_EXTRACT(message, '(?<=\\\\[).*(?=\\\\s\\\\+0000\\\\])', 0), 'dd/MMM/yyyy:HH:mm:ss')*1000"
+    },
+    {
+      "source_table_name": "FieldOperation_time",
+      "result_table_name": "DataAggregates_01",
+      "plugin_name": "DataAggregates",
+      "rowtime.watermark.field": "_time",
+      "rowtime.watermark.tumble.ms": 1000,
+      "rowtime.watermark.tumble.delay.ms": 1000,
+      "group.fields": [
+        "host"
+      ],
+      "group.host.function": ["count"],
+      "custom.fields": ["max_value"],
+      "custom.field.min_value.script": "min(1)"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "DataAggregates_01",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

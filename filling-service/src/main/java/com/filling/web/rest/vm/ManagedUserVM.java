@@ -1,6 +1,7 @@
 package com.filling.web.rest.vm;
 
 import com.filling.service.dto.AdminUserDTO;
+
 import javax.validation.constraints.Size;
 
 /**

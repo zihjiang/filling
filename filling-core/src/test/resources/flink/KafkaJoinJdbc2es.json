@@ -1,0 +1,87 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop5",
+      "topics": "aiops-test",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+      "format.field-delimiter": ";",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "consumer.zookeeper.connect": "10.10.14.45:2181",
+      "consumer.bootstrap.servers": "10.10.14.46:9092",
+      "rowtime.field": "ts",
+      "watermark": 1000
+
+    },
+    {
+      "plugin_name": "JdbcSource",
+      "driver": "com.mysql.jdbc.Driver",
+      "result_table_name": "JdbcSourceTable",
+      "url": "jdbc:mysql://10.10.14.17:3306/tmp",
+      "username": "aiops",
+      "password": "aiops",
+      "query": "select * from t_group"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "KafkaTableStreamTable_default",
+      "plugin_name": "DataJoin",
+      "join.source_table_name": [
+        "JdbcSourceTable"
+      ],
+      "join.JdbcSourceTable.where": "`{main}.host` = `{secondary}.host`",
+      "join.JdbcSourceTable.type": "left"
+    },
+    {
+      "source_table_name": "KafkaTableStreamTable_default",
+      "result_table_name": "DataSelector_default",
+      "plugin_name": "DataSelector",
+      "select.result_table_name": [
+        "DataSelector_unknown",
+        "DataSelector_other"
+      ],
+      "select.DataSelector_unknown.where": " serial_no ='未知'",
+      "select.DataSelector_other.where": " serial_no !='未知'"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "DataSelector_unknown",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "10.10.14.51:9200"
+      ],
+      "index": "waterdrop_unknown",
+      "es.bulk.flush.max.actions": 1000,
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.interval.ms": 1000,
+      "es.bulk.flush.backoff.enable": true,
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": 8
+    },
+    {
+      "source_table_name": "DataSelector_other",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "10.10.14.51:9200"
+      ],
+      "index": "waterdrop_other",
+      "es.bulk.flush.max.actions": 1000,
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.interval.ms": 1000,
+      "es.bulk.flush.backoff.enable": true,
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": 8
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling06",
+      "topics": "nginx",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"name\":\"@message\",\"value\":\"220.181.108.96 - - [13/Jun/2015:21:14:28 +0000] \\\\\\\"GET /blog/geekery/xvfb-firefox.html HTTP/1.1\\\\\\\" 200 10975 \\\\\\\"-\\\\\\\" \\\\\\\"Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)\\\\\\\"\"}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "10.10.14.43:9092",
+      "parallelism": 2,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldOperation",
+      "target_field": "_time",
+      "script": "REGEXP_EXTRACT(`value`, '\\\\s\\\\[(\\\\d+\\\\/[a-zA-Z]+\\\\/\\\\d+:\\\\d+:\\\\d+:\\\\d+)\\\\s\\\\+', 0)"
+    },
+    {
+      "source_table_name": "FieldOperation_time",
+      "result_table_name": "sql_table27",
+      "plugin_name": "FieldSelect",
+      "field": [
+        "_time"
+      ]
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "sql_table27",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

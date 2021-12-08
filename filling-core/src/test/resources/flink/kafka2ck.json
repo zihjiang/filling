@@ -1,0 +1,47 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop15",
+      "topics": "batchSend",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":\"49\",\"_time\":1626571020000}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "192.168.100.189:9092",
+      "parallelism": 10,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "result_table_name": "DataSelector_default",
+      "plugin_name": "DataSelector",
+      "select.result_table_name": [
+        "DataSelector_high",
+        "DataSelector_low"
+      ],
+      "select.DataSelector_high.where": " value >'50'",
+      "select.DataSelector_low.where": " value <= '50'"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "DataSelector_low",
+      "plugin_name": "ClickHouseSink",
+      "driver": "ru.yandex.clickhouse.ClickHouseDriver",
+      "url": "jdbc:clickhouse://192.168.100.15:8123/aiops",
+      "query": "insert into host_metric08(host, metric, value, system, instance, _time) values(?,?,?,?,?,?)",
+      "batch_size": "2000",
+      "params": ["host", "MetricsName", "value", "host", "source", "_time"],
+      "parallelism": 5,
+      "name": "mytest"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "schema": "{\"hostid\": \"host01\",\"metric\": \"cpu_user\",\"value\": 13, \"auth\": \"1|2|3|4|5\"}",
+      "simple_data": "{\"hostid\": \"host01\",\"metric\": \"cpu_user\",\"value\": 13, \"auth\": \"1|2|3|4|5\"}\n{\"hostid\": \"host01\",\"metric\": \"cpu_user\",\"value\": 13, \"auth\": \"1|2|3|4|5\"}",
+      "result_table_name": "FileSourceTable",
+      "plugin_name": "CustomStream",
+      "format.type": "json"
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "FileSourceTable",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

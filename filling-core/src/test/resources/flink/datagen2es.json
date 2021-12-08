@@ -1,0 +1,72 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "dataGenSource",
+      "result_table_name": "dataGenSourceTable",
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+      "rows-per-second": 100,
+      "number-of-rows": 100000000,
+      "fields": [
+        {
+          "id": {
+            "type": "Int",
+            "min": 1,
+            "max": 2
+          }
+        },
+        {
+          "host": {
+            "type": "String",
+            "length": 5
+          }
+        },
+        {
+          "source": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "MetricsName": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "value": {
+            "type": "Int",
+            "min": 1,
+            "max": 2
+          }
+        }
+      ],
+      "parallelism": 1,
+      "name": "my-datagen-source"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "dataGenSourceTable",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldOperation",
+      "target_field": "_time",
+      "script": "UNIX_TIMESTAMP()*1000"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "FieldOperation_time",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "10.10.14.51:9200"
+      ],
+      "index_id_field": "id",
+      "index": "test001"
+    }
+  ]
+}

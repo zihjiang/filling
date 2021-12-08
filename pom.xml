@@ -10,6 +10,7 @@
     <modules>
         <module>filling-web</module>
         <module>filling-service</module>
+        <module>filling-core</module>
     </modules>
     <packaging>pom</packaging>
 

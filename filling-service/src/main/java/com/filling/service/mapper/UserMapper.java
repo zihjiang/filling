@@ -4,12 +4,13 @@ import com.filling.domain.Authority;
 import com.filling.domain.User;
 import com.filling.service.dto.AdminUserDTO;
 import com.filling.service.dto.UserDTO;
-import java.util.*;
-import java.util.stream.Collectors;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Mapper for the entity {@link User} and its DTO called {@link UserDTO}.

@@ -1,0 +1,26 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "MysqlCdcSource",
+      "consumer.group.id": "waterdrop52",
+      "driver": "lyj012",
+      "url": "earliest",
+      "query": "KafkaTableStreamTable",
+      "result_table_name": "es01"
+    }
+  ],
+  "transform": [
+
+  ],
+  "sink": [
+    {
+      "source_table_name": "es01",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

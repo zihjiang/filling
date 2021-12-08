@@ -1,0 +1,40 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop50",
+      "topics": "filling-Nested",
+      "offset.reset": "earliest",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"_index\":\"filling-data-time02\",\"_type\":\"_doc\",\"_id\":\"CUBQCHwBcGMuhZq_5JzW\",\"_score\":1,\"_source\":{\"hostName\":\"dm-host-1\",\"host\":\"1\",\"id\":\"3820\",\"source\":\"fad48e01ed\",\"MetricsName\":\"e958c39189\",\"value\":\"6\",\"_time\":\"1632227091000\"}}",
+      "consumer.bootstrap.servers": "10.10.14.43:9092"
+    }
+  ],
+  "transform": [
+
+  ],
+  "sink": [
+    {
+      "name": "Elasticsearch-sink",
+      "plugin_name": "Elasticsearch",
+      "parallelism": "1",
+      "hosts": [
+        "10.10.14.51:9200"
+      ],
+      "index": "filling-nested",
+      "es.bulk.flush.max.actions": 1000,
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.interval.ms": 1000,
+      "es.bulk.flush.backoff.enable": "true",
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": "8",
+      "source_table_name": "KafkaTableStreamTable"
+    }
+  ]
+}

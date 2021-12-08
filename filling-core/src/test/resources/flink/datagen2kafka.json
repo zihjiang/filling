@@ -1,0 +1,59 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "dataGenSource",
+      "result_table_name": "dataGenSourceTable",
+      "schema": "{\"id\": 13215, \"name\": \"aa\", \"phone\": \"13152725000\", \"ip\": \"10.10.10.12\"}",
+      "rows-per-second": 10000,
+      "number-of-rows": 100000000,
+      "fields": [
+        {
+          "id": {
+            "type": "Int",
+            "min": 1,
+            "max": 1000000
+          }
+        },
+        {
+          "name": {
+            "type": "String",
+            "length": 5
+          }
+        },
+        {
+          "phone": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "ip": {
+            "type": "String",
+            "length": 10
+          }
+        }
+
+      ],
+      "parallelism": 10,
+      "name": "my-datagen-source"
+    }
+  ],
+  "transform": [
+
+  ],
+  "sink": [
+    {
+      "source_table_name": "dataGenSourceTable",
+      "plugin_name": "KafkaTable",
+      "producer.bootstrap.servers": "10.43.0.6:9092",
+      "topics": "filling-test",
+      "parallelism": 10,
+      "name": "my-kafka-sink"
+    }
+  ]
+}

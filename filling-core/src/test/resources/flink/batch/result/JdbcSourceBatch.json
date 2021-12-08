@@ -1,0 +1,37 @@
+[
+  {
+    "column": [
+      {
+        "id": "INT"
+      },
+      {
+        "categoryName": "STRING"
+      },
+      {
+        "department": "STRING"
+      },
+      {
+        "host": "STRING"
+      },
+      {
+        "createTime": "STRING"
+      },
+      {
+        "principal": "STRING"
+      }
+    ],
+    "data": [
+      [
+        "+I[1",
+        " workgroup",
+        " 开发部",
+        " G00",
+        " 2021-01-01: 00:00:00",
+        " 张三]"
+      ]
+    ],
+    "status": "0",
+    "tableName": "JdbcSourceTable",
+    "type": "source"
+  }
+]

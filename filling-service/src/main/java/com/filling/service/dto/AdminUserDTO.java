@@ -3,10 +3,14 @@ package com.filling.service.dto;
 import com.filling.config.Constants;
 import com.filling.domain.Authority;
 import com.filling.domain.User;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.validation.constraints.*;
 
 /**
  * A DTO representing a user, with his authorities.

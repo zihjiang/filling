@@ -1,10 +1,6 @@
 package com.filling.service;
 
 import com.filling.domain.User;
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
@@ -16,6 +12,11 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import tech.jhipster.config.JHipsterProperties;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 /**
  * Service for sending emails.

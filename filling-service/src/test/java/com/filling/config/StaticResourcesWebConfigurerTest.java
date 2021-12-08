@@ -1,10 +1,5 @@
 package com.filling.config;
 
-import static com.filling.config.StaticResourcesWebConfiguration.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
-
-import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.CacheControl;
@@ -14,6 +9,13 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistra
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import tech.jhipster.config.JHipsterDefaults;
 import tech.jhipster.config.JHipsterProperties;
+
+import java.util.concurrent.TimeUnit;
+
+import static com.filling.config.StaticResourcesWebConfiguration.RESOURCE_LOCATIONS;
+import static com.filling.config.StaticResourcesWebConfiguration.RESOURCE_PATHS;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 class StaticResourcesWebConfigurerTest {
 

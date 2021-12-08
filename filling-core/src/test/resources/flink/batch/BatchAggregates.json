@@ -1,0 +1,51 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "schema": "{\"trans_time\":0.105,\"ts\": 1575215715666, \"@filepath\":\"/opt/datas/afa-trade/TRADEINFO_G00_2019-1201_1.trd\",\"@hostname\":\"filling-15\",\"@linenum\":\"27458\",\"@message\":\"G00 PID:9240950 T000019_510412.pyc  清单打印 P510412_D1017_C0_Q0_N58@32.3.34.1.log 000019 20171017 未知 未知 未知 未知 36208640 36208640 0 36118528 36118528 0 2017/10/17 BGN:11:16:02.187 END:11:16:02.292 USE:0.105\",\"@rule_alias\":\"afa_trade\",\"@rule_name\":\"afa_trade\",\"@store_name\":\"afa-trade\",\"@timestamp\":\"2019-12-01\",\"date\":\"20171017\",\"description\":\" 清单打印\",\"end_time\":\"2017-10-17T11:16:02.292Z\",\"host_time\":\"未知\",\"logname\":\"P510412_D1017_C0_Q0_N58@32.3.34.1.log\",\"mem_1\":36208640,\"mem_2\":36208640,\"mem_3\":0,\"mem_4\":36118528,\"mem_5\":36118528,\"mem_6\":0,\"pid\":\"9240950\",\"pycname\":\"T000019_510412.pyc\",\"serial_no\":\"未知\",\"sysid\":\"000019\",\"third_time\":\"未知\",\"timestamp\":\"2019-12-01T11:16:02.187Z\",\"trade_type\":\"未知\",\"workgroup\":\"G00\" }",
+      "simple_data": "{\"trans_time\":0.105,\"ts\": 1575215715666, \"@filepath\":\"/opt/datas/afa-trade/TRADEINFO_G00_2019-1201_1.trd\",\"@hostname\":\"filling-15\",\"@linenum\":\"27458\",\"@message\":\"G00 PID:9240950 T000019_510412.pyc  清单打印 P510412_D1017_C0_Q0_N58@32.3.34.1.log 000019 20171017 未知 未知 未知 未知 36208640 36208640 0 36118528 36118528 0 2017/10/17 BGN:11:16:02.187 END:11:16:02.292 USE:0.105\",\"@rule_alias\":\"afa_trade\",\"@rule_name\":\"afa_trade\",\"@store_name\":\"afa-trade\",\"@timestamp\":\"2019-12-01\",\"date\":\"20171017\",\"description\":\" 清单打印\",\"end_time\":\"2017-10-17T11:16:02.292Z\",\"host_time\":\"未知\",\"logname\":\"P510412_D1017_C0_Q0_N58@32.3.34.1.log\",\"mem_1\":36208640,\"mem_2\":36208640,\"mem_3\":0,\"mem_4\":36118528,\"mem_5\":36118528,\"mem_6\":0,\"pid\":\"9240950\",\"pycname\":\"T000019_510412.pyc\",\"serial_no\":\"未知\",\"sysid\":\"000019\",\"third_time\":\"未知\",\"timestamp\":\"2019-12-01T11:16:02.187Z\",\"trade_type\":\"未知\",\"workgroup\":\"G00\" }",
+      "result_table_name": "FileSourceTable",
+      "plugin_name": "CustomSource",
+      "format.type": "json"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "FileSourceTable",
+      "result_table_name": "FieldSelect_01",
+      "plugin_name": "FieldSelect",
+      "field": [
+        "trans_time",
+        "description",
+        "ts",
+        "workgroup",
+        "sysid"
+      ]
+    },
+    {
+      "source_table_name": "FieldSelect_01",
+      "result_table_name": "DataAggregates_01",
+      "plugin_name": "DataAggregates",
+      "rowtime.watermark.field": "ts",
+      "rowtime.watermark.tumble.ms": 60000,
+      "rowtime.watermark.tumble.delay.ms": 1000,
+      "group.fields": [
+        "workgroup", "sysid"
+      ],
+      "group.workgroup.function": ["count"],
+      "group.sysid.function": ["count"],
+      "custom.fields": ["max_trans_time", "min_trans_time", "dus"],
+      "custom.field.max_trans_time.script": "max(trans_time)",
+      "custom.field.min_trans_time.script": "min(trans_time)",
+      "custom.field.dus.script": "(max(trans_time) - min(trans_time))"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "DataAggregates_01",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

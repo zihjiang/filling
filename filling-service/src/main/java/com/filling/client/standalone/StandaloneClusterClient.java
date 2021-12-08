@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
 import com.filling.config.ApplicationProperties;
 import com.filling.utils.Base64Utils;
-import com.filling.web.rest.AccountResource;
 import okhttp3.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Configuration;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 

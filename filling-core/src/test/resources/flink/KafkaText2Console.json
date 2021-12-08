@@ -1,0 +1,38 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling08",
+      "topics": ["zihjiang"],
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "text",
+      "schema": "{\"instance\":\"192.168.1.13_cpu2_PP1A\",\"system\":\"PP1A\",\"metric\":\"cpu2\",\"host\":\"192.168.1.13\",\"value\":1,\"_time\":\"2021-06-01 23:19:00\"}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "fromGroupOffsets",
+      "consumer.bootstrap.servers": "192.168.1.218:9092",
+      "consumer.enable.auto.commit": "true",
+      "consumer.auto.commit.interval.ms": "1000",
+      "parallelism": 1,
+      "name": "mykafka"
+    }
+  ],
+  "transform": [
+    {
+      "result_table_name": "sql01",
+      "source_table_name": "KafkaTableStreamTable",
+      "plugin_name": "Sql",
+      "sql": "select * from KafkaTableStreamTable"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "sql01",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

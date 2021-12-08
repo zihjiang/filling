@@ -1,0 +1,24 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "schema": "{\"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":\"49\",\"_time\":1626571020000}",
+      "simple_data": "{\"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":\"49\",\"_time\":1626571020000}\n{\"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":\"49\",\"_time\":1626571020000}",
+      "result_table_name": "FileSourceTable",
+      "plugin_name": "CustomSource",
+      "format.type": "json"
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "FileSourceTable",
+      "plugin_name": "KafkaTable",
+      "producer.bootstrap.servers": "192.168.1.218:9092",
+      "topics": "test"
+    }
+  ]
+}
