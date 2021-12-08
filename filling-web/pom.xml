@@ -18,6 +18,10 @@
   <profiles>
     <profile>
       <id>release</id>
+      <activation>
+        <!-- 设置默认激活这个配置 -->
+        <activeByDefault>true</activeByDefault>
+      </activation>
       <build>
         <plugins>
           <plugin>
