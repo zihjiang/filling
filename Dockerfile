@@ -9,7 +9,7 @@ RUN adduser filling
 WORKDIR /home/filling
 ADD filling-service/entrypoint.sh entrypoint.sh
 ADD ./filling-service/target/*.jar app.war
-ADD ./filling-core/target/calculation-core-1.0-SNAPSHOT.jar filling-core.jar
+ADD ./filling-core/target/filling-core-1.0-SNAPSHOT.jar filling-core.jar
 ENV application_flink_url=http://flink_cluster:8081
 ENV application_flink_jar=/home/filling/filling-core.jar
 RUN chmod 755 entrypoint.sh && chown filling:filling entrypoint.sh
