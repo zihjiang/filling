@@ -271,6 +271,7 @@ class EditorDebug extends Component {
           defaultActiveKey={['0']}
           expandIconPosition={'right'}
           onChange={this.getpreviewData}
+          destroyInactivePanel={true}
         >
           <Panel header="Preview data" key="1">
             <ProFormSelect
