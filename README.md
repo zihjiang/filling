@@ -1,3 +1,4 @@
+[![Maven Package](https://github.com/zihjiang/filling/actions/workflows/maven-publish.yml/badge.svg)](https://github.com/zihjiang/filling/actions/workflows/maven-publish.yml)
 # Filling 
 
 Filling, 如其名, 致力于填充你的各种存储,  是一个`非常易用`，`高性能`、支持`实时流式`和`离线批处理`的`海量数据`处理产品，架构于 `Apache Flink`之上。
