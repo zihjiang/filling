@@ -3,12 +3,9 @@ package com.filling.calculation.plugin.base.flink.sink;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchSink;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.io.RichOutputFormat;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.operators.DataSink;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
@@ -16,14 +13,9 @@ import org.apache.flink.types.Row;
 
 import java.io.IOException;
 
-public class ConsoleSink extends RichOutputFormat<Row> implements FlinkBatchSink<Row, Row>, FlinkStreamSink<Row, Row> {
+public class ConsoleSink extends RichOutputFormat<Row> implements FlinkStreamSink<Row, Row> {
 
     private JSONObject config;
-
-    @Override
-    public DataSink<Row> outputBatch(FlinkEnvironment env, DataSet<Row> rowDataSet) {
-        return rowDataSet.output(this);
-    }
 
     @Override
     public void setConfig(JSONObject config) {
