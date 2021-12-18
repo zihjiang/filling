@@ -125,16 +125,6 @@
         </dependency>
 
 
-
-        <!-- flink local run debug runtime jars -->
-        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-table-planner -->
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner_${flink.scala.version}</artifactId>
-            <version>${flink.version}</version>
-            <scope>provided</scope>
-        </dependency>
-
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-planner-blink_${flink.scala.version}</artifactId>
@@ -142,17 +132,11 @@
             <scope>provided</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.apache.flink</groupId>-->
-<!--            <artifactId>flink-table-runtime-blink_${flink.scala.version}</artifactId>-->
-<!--            <version>${flink.version}</version>-->
-<!--            <scope>provided</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-runtime-web_${flink.scala.version}</artifactId>
             <version>${flink.version}</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -218,7 +202,7 @@
         </dependency>
 
 
-        <!--        log4j-->
+        <!--        logback-->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>

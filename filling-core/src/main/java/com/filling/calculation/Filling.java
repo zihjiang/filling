@@ -6,7 +6,6 @@ import com.filling.calculation.apis.BaseSink;
 import com.filling.calculation.apis.BaseSource;
 import com.filling.calculation.apis.BaseTransform;
 import com.filling.calculation.config.ConfigBuilder;
-import com.filling.calculation.domain.PreviewResult;
 import com.filling.calculation.domain.RunModel;
 import com.filling.calculation.env.Execution;
 import com.filling.calculation.env.RuntimeEnv;
@@ -25,14 +24,14 @@ import java.util.stream.Collectors;
 
 public class Filling {
 
-    public static List<PreviewResult> entryPoint(String jsonObject, Engine engine, RunModel runModel) throws Exception {
+    public static void entryPoint(String jsonObject, Engine engine, RunModel runModel) throws Exception {
 
         ConfigBuilder configBuilder = new ConfigBuilder(jsonObject, engine);
         List<BaseSource> sources = configBuilder.createPlugins(PluginType.SOURCE);
         List<BaseTransform> transforms = configBuilder.createPlugins(PluginType.TRANSFORM);
         List<BaseSink> sinks = configBuilder.createPlugins(PluginType.SINK);
         Execution execution = configBuilder.createExecution();
-        return execution.start(sources, transforms, sinks, runModel);
+        execution.start(sources, transforms, sinks, runModel);
     }
 
 

@@ -28,42 +28,24 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
     }
 
     @Override
-    public List<PreviewResult> start(List<FlinkStreamSource> sources, List<FlinkStreamTransform> transforms, List<FlinkStreamSink> sinks, RunModel runModel) throws Exception {
-        List<PreviewResult> result = new ArrayList();
+    public void start(List<FlinkStreamSource> sources, List<FlinkStreamTransform> transforms, List<FlinkStreamSink> sinks, RunModel runModel) throws Exception {
 
         List<DataStream> data = new ArrayList<>();
         for (FlinkStreamSource source : sources) {
-            Exception exception = new Exception();
-            DataStream dataStream = null;
-
+            DataStream dataStream;
             try {
                 baseCheckConfig(source);
                 prepare(flinkEnvironment, source);
                 dataStream = source.getStreamData(flinkEnvironment);
                 data.add(dataStream);
                 registerResultTable(source, dataStream);
-
             } catch (Exception e) {
-                exception = e;
                 e.printStackTrace();
-            } finally {
-                // debugPreview
-                switch (runModel) {
-                    case DEV:
-                        result.addAll(debugPreview(source, dataStream, exception));
-                        break;
-                    case PROD:
-                        // Do nothing
-                        break;
-                    default:
-                        break;
-                }
             }
 
         }
         DataStream input = data.get(0);
         for (FlinkStreamTransform transform : transforms) {
-            Exception exception = new Exception();
             try {
                 prepare(flinkEnvironment, transform);
                 baseCheckConfig(transform);
@@ -75,21 +57,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
                 input = transform.processStream(flinkEnvironment, stream);
                 registerResultTable(transform, input);
             } catch (Exception e) {
-                exception = e;
                 e.printStackTrace();
-            } finally {
-                // debugPreview
-                switch (runModel) {
-                    case DEV:
-                        result.addAll(debugPreview(transform, input, exception));
-                        break;
-                    case PROD:
-                        // Do nothing
-                        break;
-                    default:
-
-                        break;
-                }
             }
 
         }
@@ -103,20 +71,8 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
             }
             sink.outputStream(flinkEnvironment, stream);
         }
-        try {
-            switch (runModel) {
-                case PROD:
-                case DEV:
-                    flinkEnvironment.getStreamExecutionEnvironment().execute(flinkEnvironment.getJobName());
-                    break;
-            }
 
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return result;
+        flinkEnvironment.getStreamExecutionEnvironment().execute(flinkEnvironment.getJobName());
     }
 
     private void registerResultTable(Plugin plugin, DataStream dataStream) {

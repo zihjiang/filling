@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchSource;
 import com.filling.calculation.flink.stream.FlinkStreamSource;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.typeinfo.SqlTimeTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.DataSet;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.connector.jdbc.JdbcInputFormat;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -29,7 +27,7 @@ import java.util.regex.Pattern;
 import static org.apache.flink.api.common.typeinfo.BasicTypeInfo.*;
 import static org.apache.flink.api.common.typeinfo.PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO;
 
-public class JdbcSource implements  FlinkStreamSource<Row>, FlinkBatchSource<Row> {
+public class JdbcSource implements  FlinkStreamSource<Row> {
 
     private JSONObject config;
     private String tableName;
@@ -77,11 +75,6 @@ public class JdbcSource implements  FlinkStreamSource<Row>, FlinkBatchSource<Row
     public DataStream<Row> getStreamData(FlinkEnvironment env) {
 
         return env.getStreamExecutionEnvironment().createInput(jdbcInputFormat).setParallelism(getParallelism()).name(getName());
-    }
-
-    @Override
-    public DataSet<Row> getBatchData(FlinkEnvironment env) {
-        return env.getBatchEnvironment().createInput(jdbcInputFormat);
     }
 
     @Override

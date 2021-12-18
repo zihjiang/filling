@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.env.Execution;
 import com.filling.calculation.env.RuntimeEnv;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchExecution;
 import com.filling.calculation.flink.stream.FlinkStreamExecution;
 import com.filling.calculation.flink.util.Engine;
 import com.filling.calculation.flink.util.PluginType;
@@ -128,7 +127,7 @@ public class ConfigBuilder {
             try {
                 JSONObject jsonObjectplugin = JSONObject.parseObject(plugin.toString());
                 final String className = buildClassFullQualifier(jsonObjectplugin.getString(PLUGIN_NAME_KEY), type);
-                T t =  (T) Class.forName(className).newInstance();
+                T t = (T) Class.forName(className).newInstance();
                 t.setConfig(jsonObjectplugin);
                 basePluginList.add(t);
             } catch (Exception e) {
@@ -155,20 +154,13 @@ public class ConfigBuilder {
         Execution execution = null;
         switch (engine) {
             case SPARK:
-//                SparkEnvironment sparkEnvironment = (SparkEnvironment) env;
-//                if (streaming) {
-//                    execution = new SparkStreamingExecution(sparkEnvironment);
-//                } else {
-//                    execution = new SparkBatchExecution(sparkEnvironment);
-//                }
+                // TODO
+
                 break;
             case FLINK:
                 FlinkEnvironment flinkEnvironment = (FlinkEnvironment) env;
-                if (batch) {
-                    execution = new FlinkBatchExecution(flinkEnvironment);
-                } else {
-                    execution = new FlinkStreamExecution(flinkEnvironment);
-                }
+
+                execution = new FlinkStreamExecution(flinkEnvironment);
                 break;
             default:
                 break;

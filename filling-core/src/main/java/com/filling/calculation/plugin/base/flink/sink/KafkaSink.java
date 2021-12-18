@@ -5,17 +5,13 @@ import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.common.PropertiesUtil;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchSink;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
 import org.apache.commons.lang.StringUtils;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.operators.DataSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
 import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -30,7 +26,7 @@ import java.util.Properties;
 /**
  * @author zihjiang
  */
-public class KafkaSink implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row, Row> {
+public class KafkaSink implements FlinkStreamSink<Row, Row> {
 
     private final Logger log = LoggerFactory.getLogger(KafkaSink.class);
 
@@ -60,16 +56,6 @@ public class KafkaSink implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row,
 
 
         return dataStream.addSink(myProducer).setParallelism(getParallelism()).name(getName());
-    }
-
-
-    @Override
-    public DataSink<Row> outputBatch(FlinkEnvironment env, DataSet<Row> rowDataSet){
-
-        BatchTableEnvironment tableEnvironment = env.getBatchTableEnvironment();
-//        Table table = tableEnvironment.fromDataSet(rowDataSet);
-//        insert(tableEnvironment,table);
-        return null;
     }
 
     @Override

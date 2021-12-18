@@ -5,10 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchTransform;
 import com.filling.calculation.flink.stream.FlinkStreamTransform;
 import com.filling.calculation.flink.util.TableUtil;
-import org.apache.flink.api.java.DataSet;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
@@ -25,7 +23,7 @@ import java.util.Map;
  * @author: zihjiang
  * @create: 2021-06-26 16:10
  **/
-public class DataSelector implements FlinkBatchTransform<Row, Row>, FlinkStreamTransform<Row, Row> {
+public class DataSelector implements FlinkStreamTransform<Row, Row> {
 
 
 //        "source_table_name": "sql_table29",
@@ -50,13 +48,6 @@ public class DataSelector implements FlinkBatchTransform<Row, Row>, FlinkStreamT
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
         return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
-    }
-
-    @Override
-    public DataSet<Row> processBatch(FlinkEnvironment env, DataSet<Row> data) {
-        BatchTableEnvironment tableEnvironment = env.getBatchTableEnvironment();
-
-        return (DataSet<Row>) process(tableEnvironment, data, "batch");
     }
 
     private Object process(TableEnvironment tableEnvironment, Object data, String type) {
