@@ -1,7 +1,6 @@
 package com.filling.calculation.plugin.base.flink.source.stream;
 
 import com.filling.calculation.Filling;
-import com.filling.calculation.domain.RunModel;
 import com.filling.calculation.flink.util.Engine;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +28,7 @@ public class DataGenTest {
 
         String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
 
-        Filling.entryPoint(str, Engine.FLINK, RunModel.PROD);
+        Filling.entryPoint(str, Engine.FLINK);
     }
 
     @Test
@@ -37,7 +36,7 @@ public class DataGenTest {
         configPath = "flink/dataGen2file.json";
         String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
 
-        Filling.entryPoint(str, Engine.FLINK, RunModel.PROD);
+        Filling.entryPoint(str, Engine.FLINK);
     }
 
 
@@ -46,6 +45,6 @@ public class DataGenTest {
         configPath = "flink/dataGen2es.json";
         String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
 
-        Filling.entryPoint(str, Engine.FLINK, RunModel.PROD);
+        Filling.entryPoint(str, Engine.FLINK);
     }
 }
