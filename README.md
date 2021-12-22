@@ -52,6 +52,9 @@ graph TD
 source[source] --> transfrom[transfrom]
 transfrom --> sink[sink]
 ```
+## 快速体验
+
+#### [使用docker快速部署](https://zihjiang.github.io/filling-book/%E9%83%A8%E7%BD%B2/quick-install.html)
 
 ## Filling 功能截图
 
