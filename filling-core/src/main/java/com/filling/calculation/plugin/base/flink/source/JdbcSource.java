@@ -12,36 +12,32 @@ import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.connector.jdbc.JdbcInputFormat;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.types.Row;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.sql.*;
+import java.util.*;
 
 import static org.apache.flink.api.common.typeinfo.BasicTypeInfo.*;
 import static org.apache.flink.api.common.typeinfo.PrimitiveArrayTypeInfo.BYTE_PRIMITIVE_ARRAY_TYPE_INFO;
 
-public class JdbcSource implements  FlinkStreamSource<Row> {
+public class JdbcSource implements FlinkStreamSource<Row> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(JdbcSource.class);
 
     private JSONObject config;
-    private String tableName;
     private String driverName;
     private String dbUrl;
     private String username;
     private String password;
+    private String query;
+    private String getFastRow;
     private int fetchSize = Integer.MIN_VALUE;
-    private Set<String> fields;
-
-    private static final Pattern COMPILE = Pattern.compile("select (.+) from (.+).*");
 
 
     private HashMap<String, TypeInformation> informationMapping = new HashMap<>();
+
+    private HashMap<Integer, String> informationMappingNum = new HashMap<>();
 
     private JdbcInputFormat jdbcInputFormat;
 
@@ -71,6 +67,45 @@ public class JdbcSource implements  FlinkStreamSource<Row> {
 
     }
 
+    {
+        informationMappingNum.put(2003, "Array");
+        informationMappingNum.put(-5, "BIGINT");
+        informationMappingNum.put(-2, "BINARY");
+        informationMappingNum.put(-7, "Bit");
+        informationMappingNum.put(2004, "Blob");
+        informationMappingNum.put(16, "BOOLEAN");
+        informationMappingNum.put(1, "CHAR");
+        informationMappingNum.put(2005, "Clob");
+        informationMappingNum.put(91, "DATE");
+        informationMappingNum.put(70, "DATALINK");
+        informationMappingNum.put(3, "DECIMAL");
+        informationMappingNum.put(2001, "Distinct");
+        informationMappingNum.put(8, "DOUBLE");
+        informationMappingNum.put(6, "FLOAT");
+        informationMappingNum.put(4, "INTEGER");
+        informationMappingNum.put(2000, "JAVAOBJECT");
+        informationMappingNum.put(-16, "LONG VAR CHAR");
+        informationMappingNum.put(-15, "NCHAR");
+        informationMappingNum.put(2011, "NCLOB");
+        informationMappingNum.put(12, "VARCHAR");
+        informationMappingNum.put(-3, "VARBINARY");
+        informationMappingNum.put(-6, "TINY INT");
+        informationMappingNum.put(2014, "TIME STAMT WITH TIME ZONE");
+        informationMappingNum.put(93, "TIMESTAMP");
+        informationMappingNum.put(92, "TIME");
+        informationMappingNum.put(2002, "STRUCT");
+        informationMappingNum.put(2009, "SQLXML");
+        informationMappingNum.put(5, "SMALLINT");
+        informationMappingNum.put(-8, "ROWID");
+        informationMappingNum.put(2012, "REFCURSOR");
+        informationMappingNum.put(2006, "REF");
+        informationMappingNum.put(7, "REAL");
+        informationMappingNum.put(-9, "NVARCHAR");
+        informationMappingNum.put(2, "NUMERIC");
+        informationMappingNum.put(0, "NULL");
+        informationMappingNum.put(5, "SMALLINT");
+    }
+
     @Override
     public DataStream<Row> getStreamData(FlinkEnvironment env) {
 
@@ -97,22 +132,9 @@ public class JdbcSource implements  FlinkStreamSource<Row> {
         driverName = config.getString("driver");
         dbUrl = config.getString("url");
         username = config.getString("username");
-        String query = config.getString("query");
-        Matcher matcher = COMPILE.matcher(query);
-        if (matcher.find()) {
-            String var = matcher.group(1);
-            tableName = matcher.group(2);
-            if ("*".equals(var.trim())) {
-                //do nothing
-            } else {
-                LinkedHashSet<String> vars = new LinkedHashSet<>();
-                String[] split = var.split(",");
-                for (String s : split) {
-                    vars.add(s.trim());
-                }
-                fields = vars;
-            }
-        }
+        query = config.getString("query");
+        getFastRow = config.getString("getFastRow");
+
         if (config.containsKey("password")) {
             password = config.getString("password");
         }
@@ -120,55 +142,55 @@ public class JdbcSource implements  FlinkStreamSource<Row> {
             fetchSize = config.getInteger("fetch_size");
         }
 
-        jdbcInputFormat = JdbcInputFormat.buildJdbcInputFormat()
+        jdbcInputFormat = JdbcInputFormat
+                .buildJdbcInputFormat()
                 .setDrivername(driverName)
                 .setDBUrl(dbUrl)
                 .setUsername(username)
                 .setPassword(password)
                 .setQuery(query)
                 .setFetchSize(fetchSize)
-                .setRowTypeInfo(getRowTypeInfo())
-                .finish();
+                .setRowTypeInfo(getRowTypeInfo()).finish();
     }
 
     private RowTypeInfo getRowTypeInfo() {
-        HashMap<String, TypeInformation> map = new LinkedHashMap<>();
-
+        String[] columnNames = new String[0];
+        TypeInformation[] columnTypes = new TypeInformation[0];
         try {
             Class.forName(driverName);
             Connection connection = DriverManager.getConnection(dbUrl, username, password);
-            DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet columns = metaData.getColumns(connection.getCatalog(), connection.getSchema(), tableName, "%");
-            while (columns.next()) {
-                String columnName = columns.getString("COLUMN_NAME");
-                String dataTypeName = columns.getString("TYPE_NAME");
-                if (fields == null || fields.contains(columnName)) {
-                    map.put(columnName, informationMapping.get(dataTypeName));
-                    System.out.println( columnName +":  " + dataTypeName);
+            try (Statement stmt = connection.createStatement()) {
+                try (ResultSet rs = stmt.executeQuery(getFastRow(query))) {
+                    int columnCount = rs.getMetaData().getColumnCount();
+                    columnNames = new String[columnCount];
+                    columnTypes = new TypeInformation[columnCount];
+                    for (int i = 0; i < columnCount; i++) {
+                        int columnTypeNum = rs.getMetaData().getColumnType(i + 1);
+                        String columnName = rs.getMetaData().getColumnName(i + 1);
+                        TypeInformation columnType = informationMapping.get(informationMappingNum.get(columnTypeNum));
+                        if (columnType == null) {
+                            LOG.error("columnName: {} columnTypeNum: {} not support, use String", columnName, informationMappingNum.get(columnTypeNum));
+                            columnType = informationMapping.get("VARCHAR");
+                        }
+                        columnNames[i] = columnName;
+                        columnTypes[i] = columnType;
+                    }
                 }
             }
             connection.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return new RowTypeInfo(columnTypes, columnNames);
+    }
 
-        int size = map.size();
-        if (fields != null && fields.size() > 0) {
-            size = fields.size();
-        } else {
-            fields = map.keySet();
+    private String getFastRow(String query) {
+        String limitString = "select * from ({query}) limit 1".replaceAll("\\{query}", query);
+        if (getFastRow == null) {
+            LOG.warn("getFastRow not set, use default: {}", limitString);
+            return limitString;
         }
-
-        TypeInformation<?>[] typeInformation = new TypeInformation<?>[size];
-        String[] names = new String[size];
-        int i = 0;
-
-        for (String field : fields) {
-            typeInformation[i] = map.get(field);
-            names[i] = field;
-            i++;
-        }
-        return new RowTypeInfo(typeInformation, names);
+        return getFastRow;
     }
 
     @Override
