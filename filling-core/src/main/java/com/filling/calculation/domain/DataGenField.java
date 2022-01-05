@@ -9,7 +9,7 @@ import com.filling.calculation.enums.GenDataType;
  */
 public class DataGenField {
 
-    private GenDataKind Kind;
+    private GenDataKind kind;
     private GenDataType type;
     private Integer min;
     private Integer max;
@@ -18,11 +18,11 @@ public class DataGenField {
     private Integer end;
 
     public GenDataKind getKind() {
-        return GenDataKind.SEQUENCE.equals(Kind) ? GenDataKind.SEQUENCE : GenDataKind.RANDOM;
+        return GenDataKind.SEQUENCE.equals(kind) ? GenDataKind.SEQUENCE : GenDataKind.RANDOM;
     }
 
     public void setKind(GenDataKind kind) {
-        Kind = kind;
+        this.kind = kind;
     }
 
     public Integer getMin() {
@@ -76,7 +76,7 @@ public class DataGenField {
     @Override
     public String toString() {
         return "DataGenField{" +
-                "Kind='" + Kind + '\'' +
+                "kind='" + kind + '\'' +
                 ", type='" + type + '\'' +
                 ", min=" + min +
                 ", max=" + max +

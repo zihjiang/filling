@@ -4,16 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchSink;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.io.FileOutputFormat;
 import org.apache.flink.api.common.serialization.Encoder;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.io.TextOutputFormat;
-import org.apache.flink.api.java.operators.DataSink;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
@@ -24,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
 
-public class FileSink implements FlinkBatchSink<Row, Row>, FlinkStreamSink<Row, Row> {
+public class FileSink implements FlinkStreamSink<Row, Row> {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileSink.class);
 
@@ -37,34 +31,6 @@ public class FileSink implements FlinkBatchSink<Row, Row>, FlinkStreamSink<Row, 
     private FileOutputFormat outputFormat;
 
     private Path filePath;
-
-
-    @Override
-    public DataSink<Row> outputBatch(FlinkEnvironment env, DataSet<Row> dataSet) {
-        String format = config.getString(FORMAT);
-        switch (format) {
-            case "json":
-                RowTypeInfo rowTypeInfo = (RowTypeInfo) dataSet.getType();
-                outputFormat = new JsonRowOutputFormat(filePath, rowTypeInfo);
-                break;
-            case "csv":
-                CsvRowOutputFormat csvFormat = new CsvRowOutputFormat(filePath);
-                outputFormat = csvFormat;
-                break;
-            case "text":
-                outputFormat = new TextOutputFormat(filePath);
-                break;
-            default:
-                LOG.warn(" unknown file_format [{}],only support json,csv,text", format);
-                break;
-
-        }
-        if (config.containsKey(WRITE_MODE)){
-            String mode = config.getString(WRITE_MODE);
-            outputFormat.setWriteMode(FileSystem.WriteMode.valueOf(mode));
-        }
-        return dataSet.output(outputFormat);
-    }
 
     @Override
     public void setConfig(JSONObject config) {

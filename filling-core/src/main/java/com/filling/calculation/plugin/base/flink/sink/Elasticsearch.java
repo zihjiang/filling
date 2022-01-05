@@ -4,14 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.common.EsUtil;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchSink;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
 import com.filling.calculation.utils.StringTemplate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.functions.RuntimeContext;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.operators.DataSink;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
@@ -29,10 +26,13 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestClientBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
-public class Elasticsearch implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row, Row> {
+public class Elasticsearch implements FlinkStreamSink<Row, Row> {
 
     private JSONObject config;
     private String indexName;
@@ -152,33 +152,6 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row>, FlinkBatchSink<
 
         // finally, build and add the sink to the job's pipeline
         return dataStream.addSink(esSinkBuilder.build()).setParallelism(getParallelism()).name(getName());
-    }
-
-    @Override
-    public DataSink<Row> outputBatch(FlinkEnvironment env, DataSet<Row> dataSet) {
-
-        RowTypeInfo rowTypeInfo = (RowTypeInfo) dataSet.getType();
-        String[] fieldNames = rowTypeInfo.getFieldNames();
-
-        indexName = StringTemplate.substitute(config.getString("index"), config.getString("index_time_format"));
-        return dataSet.output(new ElasticsearchOutputFormat<>(config, new ElasticsearchSinkFunction<Row>() {
-            @Override
-            public void process(Row element, RuntimeContext ctx, RequestIndexer indexer) {
-                indexer.add(createIndexRequest(element));
-            }
-
-            private IndexRequest createIndexRequest(Row element) {
-                Map<String, Object> json = new HashMap<>(100);
-                int elementLen = element.getArity();
-                for (int i = 0; i < elementLen; i++) {
-                    json.put(fieldNames[i], element.getField(i));
-                }
-                return Requests.indexRequest()
-                        .index(indexName)
-                        .type(config.getString("index_type"))
-                        .source(json);
-            }
-        }));
     }
 
     @Override

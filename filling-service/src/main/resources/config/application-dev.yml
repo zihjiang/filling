@@ -109,8 +109,8 @@ jhipster:
 application:
    flink:
      model: standalone
-     url: http://192.168.100.177:8081
-#     url: http://10.10.14.210:8081
+#     url: http://192.168.100.177:8081
+     url: http://10.10.14.210:8081
 #     url: http://127.0.0.1:8081
 #     url: http://10.10.14.117:9091
-     jar: /Users/jiangzihan/gitHub/filling-core/target/calculation-core-1.0-SNAPSHOT.jar
+     jar: /Users/jiangzihan/filling/filling-core/target/filling-core-1.0-SNAPSHOT.jar

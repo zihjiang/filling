@@ -8,11 +8,13 @@ import com.filling.calculation.flink.stream.FlinkStreamSource;
 import com.filling.calculation.plugin.base.flink.source.mySqlCdc.RowDebeziumDeserializationSchema;
 import com.ververica.cdc.connectors.mysql.source.MySqlSource;
 import org.apache.commons.lang.StringUtils;
-import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.table.api.Table;
+import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.types.Row;
@@ -70,10 +72,27 @@ public class MysqlCdcSource implements FlinkStreamSource<Row> {
         // enable checkpoint
         env.getStreamExecutionEnvironment().enableCheckpointing(3000);
 
-        return env.getStreamExecutionEnvironment()
-                .fromSource(mySqlSource, WatermarkStrategy.noWatermarks(), "MySQL Source")
-                // set 4 parallel source tasks
-                .setParallelism(4);
+        TableResult inputTable = env.getStreamTableEnvironment().executeSql("CREATE TABLE products (\n" +
+                "    id INT,\n" +
+                "    name STRING,\n" +
+                "    description STRING,\n" +
+                "    PRIMARY KEY (id) NOT ENFORCED\n" +
+                "  ) WITH (\n" +
+                "    'connector' = 'mysql-cdc',\n" +
+                "    'hostname' = '192.168.100.177',\n" +
+                "    'port' = '3306',\n" +
+                "    'username' = 'root',\n" +
+                "    'password' = '123456',\n" +
+                "    'database-name' = 'mydb',\n" +
+                "    'table-name' = 'products'\n" +
+                "  )\n");
+
+        Table table = env.getStreamTableEnvironment().from("products");
+        DataStream<Tuple2<Boolean, Row>> retractStream = env.getStreamTableEnvironment().toRetractStream(table, Row.class);
+//        retractStream.map( d -> {
+//            d.g
+//        })
+        return env.getStreamTableEnvironment().toChangelogStream(table);
     }
 
     @Override

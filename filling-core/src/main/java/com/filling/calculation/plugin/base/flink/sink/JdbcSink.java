@@ -5,11 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
-import com.filling.calculation.flink.batch.FlinkBatchSink;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
 import org.apache.commons.lang.StringUtils;
-import org.apache.flink.api.java.DataSet;
-import org.apache.flink.api.java.operators.DataSink;
 import org.apache.flink.connector.jdbc.JdbcConnectionOptions;
 import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
 import org.apache.flink.streaming.api.datastream.DataStream;
@@ -23,7 +20,7 @@ import org.apache.flink.types.Row;
  * @author: zihjiang
  * @create: 2021-11-09 16:10
  **/
-public class JdbcSink implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row, Row> {
+public class JdbcSink implements FlinkStreamSink<Row, Row> {
 
     JSONObject config;
 
@@ -118,21 +115,4 @@ public class JdbcSink implements FlinkStreamSink<Row, Row>, FlinkBatchSink<Row, 
         ).setParallelism(getParallelism()).name(getName());
 
     }
-
-    @Override
-    public DataSink<Row> outputBatch(FlinkEnvironment env, DataSet<Row> dataSet) {
-        dataSet.output(new ClickHouseOutputFormat( driverName,  dbUrl,  username,  password,  query,  batchSize,  batchIntervalMs,  maxRetries,  params));
-
-//        dataSet.output(JdbcOutputFormat.buildJdbcOutputFormat()
-//                .setDrivername(driverName)
-//                .setDBUrl(dbUrl)
-//                .setUsername(username)
-//                .setPassword(password)
-//                .setBatchSize(batchSize)
-//                .setQuery(query)
-//                .finish()
-//        );
-        return null;
-    }
-
 }
