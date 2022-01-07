@@ -14,7 +14,7 @@
 
         <scala.version>2.11</scala.version>
 
-        <flink.version>1.13.1</flink.version>
+        <flink.version>1.13.2</flink.version>
         <flink.scala.version>2.11</flink.scala.version>
         <elasticsearch.version>7.5.1</elasticsearch.version>
         <logback.version>1.2.3</logback.version>
@@ -179,6 +179,13 @@
             <groupId>com.ververica</groupId>
             <artifactId>flink-connector-mysql-cdc</artifactId>
             <version>2.1.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>io.pravega</groupId>
+            <artifactId>pravega-connectors-flink-1.13_2.12</artifactId>
+            <version>0.10.1</version>
         </dependency>
 
 

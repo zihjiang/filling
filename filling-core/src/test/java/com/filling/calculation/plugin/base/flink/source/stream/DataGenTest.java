@@ -47,4 +47,13 @@ public class DataGenTest {
 
         Filling.entryPoint(str, Engine.FLINK);
     }
+
+
+    @Test
+    public void testGenDatae2Pravega() throws Exception {
+        configPath = "flink/dataGen2pravega.json";
+        String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
+
+        Filling.entryPoint(str, Engine.FLINK);
+    }
 }
