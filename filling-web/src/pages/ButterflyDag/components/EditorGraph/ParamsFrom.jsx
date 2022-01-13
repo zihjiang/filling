@@ -148,6 +148,8 @@ class ParamsFrom extends Component {
                 key={idx}
                 name={item.name}
                 label={item.label}
+                tooltip={item.paramsDesc}
+                placeholder={item.paramsDesc}
                 defaultValue={item.defaultValue}
                 valuePropName="value">
                 <AceEditor
@@ -159,7 +161,8 @@ class ParamsFrom extends Component {
                   showPrintMargin={true}
                   showGutter={true}
                   highlightActiveLine={true}
-                  width='100%'
+                  width={250}
+                  editorProps={{ $blockScrolling: false }}
                   setOptions={{
                     enableBasicAutocompletion: true,
                     enableLiveAutocompletion: true,
