@@ -392,6 +392,73 @@ const source = [
         height: 90,
         width: "100%"
     },
+
+
+    {
+        id: 'MysqlCdc',
+        text: 'Mysql cdc',
+        type: 'png',
+        Data: {},
+        pluginType: 'source',
+        pluginName: "MysqlCdcSource",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "Mysql-cdc",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "MysqlCdcSource",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "string"
+            },{
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": true,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            },
+            {
+                "name": "sql",
+                "mode": "sql",
+                "label": "sql",
+                "text": "cdc的建表语句, 参考https://ververica.github.io/flink-cdc-connectors/master/content/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/mysql-postgres-tutorial-zh.html",
+                "paramsDesc": "cdc的建表语句, 参考https://ververica.github.io/flink-cdc-connectors/master/content/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/mysql-postgres-tutorial-zh.html",
+                "defaultValue": "CREATE TABLE products (\n    id INT,\n    name STRING,\n    description STRING,\n    PRIMARY KEY (id) NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.177',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '123456',\n    'database-name' = 'mydb',\n    'table-name' = 'products'\n  )",
+                "required": true,
+                "paramsDesc": "sql",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "text"
+            }
+        ],
+        endpoints: [{
+            id: 'mysqlCdc_source_table_name',
+            orientation: [1, 0],
+            pos: [0, 0.5],
+            Class: BaseEndpoint,
+            color: 'system-green'
+        }],
+        content: MysqlIcon,
+        height: 90,
+        width: "100%"
+    }
 ];
 const transform = [
     {

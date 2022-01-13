@@ -1,0 +1,31 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "MysqlCdcSource",
+      "result_table_name": "mysqlTableStreamTable",
+      "sql": "CREATE TABLE products (\n    id INT,\n    name STRING,\n    description STRING,\n    PRIMARY KEY (id) NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.177',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '123456',\n    'database-name' = 'mydb',\n    'table-name' = 'products'\n  )"
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "mysqlTableStreamTable",
+      "plugin_name": "ConsoleSink"
+    },
+    {
+      "source_table_name": "mysqlTableStreamTable",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "192.168.100.203:9201"
+      ],
+      "index_id_field": "id",
+      "index": "test001"
+    }
+  ]
+}
