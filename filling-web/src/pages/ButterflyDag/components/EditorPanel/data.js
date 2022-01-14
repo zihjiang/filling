@@ -439,7 +439,7 @@ const source = [
                 "label": "sql",
                 "text": "cdc的建表语句, 参考https://ververica.github.io/flink-cdc-connectors/master/content/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/mysql-postgres-tutorial-zh.html",
                 "paramsDesc": "cdc的建表语句, 参考https://ververica.github.io/flink-cdc-connectors/master/content/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/mysql-postgres-tutorial-zh.html",
-                "defaultValue": "CREATE TABLE products (\n    id INT,\n    name STRING,\n    description STRING,\n    PRIMARY KEY (id) NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.177',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '123456',\n    'database-name' = 'mydb',\n    'table-name' = 'products'\n  )",
+                "defaultValue": "CREATE TABLE {table} (\n    id INT,\n    name STRING,\n    description STRING,\n    PRIMARY KEY (id) NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.177',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '123456',\n    'database-name' = 'mydb',\n    'table-name' = 'products'\n  )",
                 "required": true,
                 "paramsDesc": "sql",
                 "desc": " ",
