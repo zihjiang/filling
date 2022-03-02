@@ -18,7 +18,7 @@ yarn-error.log
 /coverage
 .idea
 yarn.lock
-package-lock.json
+# package-lock.json
 *bak
 .vscode
 
