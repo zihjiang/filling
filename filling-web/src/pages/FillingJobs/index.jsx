@@ -17,7 +17,6 @@ import ProForm, {
   ProFormDigit,
   ProFormGroup
 } from '@ant-design/pro-form';
-import { browserHistory } from 'react-router';
 
 const handleRemove = async (selectedRow) => {
   const hide = message.loading('正在删除');
@@ -288,9 +287,7 @@ const TableList = () => {
               console.log(values);
               const job = addFillingJobs({ data: values });
               job.then(d => {
-                console.log(d);
                 // window.location.href
-                console.log(browserHistory);
                 window.location.href = '/butterfly-dag/' + d.id;
               })
               message.success('提交成功');

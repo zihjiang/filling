@@ -73,6 +73,7 @@ class panelPlugins {
 
           e.originalEvent.dataTransfer.setData('endpoints', JSON.stringify(item['endpoints']));
           e.originalEvent.dataTransfer.setData('content', JSON.stringify(item['content']));
+          e.originalEvent.dataTransfer.setData('text', item['text']);
           e.originalEvent.dataTransfer.setDragImage(img, 0, 0);
         })
 
@@ -100,7 +101,8 @@ class panelPlugins {
           let pluginName = e.originalEvent.dataTransfer.getData('pluginName');
           let pluginOptions = e.originalEvent.dataTransfer.getData('pluginOptions');
 
-          let text = pluginName;
+          let text = e.originalEvent.dataTransfer.getData('text');
+
 
           let node = {
             id,
