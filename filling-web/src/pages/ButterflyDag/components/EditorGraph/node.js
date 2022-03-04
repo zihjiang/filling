@@ -40,8 +40,7 @@ class BaseNode extends Node {
     // if (this.widEndpointDom) {
     //   container.append(this.widEndpointDom);
     // }
-
-    container.append(`<span class='text'>${data.options.text}</span>`);
+    container.append(`<span class='text' title='${data.options.data ? data.options.data.name : data.options.text}' id='${data.id}'>${data.options.data ? data.options.data.name : data.options.text}</span>`);
     container.append(`<img class='image' src=${data.options.content}></img>`);
 
     $(container).on('dblclick', () => {

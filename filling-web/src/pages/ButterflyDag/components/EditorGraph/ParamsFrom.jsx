@@ -61,6 +61,8 @@ class ParamsFrom extends Component {
         _.map(window.canvas.nodes, (d) => { if (d.id == window.selectNode.id) d.options.data = _.merge(d.options.data, values) });
         break;
     }
+    // 更改节点的值
+    document.getElementById(selectNode.id).innerText = values.name;
   }
 
   _forceUpdate = (values) => {
