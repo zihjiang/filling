@@ -463,7 +463,7 @@ const source = [
 const transform = [
     {
         id: 'DataAggregates',
-        text: '时间聚合',
+        text: 'Data Aggregates',
         type: 'png',
         Data: {},
         pluginType: 'transform',
@@ -472,7 +472,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "kafka-source",
+                "defaultValue": "Data Aggregates",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
