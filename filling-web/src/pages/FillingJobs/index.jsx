@@ -3,13 +3,20 @@ import { Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
 import ProTable, { TableDropdown } from '@ant-design/pro-table';
-import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-form';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { fillingJobs, addFillingJobs, updateFillingJobs, removeFillingJobs } from './service';
 import { Link } from 'react-router-dom';
 import { startFillingJobs, stopFillingJobs, patchFillingJobs } from '@/pages/FillingJobs/service';
 import CreateForm from './components/CreateForm';
 import lodash from 'lodash';
+import ProForm, {
+  ModalForm,
+  ProFormText,
+  ProFormTextArea,
+  ProFormSelect,
+  ProFormDigit,
+  ProFormGroup
+} from '@ant-design/pro-form';
 
 const handleRemove = async (selectedRow) => {
   const hide = message.loading('正在删除');
@@ -224,7 +231,7 @@ const TableList = () => {
                 onCancel: () => console.log('run'),
               }}
               onFinish={async (values) => {
-                
+
                 let entity = lodash.assign(record, values);
                 entity.id = undefined;
                 entity.applicationId = undefined;
@@ -252,6 +259,10 @@ const TableList = () => {
       }
     },
   ];
+  let initialValues = {};
+  if (!initialValues.confProp) {
+    initialValues.confProp = '{"execution.parallelism": 2}';
+  }
   return (
     <PageContainer>
       <ProTable
@@ -262,9 +273,44 @@ const TableList = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <Link to={"/butterfly-dag/"} >
-            新建任务
-          </Link>,
+          <ModalForm
+            title="新建任务"
+            trigger={
+              <Button type="primary"> 新建任务</Button>
+            }
+            modalProps={{
+              onCancel: () => console.log('run'),
+            }}
+            onFinish={async (values) => {
+              // await this.save(values);
+              // const job = await addFillingJobs({ data: entity });
+              console.log(values);
+              const job = addFillingJobs({ data: values });
+              job.then(d => {
+                // window.location.href
+                window.location.href = '/butterfly-dag/' + d.id;
+              })
+              message.success('提交成功');
+              return true;
+            }}
+            width="40%"
+            initialValues={initialValues}
+          >
+            <ProFormText
+              width="xl"
+              name="name"
+              label="任务名称"
+              tooltip="最长为 24 位"
+              placeholder="请输入名称"
+              rules={[{ required: true }]}
+            />
+
+            <ProFormGroup label="任务参数">
+              <ProFormTextArea width="xl" name="confProp" label="" />
+            </ProFormGroup>
+            <ProFormTextArea width="xl" name="description" label="说明" />
+          </ModalForm>
+          ,
         ]}
         request={fillingJobs}
         columns={columns}

@@ -32,7 +32,7 @@ public class FillingJobs implements Serializable {
     private String applicationId;
 
     @Column(name = "job_text")
-    private String jobText;
+    private String jobText = "{}";
 
     @Column(name = "type")
     private String type;
@@ -41,7 +41,7 @@ public class FillingJobs implements Serializable {
     private String confProp;
 
     @Column(name = "status")
-    private String status;
+    private String status = "1";
 
     @Column(name = "createtime")
     private Instant createtime = Instant.now();
