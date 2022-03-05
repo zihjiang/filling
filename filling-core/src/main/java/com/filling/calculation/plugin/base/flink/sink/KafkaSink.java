@@ -6,21 +6,21 @@ import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.common.PropertiesUtil;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
+import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
 import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 
 /**
@@ -38,17 +38,19 @@ public class KafkaSink implements FlinkStreamSink<Row, Row> {
 
     @Override
     public DataStreamSink<Row> outputStream(FlinkEnvironment env, DataStream<Row> dataStream) {
-        StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
-        Table table = tableEnvironment.fromDataStream(dataStream);
 
-        List<String> columns = table.getResolvedSchema().getColumnNames();
-        JSONObject jsonObject = new JSONObject();
+        RowTypeInfo rowTypeInfo = (RowTypeInfo) dataStream.getType();
+        List<TypeInformation> fieldTypes = new ArrayList<>();
+        for (int i = 0; i < rowTypeInfo.getFieldTypes().length; i++) {
+            fieldTypes.add(rowTypeInfo.getFieldTypes()[i]);
+        }
+
         FlinkKafkaProducer<Row> myProducer = new FlinkKafkaProducer<>(
                 topic,
                 (KafkaSerializationSchema<Row>) (element, timestamp) -> {
-                    for (String column : columns) {
-                        jsonObject.put(column, element.getField(column));
-                    }
+                    Map<String, Object> stringObjectMap = SchemaUtil.rowToJsonMap(element, Arrays.asList(rowTypeInfo.getFieldNames()), fieldTypes);
+                    JSONObject jsonObject = new JSONObject(stringObjectMap);
+
                     return new ProducerRecord<>(topic, jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
                 },
                 kafkaParams,

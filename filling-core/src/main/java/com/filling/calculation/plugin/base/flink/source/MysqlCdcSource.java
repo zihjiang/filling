@@ -21,6 +21,7 @@ import org.apache.flink.table.types.logical.IntType;
 import org.apache.flink.table.types.logical.RowType;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +43,18 @@ public class MysqlCdcSource implements FlinkStreamSource<Row> {
 
         Table table = env.getStreamTableEnvironment().from("mysqlCdc_tmp");
 
-        return env.getStreamTableEnvironment().toChangelogStream(table);
+        DataStream<Tuple2<Boolean, Row>> retractStream = env.getStreamTableEnvironment().toRetractStream(table, Row.class);
+
+        return retractStream.flatMap(new FlatMapFunction<Tuple2<Boolean, Row>, Row>() {
+            @Override
+            public void flatMap(Tuple2<Boolean, Row> value, Collector<Row> out) throws Exception {
+                System.out.println(value.f0);
+                out.collect(value.f1);
+            }
+        }).shuffle();
+//        retractStream.print();
+//
+//        return env.getStreamTableEnvironment().toChangelogStream(table);
     }
 
     @Override

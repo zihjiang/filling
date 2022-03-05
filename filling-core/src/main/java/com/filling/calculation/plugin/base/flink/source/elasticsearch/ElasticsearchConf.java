@@ -72,7 +72,7 @@ public class ElasticsearchConf {
     /** table field names */
     private String[] fieldNames;
 
-    private Boolean autoSchema = false;
+    private Boolean autoSchema = true;
 
     public int getMaxConnPerRoute() {
         return maxConnPerRoute;

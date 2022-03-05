@@ -9,7 +9,6 @@ import com.filling.calculation.flink.stream.FlinkStreamTransform;
 import com.filling.calculation.flink.util.TableUtil;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -64,7 +63,7 @@ public class DataSelector implements FlinkStreamTransform<Row, Row> {
 //            tableEnvironment.createTemporaryView(table_name, table);
         }
 
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), false);
     }
 
     @Override

@@ -14,7 +14,6 @@ import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -53,7 +52,7 @@ public class FieldSplit implements FlinkStreamTransform<Row, Row> {
             .replaceAll("\\{function_name}", FUNCTION_NAME)
             .replaceAll("\\{source_field}", config.getString(SOURCE_FIELD_NAME));
         Table table = tableEnvironment.sqlQuery(sql);
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, table) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override
@@ -63,9 +62,7 @@ public class FieldSplit implements FlinkStreamTransform<Row, Row> {
                     .getStreamTableEnvironment()
                     .registerFunction("split",new ScalarSplit(rowTypeInfo,num,separator));
         }else {
-            flinkEnvironment
-                    .getBatchTableEnvironment()
-                    .registerFunction("split",new ScalarSplit(rowTypeInfo,num,separator));
+            System.out.println("no support batch");
         }
     }
 

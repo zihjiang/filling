@@ -12,10 +12,10 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
 
-        <scala.version>2.11</scala.version>
+        <scala.version>2.12</scala.version>
 
-        <flink.version>1.13.1</flink.version>
-        <flink.scala.version>2.11</flink.scala.version>
+        <flink.version>1.14.3</flink.version>
+        <flink.scala.version>2.12</flink.scala.version>
         <elasticsearch.version>7.5.1</elasticsearch.version>
         <logback.version>1.2.3</logback.version>
         <log4j-over-slf4j.version>1.7.30</log4j-over-slf4j.version>
@@ -125,9 +125,17 @@
         </dependency>
 
 
+<!--        <dependency>-->
+<!--            <groupId>org.apache.flink</groupId>-->
+<!--            <artifactId>flink-table-planner-blink_${flink.scala.version}</artifactId>-->
+<!--            <version>${flink.version}</version>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-table-planner -->
         <dependency>
             <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table-planner-blink_${flink.scala.version}</artifactId>
+            <artifactId>flink-table-planner_${flink.scala.version}</artifactId>
             <version>${flink.version}</version>
             <scope>provided</scope>
         </dependency>

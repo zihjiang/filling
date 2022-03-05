@@ -14,7 +14,6 @@ import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -51,7 +50,7 @@ public class DataParsing implements FlinkStreamTransform<Row, Row> {
         Table table = tableEnvironment.sqlQuery(sql);
 
 //        Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)).select(call(ScalarParsing.class, $(config.getString(SOURCE_FIELD_NAME))));
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, table) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override
@@ -60,10 +59,6 @@ public class DataParsing implements FlinkStreamTransform<Row, Row> {
             flinkEnvironment
                     .getStreamTableEnvironment()
                     .registerFunction("dataParsing",new ScalarParsing(rowTypeInfo,fields));
-        }else {
-            flinkEnvironment
-                    .getBatchTableEnvironment()
-                    .createTemporarySystemFunction("dataParsing",new ScalarParsing(rowTypeInfo,fields));
         }
     }
 

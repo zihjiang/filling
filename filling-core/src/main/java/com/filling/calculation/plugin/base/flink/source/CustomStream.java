@@ -12,7 +12,6 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.io.RowCsvInputFormat;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.core.fs.Path;
-import org.apache.flink.orc.OrcRowInputFormat;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.types.Row;
 
@@ -83,8 +82,8 @@ public class CustomStream implements FlinkStreamSource<Row> {
 //                inputFormat = new ParquetRowInputFormat(filePath, messageType);
                 break;
             case "orc":
-                OrcRowInputFormat orcRowInputFormat = new OrcRowInputFormat(PATH.toString(), schemaContent, null, 1000);
-                this.inputFormat = orcRowInputFormat;
+
+                System.out.println("no support orc");
                 break;
             case "csv":
                 Object csvSchemaInfo = JSONObject.parse(schemaContent);

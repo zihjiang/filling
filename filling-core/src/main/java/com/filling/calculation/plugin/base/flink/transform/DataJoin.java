@@ -11,7 +11,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -76,7 +75,7 @@ public class DataJoin implements FlinkStreamTransform<Row, Row> {
             mainTable = tableEnvironment.sqlQuery(sql);
         }
 
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, mainTable) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, mainTable, false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, mainTable, false);
     }
 
     @Override

@@ -13,7 +13,6 @@ import org.apache.flink.streaming.api.CheckpointingMode;
 import org.apache.flink.streaming.api.environment.CheckpointConfig;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableConfig;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,6 @@ public class FlinkEnvironment implements RuntimeEnv {
     private StreamTableEnvironment tableEnvironment;
 
     private ExecutionEnvironment batchEnvironment;
-
-    private BatchTableEnvironment batchTableEnvironment;
 
     private boolean isStreaming;
 
@@ -66,8 +63,6 @@ public class FlinkEnvironment implements RuntimeEnv {
             createStreamTableEnvironment();
         } else {
             createExecutionEnvironment();
-            createBatchTableEnvironment();
-
         }
         if (config.containsKey("job.name")){
             jobName = config.getString("job.name");
@@ -126,10 +121,6 @@ public class FlinkEnvironment implements RuntimeEnv {
         return batchEnvironment;
     }
 
-    public BatchTableEnvironment getBatchTableEnvironment() {
-        return batchTableEnvironment;
-    }
-
     private void createExecutionEnvironment() {
 //         batchEnvironment = ExecutionEnvironment.createRemoteEnvironment("10.10.14.117", 9091, "/Users/jiangzihan/hesheng/aiops/aiops-calculation-service/target/aiops-calculation-service-0.0.1-SNAPSHOT.war");
         batchEnvironment = ExecutionEnvironment.getExecutionEnvironment();
@@ -138,10 +129,6 @@ public class FlinkEnvironment implements RuntimeEnv {
             batchEnvironment.setParallelism(parallelism);
         }
         EnvironmentUtil.setRestartStrategy(config, batchEnvironment.getConfig());
-    }
-
-    private void createBatchTableEnvironment() {
-        batchTableEnvironment = BatchTableEnvironment.create(batchEnvironment);
     }
 
 

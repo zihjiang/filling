@@ -10,7 +10,6 @@ import com.filling.calculation.flink.util.TableUtil;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.expressions.Expression;
 import org.apache.flink.table.expressions.ExpressionParser;
@@ -37,15 +36,12 @@ public class FieldOperation implements FlinkStreamTransform<Row, Row> {
 
     private Object process(TableEnvironment tableEnvironment, Object data, String type) {
 
-        String sql = "select *,({script}) as {target_field_name} from {table_name}"
-            .replaceAll("\\{script}", config.getString(SCRIPT_NAME))
+        String sql = "select *,(" +config.getString(SCRIPT_NAME)+ ") as {target_field_name} from {table_name}"
             .replaceAll("\\{target_field_name}", config.getString(TARGET_FIELD_NAME))
             .replaceAll("\\{table_name}", config.getString(SOURCE_TABLE_NAME));
 
-//        Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)).addOrReplaceColumns(config.getString(SCRIPT_NAME)).as(config.getString(TARGET_FIELD_NAME));
-
         Table table = tableEnvironment.sqlQuery(sql);
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, table) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override
