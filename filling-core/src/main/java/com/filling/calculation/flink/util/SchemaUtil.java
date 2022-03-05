@@ -2,6 +2,8 @@ package com.filling.calculation.flink.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.filling.calculation.common.DtStringUtil;
+import com.google.common.collect.Maps;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
@@ -10,71 +12,17 @@ import org.apache.flink.formats.avro.typeutils.AvroSchemaConverter;
 import org.apache.flink.table.descriptors.Schema;
 import org.apache.flink.table.utils.TypeStringUtils;
 import org.apache.flink.types.Row;
+import org.apache.flink.util.Preconditions;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
+/**
+ * @author zihjiang
+ * @date 2020/10/22 - 15:10
+ */
 public class SchemaUtil {
 
-
-    public static void setSchema(Schema schema, Object info, String format) {
-
-        switch (format.toLowerCase()) {
-            case "json":
-                getJsonSchema(schema, (JSONObject) info);
-                break;
-            case "csv":
-                getCsvSchema(schema, (List<Map<String, String>>) info);
-                break;
-            case "orc":
-                getOrcSchema(schema, (JSONObject) info);
-                break;
-            case "avro":
-                getAvroSchema(schema, (JSONObject) info);
-                break;
-            case "parquet":
-                getParquetSchema(schema, (JSONObject) info);
-            default:
-                break;
-        }
-    }
-
-    private static void getJsonSchema(Schema schema, JSONObject json) {
-
-        for (Map.Entry<String, Object> entry : json.entrySet()) {
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            if (value instanceof Long) {
-                schema.field(key, "LONG");
-            } else if (value instanceof Integer) {
-                schema.field(key, "INT");
-            } else if (value instanceof BigDecimal) {
-                schema.field(key, "FLOAT");
-            } else if (value instanceof JSONObject) {
-                schema.field(key, getTypeInformation((JSONObject) value));
-            } else if (value instanceof String) {
-                schema.field(key, "STRING");
-            } else if (value instanceof JSONArray) {
-                Object obj = ((JSONArray) value).get(0);
-                if (obj instanceof JSONObject) {
-                    schema.field(key, ObjectArrayTypeInfo.getInfoFor(Row[].class,getTypeInformation((JSONObject) obj)));
-                }else {
-                    schema.field(key, ObjectArrayTypeInfo.getInfoFor(Object[].class,TypeInformation.of(Object.class)));
-                }
-            }
-        }
-    }
-
-    private static void getCsvSchema(Schema schema, List<Map<String, String>> schemaList) {
-
-        for (Map<String, String> map : schemaList) {
-            String field = map.get("field");
-            String type = map.get("type").toUpperCase();
-            schema.field(field, type);
-        }
-    }
 
     public static TypeInformation[] getCsvType(List<Map<String, String>> schemaList) {
         TypeInformation[] typeInformation = new TypeInformation[schemaList.size()];
@@ -84,37 +32,6 @@ public class SchemaUtil {
             typeInformation[i++] = TypeStringUtils.readTypeInfo(type);
         }
         return typeInformation;
-    }
-
-
-    /**
-     * todo
-     *
-     * @param schema
-     * @param json
-     */
-    private static void getOrcSchema(Schema schema, JSONObject json) {
-
-    }
-
-
-    /**
-     * todo
-     *
-     * @param schema
-     * @param json
-     */
-    private static void getParquetSchema(Schema schema, JSONObject json) {
-
-    }
-
-
-    private static void getAvroSchema(Schema schema, JSONObject json) {
-        RowTypeInfo typeInfo = (RowTypeInfo) AvroSchemaConverter.<Row>convertToTypeInfo(json.toString());
-        String[] fieldNames = typeInfo.getFieldNames();
-        for(String name : fieldNames){
-            schema.field(name,typeInfo.getTypeAt(name));
-        }
     }
 
     /**
@@ -151,6 +68,9 @@ public class SchemaUtil {
                     // 数组形式, 默认都是striing
                     informations[i] = ObjectArrayTypeInfo.getInfoFor(Types.STRING());
                 }
+            } else {
+                // 数组形式, 默认都是striing
+                informations[i] = ObjectArrayTypeInfo.getInfoFor(Types.STRING());
             }
             i++;
         }
@@ -159,7 +79,106 @@ public class SchemaUtil {
 
 
 
-    public static String getUniqueTableName() {
-        return "_tmp_" + UUID.randomUUID().toString().replaceAll("-", "_");
+    /**
+     * row数据转json map
+     * @param row row为具有field名称的row
+     * @param rowTypeInfo 字段类型信息
+     * @return
+     */
+    public static Map<String, Object> rowToJsonMap(Row row, List<String> fields, List<TypeInformation> fieldTypes) {
+
+        Preconditions.checkArgument(row.getArity() == fields.size());
+        Map<String, Object> jsonMap = Maps.newHashMap();
+        int i = 0;
+        for (; i < fields.size(); ++i) {
+            String field = fields.get(i);
+            String[] parts = field.split("\\.");
+            Map<String, Object> currMap = jsonMap;
+            for (int j = 0; j < parts.length - 1; ++j) {
+                String key = parts[j];
+                if (currMap.get(key) == null) {
+                    HashMap<String, Object> hashMap = Maps.newHashMap();
+                    currMap.put(key, hashMap);
+                }
+                currMap = (Map<String, Object>) currMap.get(key);
+            }
+            String key = parts[parts.length - 1];
+            Object col = row.getField(i);
+            if (col != null) {
+                if (fieldTypes.get(i).isBasicType()) {
+                    Object value = DtStringUtil.col2string(col, fieldTypes.get(i).toString());
+                    currMap.put(key, value);
+                } else {
+                    // 判断类型,
+                    switch (fieldTypes.get(i).getClass().getTypeName()) {
+                        case "org.apache.flink.api.java.typeutils.RowTypeInfo":
+                            currMap.put(key, rowObjectToJsonMap(col));
+                            break;
+                        case "org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo":
+                            currMap.put(key, rowArrayToJsonMap(col));
+                            break;
+                        case "org.apache.flink.api.common.typeinfo.SqlTimeTypeInfo":
+                            currMap.put(key, DtStringUtil.col2string(col, fieldTypes.get(i).toString()));
+                            break;
+                        default:
+                            currMap.put(key, col);
+                            break;
+                    }
+
+
+                }
+            } else {
+
+            }
+
+        }
+
+        return jsonMap;
+    }
+
+    static Map<String, Object> rowObjectToJsonMap(Object col) {
+        Row row = (Row) col;
+        Map result = new HashMap(row.getArity());
+        for (String fieldName : row.getFieldNames(true)) {
+            if( "org.apache.flink.api.java.typeutils.RowTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName()) ) {
+                result.put(fieldName, rowObjectToJsonMap(row.getFieldAs(fieldName)));
+            } else if("org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName())) {
+                result.put(fieldName, rowArrayToJsonMap(row.getFieldAs(fieldName)));
+            } else {
+                result.put(fieldName, row.getFieldAs(fieldName).toString());
+            }
+        }
+        return result;
+
+    }
+
+    static List rowArrayToJsonMap(Object col) {
+        List result = new ArrayList();
+        if(col instanceof String[]) {
+            String[] strings = (String[]) col;
+            result = Arrays.asList(strings);
+        } else {
+            Row[] rows = (Row[]) col;
+            for (Row row : rows) {
+                for (String fieldName : row.getFieldNames(true)) {
+                    System.out.println("row.getFieldAs(fieldName).getClass().getTypeName()): " + row.getFieldAs(fieldName).getClass().getTypeName());
+                    if( "org.apache.flink.api.java.typeutils.RowTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName()) ) {
+                        Map<String, Object> _result = new HashMap<>();
+                        _result.put(fieldName, rowObjectToJsonMap(row.getFieldAs(fieldName)));
+                        result.add(_result);
+                    } else if("org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName())) {
+                        List<Map<String, Object>> _result = rowArrayToJsonMap(row.getFieldAs(fieldName));
+                        result.addAll(_result);
+                    } else {
+                        Map<String, Object> _result = new HashMap<>();
+                        _result.put(fieldName, row.getField(fieldName));
+                        result.add(_result);
+                    }
+                }
+            }
+        }
+
+
+        return result;
     }
 }

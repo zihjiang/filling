@@ -11,7 +11,6 @@ import com.filling.calculation.plugin.base.flink.transform.scalar.ScalarFlattene
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -46,7 +45,7 @@ public class FieldFlattener implements FlinkStreamTransform<Row, Row> {
 //        Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))
 //                .joinLateral(call("flattener", $("_id")));
 //                );
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, table) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override
@@ -55,10 +54,6 @@ public class FieldFlattener implements FlinkStreamTransform<Row, Row> {
             flinkEnvironment
                     .getStreamTableEnvironment()
                     .registerFunction("flattener",new ScalarFlattener());
-        }else {
-            flinkEnvironment
-                    .getBatchTableEnvironment()
-                    .createTemporarySystemFunction("flattener",new ScalarFlattener());
         }
     }
 

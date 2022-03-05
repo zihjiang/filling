@@ -70,7 +70,7 @@ public class ElasticSearchSource implements FlinkStreamSource<Row> {
     @Override
     public CheckResult checkConfig() {
         if(!elasticsearchConf.getAutoSchema()) {
-            return CheckConfigUtil.check(config, SCHEMA);
+            return CheckConfigUtil.check(config);
         }
         CheckResult result = new CheckResult(true, "");
         return result;

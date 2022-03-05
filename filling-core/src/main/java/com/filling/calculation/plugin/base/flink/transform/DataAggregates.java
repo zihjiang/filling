@@ -12,7 +12,6 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.Tumble;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.expressions.Expression;
 import org.apache.flink.table.expressions.ExpressionParser;
@@ -62,11 +61,6 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
                 );
 
         return TableUtil.tableToDataStream(tableEnvironment, result, true);
-    }
-
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
-
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) tableEnvironment, tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))) : TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), false);
     }
 
     @Override

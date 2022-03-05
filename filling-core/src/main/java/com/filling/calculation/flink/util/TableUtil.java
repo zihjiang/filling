@@ -5,7 +5,6 @@ import org.apache.flink.api.java.DataSet;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.catalog.Catalog;
 import org.apache.flink.table.catalog.ObjectPath;
@@ -25,13 +24,6 @@ public class TableUtil {
                     .map(row -> row.f1)
                     .returns(typeInfo);
         }
-
-//        return tableEnvironment.toAppendStream(table, Row.class);
-
-    }
-
-    public static DataSet<Row> tableToDataSet(BatchTableEnvironment tableEnvironment, Table table){
-         return tableEnvironment.toDataSet(table,table.getSchema().toRowType());
     }
 
     public static boolean tableExists(TableEnvironment tableEnvironment, String name){

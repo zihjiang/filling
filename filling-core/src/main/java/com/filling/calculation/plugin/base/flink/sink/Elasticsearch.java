@@ -2,9 +2,9 @@ package com.filling.calculation.plugin.base.flink.sink;
 
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckResult;
-import com.filling.calculation.common.EsUtil;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
+import com.filling.calculation.flink.util.SchemaUtil;
 import com.filling.calculation.utils.StringTemplate;
 import org.apache.commons.lang.StringUtils;
 import org.apache.flink.api.common.functions.RuntimeContext;
@@ -22,6 +22,7 @@ import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.RestClientBuilder;
@@ -85,28 +86,22 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
     @Override
     public DataStreamSink<Row> outputStream(FlinkEnvironment env, DataStream<Row> dataStream) throws Exception {
 
-        List<HttpHost> httpHosts = new ArrayList<>();
-        List<String> hosts = config.getObject("hosts", List.class);
-        for (String host : hosts) {
-            httpHosts.add(new HttpHost(host.split(":")[0], Integer.parseInt(host.split(":")[1]), "http"));
-        }
-
         RowTypeInfo rowTypeInfo = (RowTypeInfo) dataStream.getType();
-
-        List<String> fieldNames = Arrays.asList(rowTypeInfo.getFieldNames());
-
-
         List<TypeInformation> fieldTypes = new ArrayList<>();
         for (int i = 0; i < rowTypeInfo.getFieldTypes().length; i++) {
             fieldTypes.add(rowTypeInfo.getFieldTypes()[i]);
         }
 
-
+        List<HttpHost> httpHosts = new ArrayList<>();
+        List<String> hosts = config.getObject("hosts", List.class);
+        for (String host : hosts) {
+            httpHosts.add(new HttpHost(host.split(":")[0], Integer.parseInt(host.split(":")[1]), "http"));
+        }
         indexName = StringTemplate.substitute(config.getString("index"), config.getString("index_time_format"));
 
         ElasticsearchSink.Builder<Row> esSinkBuilder = new ElasticsearchSink.Builder<>(httpHosts, new ElasticsearchSinkFunction<Row>() {
             public IndexRequest createIndexRequest(Row element) {
-                Map<String, Object> dataMap = EsUtil.rowToJsonMap(element, fieldNames, fieldTypes);
+                Map<String, Object> dataMap = SchemaUtil.rowToJsonMap(element,  Arrays.asList(rowTypeInfo.getFieldNames()), fieldTypes);
 
                 IndexRequest indexRequest = Requests.indexRequest()
                         .index(indexName)
@@ -119,9 +114,29 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
                 return indexRequest;
             }
 
+            public DeleteRequest deleteIndexRequest(Row element) {
+                String id = element.getField(INDEXIDFIELD).toString();
+                DeleteRequest deleteRequest = Requests.deleteRequest(indexName)
+                        .type(config.getString("index_type"))
+                        .id(id);
+
+                return deleteRequest;
+            }
+
             @Override
             public void process(Row element, RuntimeContext ctx, RequestIndexer indexer) {
-                indexer.add(createIndexRequest(element));
+                switch (element.getKind()) {
+                    case DELETE:
+                        indexer.add(deleteIndexRequest(element));
+                        break;
+                    case INSERT:
+                    case UPDATE_AFTER:
+                    case UPDATE_BEFORE:
+                        indexer.add(createIndexRequest(element));
+                        break;
+                }
+
+
             }
         });
 

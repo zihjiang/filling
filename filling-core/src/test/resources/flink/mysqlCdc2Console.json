@@ -8,7 +8,7 @@
     {
       "plugin_name": "MysqlCdcSource",
       "result_table_name": "mysqlTableStreamTable",
-      "sql": "CREATE TABLE products (\n    id INT,\n    name STRING,\n    description STRING,\n    PRIMARY KEY (id) NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.177',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '123456',\n    'database-name' = 'mydb',\n    'table-name' = 'products'\n  )"
+      "sql": "CREATE TABLE {table} (\n    `id` bigint,\n    `itemid` STRING,\n    `clock` INT,\n    `value` DOUBLE,\n    `ns` INT,\n    PRIMARY KEY (`id`)  NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.141',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '1qaz@WSX',\n    'database-name' = 'zabbix',\n    'table-name' = 'history'\n  )"
     }
   ],
   "transform": [

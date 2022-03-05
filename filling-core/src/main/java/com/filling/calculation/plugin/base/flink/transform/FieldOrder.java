@@ -11,7 +11,6 @@ import com.filling.calculation.flink.util.TableUtil;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.api.bridge.java.BatchTableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
@@ -45,7 +44,7 @@ public class FieldOrder implements FlinkStreamTransform<Row, Row> {
             table = table.orderBy(FIELD_AND_SORT);
         }
 
-        return "batch".equals(type) ? TableUtil.tableToDataSet((BatchTableEnvironment) env, table) : TableUtil.tableToDataStream((StreamTableEnvironment) env, table, false);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) env, table, false);
     }
     @Override
     public void setConfig(JSONObject config) {
