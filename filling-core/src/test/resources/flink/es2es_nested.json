@@ -1,0 +1,29 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "ElasticSearchSource",
+      "result_table_name": "es01",
+      "hosts": ["192.168.100.203:9201"],
+      "index": "internal",
+      "name": "es-source",
+      "parallelism": 1
+    }
+  ],
+  "transform": [],
+  "sink": [
+    {
+      "source_table_name": "es01",
+      "plugin_name": "Elasticsearch",
+      "hosts": [
+        "192.168.100.203:9201"
+      ],
+      "index": "test004",
+      "parallelism": 9
+    }
+  ]
+}

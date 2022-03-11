@@ -25,6 +25,16 @@ public class ClickHouseSink implements FlinkStreamSink<Row, Row> {
 
     JSONObject config;
 
+    public static final String DRIVER = "driver";
+    public static final String URL = "url";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String QUERY = "query";
+    public static final String BATCHSIZE = "batch_size";
+    public static final String INTERVERTEBRAL = "batch_interval_ms";
+    public static final String MAXRETRIES = "max_retries";
+    public static final String PARAMS = "params";
+
     private String driverName;
     private String dbUrl;
     private String username;
@@ -67,24 +77,24 @@ public class ClickHouseSink implements FlinkStreamSink<Row, Row> {
     @Override
     public void prepare(FlinkEnvironment env) {
 
-        driverName = config.getString("driver");
-        dbUrl = config.getString("url");
-        username = config.getString("username");
-        query = config.getString("query");
-        if (config.containsKey("password")) {
-            password = config.getString("password");
+        driverName = config.getString(DRIVER);
+        dbUrl = config.getString(URL);
+        username = config.getString(USERNAME);
+        query = config.getString(QUERY);
+        if (config.containsKey(PASSWORD)) {
+            password = config.getString(PASSWORD);
         }
-        if (config.containsKey("batch_size")) {
-            batchSize = config.getInteger("batch_size");
+        if (config.containsKey(BATCHSIZE)) {
+            batchSize = config.getInteger(BATCHSIZE);
         }
-        if (config.containsKey("batch_interval_ms")) {
-            batchIntervalMs = config.getInteger("batch_interval_ms");
+        if (config.containsKey(INTERVERTEBRAL)) {
+            batchIntervalMs = config.getInteger(INTERVERTEBRAL);
         }
-        if (config.containsKey("max_retries")) {
-            maxRetries = config.getInteger("max_retries");
+        if (config.containsKey(MAXRETRIES)) {
+            maxRetries = config.getInteger(MAXRETRIES);
         }
-        if (config.containsKey("params")) {
-            params = config.getJSONArray("params");
+        if (config.containsKey(PARAMS)) {
+            params = config.getJSONArray(PARAMS);
         }
     }
 

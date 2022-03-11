@@ -1,4 +1,4 @@
-package com.filling.calculation.plugin.base.flink.source.stream;
+package com.filling.calculation.plugin.base.flink.source.batch;
 
 import com.filling.calculation.Filling;
 import com.filling.calculation.env.Engine;
@@ -10,12 +10,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 
-public class ElasticsearchTest {
+public class JdbcTest {
 
     private String configPath;
 
     private String rootPath;
-
 
     @Before
     public void setup() {
@@ -24,16 +23,8 @@ public class ElasticsearchTest {
     }
 
     @Test
-    public void testEs2es() throws Exception {
-        configPath = "flink/es2es.json";
-        String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
-
-        Filling.entryPoint(str, Engine.FLINK);
-    }
-
-    @Test
-    public void testEs2esNested() throws Exception {
-        configPath = "flink/es2es_nested.json";
+    public void testCase01() throws Exception {
+        configPath = "flink/batch/BatchJdbc.json";
         String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
 
         Filling.entryPoint(str, Engine.FLINK);

@@ -37,6 +37,9 @@ public class CustomStream implements FlinkStreamSource<Row> {
     private final static String SIMPLE_DATA = "simple_data";
     private final static String SOURCE_FORMAT = "format.type";
     private final static String SCHEMA = "schema";
+    private final static String JSON = "json";
+    private final static String TEXT = "text";
+    private final static String CSV = "csv";
 
 
 
@@ -53,10 +56,10 @@ public class CustomStream implements FlinkStreamSource<Row> {
     @Override
     public CheckResult checkConfig() {
         // 如果schema为json, 并且没有设置schema, 则用simple_data第一条作为schema
-        if("json".equals(config.getString(SOURCE_FORMAT)) && !CheckConfigUtil.check(config, SIMPLE_DATA).isSuccess() && !CheckConfigUtil.check(config, SCHEMA).isSuccess() ) {
+        if(JSON.equals(config.getString(SOURCE_FORMAT)) && !CheckConfigUtil.check(config, SIMPLE_DATA).isSuccess() && !CheckConfigUtil.check(config, SCHEMA).isSuccess() ) {
             String simpleData = config.getString(SIMPLE_DATA);
             config.put(SCHEMA, simpleData.split("\n")[0]);
-        } else if("text".equals(config.getString(SOURCE_FORMAT))) {
+        } else if(TEXT.equals(config.getString(SOURCE_FORMAT))) {
             return CheckConfigUtil.check(config,SOURCE_FORMAT, SIMPLE_DATA);
         }
         return CheckConfigUtil.check(config,SOURCE_FORMAT,SCHEMA, SIMPLE_DATA);
@@ -70,28 +73,19 @@ public class CustomStream implements FlinkStreamSource<Row> {
         String format = config.getString(SOURCE_FORMAT);
         String schemaContent = config.getString(SCHEMA);
         switch (format) {
-            case "json":
+            case JSON:
                 Object jsonSchemaInfo = JSONObject.parse(schemaContent);
                 RowTypeInfo jsonInfo = SchemaUtil.getTypeInformation((JSONObject) jsonSchemaInfo);
                 JsonRowInputFormat jsonInputFormat = new JsonRowInputFormat(PATH, null, jsonInfo);
                 inputFormat = jsonInputFormat;
                 break;
-            case "parquet":
-//                final Schema parse = new Schema.Parser().parse(schemaContent);
-//                final MessageType messageType = new AvroSchemaConverter().convert(parse);
-//                inputFormat = new ParquetRowInputFormat(filePath, messageType);
-                break;
-            case "orc":
-
-                System.out.println("no support orc");
-                break;
-            case "csv":
+            case CSV:
                 Object csvSchemaInfo = JSONObject.parse(schemaContent);
                 TypeInformation[] csvType = SchemaUtil.getCsvType((List<Map<String, String>>) csvSchemaInfo);
                 RowCsvInputFormat rowCsvInputFormat = new RowCsvInputFormat(PATH, csvType, true);
                 this.inputFormat = rowCsvInputFormat;
                 break;
-            case "text":
+            case TEXT:
                 TextRowInputFormat textInputFormat = new TextRowInputFormat(PATH);
                 inputFormat = textInputFormat;
                 break;

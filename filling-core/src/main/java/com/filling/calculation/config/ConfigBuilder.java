@@ -6,7 +6,7 @@ import com.filling.calculation.env.Execution;
 import com.filling.calculation.env.RuntimeEnv;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamExecution;
-import com.filling.calculation.flink.util.Engine;
+import com.filling.calculation.env.Engine;
 import com.filling.calculation.flink.util.PluginType;
 import com.filling.calculation.plugin.Plugin;
 
@@ -14,9 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
 
+/**
+ * @author jiangzihan
+ */
 public class ConfigBuilder {
 
     private static final String PLUGIN_NAME_KEY = "plugin_name";
+    private static final String SPLIT = "\\.";
+    private static final String ENV = "env";
     private String configFile;
     private Engine engine;
     private ConfigPackage configPackage = new ConfigPackage(Engine.FLINK.getEngine());
@@ -68,7 +73,7 @@ public class ConfigBuilder {
      **/
     private String buildClassFullQualifier(String name, PluginType classType) throws Exception {
 
-        if (name.split("\\.").length == 1) {
+        if (name.split(SPLIT).length == 1) {
             String packageName = null;
             Iterable<? extends Plugin> plugins = null;
             switch (classType) {
@@ -139,7 +144,7 @@ public class ConfigBuilder {
     }
 
     private RuntimeEnv createEnv() {
-        envConfig = config.getJSONObject("env");
+        envConfig = config.getJSONObject(ENV);
         batch = checkIsBarch();
         env = new FlinkEnvironment();
         env.setConfig(envConfig);

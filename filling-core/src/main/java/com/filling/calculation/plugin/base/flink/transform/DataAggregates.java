@@ -28,36 +28,45 @@ import static org.apache.flink.table.api.Expressions.lit;
  */
 public class DataAggregates implements FlinkStreamTransform<Row, Row> {
 
+    private static final String CUSTOM_FIELD = "custom.fields";
+    private static final String GROUP_FIELDS = "group.fields";
+    private static final String ROWTIME_SUFFIX = ".rowtime";
+    private static final String WATERMARK_SUFFIX = "_watermark";
+
+    private static String ROWTIME_WATERMARK_FIELD = "rowtime.watermark.field";
+
+    private static String ROWTIME_WATERMARK_FIELD_MS = "rowtime.watermark.tumble.ms";
+
+    private static String ROWTIME_WATERMARK_FIELD_DELAY_MS = "rowtime.watermark.tumble.delay.ms";
+
     private JSONObject config;
 
     private static List<String> SELECT_FIELDS= new ArrayList<>();
 
     private static List<String> CUSTOM_FIELDS= new ArrayList<>();
 
-    private static String ROWTIME_WATERMARK_FIELD;
-
-    private static Long ROWTIME_WATERMARK_FIELD_MS;
-
-    private static Long ROWTIME_WATERMARK_FIELD_DELAY_MS;
+    String rowtimeWatermarkField = "";
+    Long rowtimeWatermarkFieldMs;
+    Long rowtimeWatermarkFieldDelayMs;
 
     @Override
     public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
-        DataStream<Row> dataStreamForWT = dataStream.assignTimestampsAndWatermarks(new DefaultWaterMark(ROWTIME_WATERMARK_FIELD, ROWTIME_WATERMARK_FIELD_DELAY_MS));
+        DataStream<Row> dataStreamForWT = dataStream.assignTimestampsAndWatermarks(new DefaultWaterMark(rowtimeWatermarkField, rowtimeWatermarkFieldDelayMs));
          Table table = tableEnvironment.fromDataStream(
                  dataStreamForWT,
                  _(
-                         getGroupField(ROWTIME_WATERMARK_FIELD + ".rowtime", getColumnByTable(tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), ROWTIME_WATERMARK_FIELD))
+                         getGroupField(rowtimeWatermarkField + ROWTIME_SUFFIX, getColumnByTable(tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), rowtimeWatermarkField))
                  )
          );
         Table result = table.filter(
-                        $(ROWTIME_WATERMARK_FIELD).isNotNull()
+                        $(rowtimeWatermarkField).isNotNull()
                         // define window
-        ).window(Tumble.over(lit(ROWTIME_WATERMARK_FIELD_MS).millis()).on($(ROWTIME_WATERMARK_FIELD)).as(ROWTIME_WATERMARK_FIELD + "_watermark"))
+        ).window(Tumble.over(lit(rowtimeWatermarkFieldMs).millis()).on($(rowtimeWatermarkField)).as(rowtimeWatermarkField + WATERMARK_SUFFIX))
                 // group by key and window
-                .groupBy( _(getGroupField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS)))
+                .groupBy( _(getGroupField(rowtimeWatermarkField + WATERMARK_SUFFIX, SELECT_FIELDS)))
                 .select(
-                        _(getSelectField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS))
+                        _(getSelectField(rowtimeWatermarkField + WATERMARK_SUFFIX, SELECT_FIELDS))
                 );
 
         return TableUtil.tableToDataStream(tableEnvironment, result, true);
@@ -82,15 +91,15 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
     @Override
     public void prepare(FlinkEnvironment env) {
 
-        SELECT_FIELDS = config.getObject("group.fields", List.class);
+        SELECT_FIELDS = config.getObject(GROUP_FIELDS, List.class);
 
-        if(config.getString("custom.fields") != null ) {
-            CUSTOM_FIELDS = config.getObject("custom.fields", List.class);
+        if(config.getString(CUSTOM_FIELD) != null ) {
+            CUSTOM_FIELDS = config.getObject(CUSTOM_FIELD, List.class);
         }
 
-        ROWTIME_WATERMARK_FIELD = config.getString("rowtime.watermark.field");
-        ROWTIME_WATERMARK_FIELD_MS = config.getLong("rowtime.watermark.tumble.ms");
-        ROWTIME_WATERMARK_FIELD_DELAY_MS = config.getLong("rowtime.watermark.tumble.delay.ms");
+        rowtimeWatermarkField = config.getString(ROWTIME_WATERMARK_FIELD);
+        rowtimeWatermarkFieldMs = config.getLong(ROWTIME_WATERMARK_FIELD_MS);
+        rowtimeWatermarkFieldDelayMs = config.getLong(ROWTIME_WATERMARK_FIELD_DELAY_MS);
     }
 
     /**
@@ -113,8 +122,6 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
     private String getGroupField(String watermarkFieldName,  List<String> fieldNames) {
         List<String> _fieldNames = new ArrayList<>(fieldNames);
         _fieldNames.add(watermarkFieldName);
-
-        System.out.println("getGroupField: " + String.join(",", _fieldNames));
 
         return String.join(",", _fieldNames);
     }

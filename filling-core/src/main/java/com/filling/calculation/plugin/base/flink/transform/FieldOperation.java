@@ -22,19 +22,18 @@ public class FieldOperation implements FlinkStreamTransform<Row, Row> {
 
     private JSONObject config;
 
-    private static String SCRIPT_NAME = "script";
-    private static String TARGET_FIELD_NAME = "target_field";
-    private static String SCRIPT = null;
+    private static final String SCRIPT_NAME = "script";
+    private static final String TARGET_FIELD_NAME = "target_field";
 
     @Override
     public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        return (DataStream<Row>) process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private Object process(TableEnvironment tableEnvironment) {
 
         String sql = "select *,(" +config.getString(SCRIPT_NAME)+ ") as {target_field_name} from {table_name}"
             .replaceAll("\\{target_field_name}", config.getString(TARGET_FIELD_NAME))
@@ -62,12 +61,12 @@ public class FieldOperation implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public void prepare(FlinkEnvironment env) {
-        SCRIPT = config.getString(SCRIPT_NAME);
+        String SCRIPT = config.getString(SCRIPT_NAME);
     }
 
     /**
      * 防止idea提示废弃
-     * @param expr
+     * @param expr 表达式
      * @return
      */
     private Expression[] _(String expr) {

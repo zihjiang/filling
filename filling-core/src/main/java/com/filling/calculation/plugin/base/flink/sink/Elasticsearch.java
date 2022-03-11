@@ -40,6 +40,7 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
     private String INDEXIDFIELD;
 
     private final static String PREFIX = "es.";
+    private final static String HOSTS = "hosts";
 
     private String USERNAME;
     private String PASSWORD;
@@ -56,7 +57,7 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
 
     @Override
     public CheckResult checkConfig() {
-        if (config.containsKey("hosts")) {
+        if (config.containsKey(HOSTS)) {
             return new CheckResult(true, "");
         } else {
             return new CheckResult(false, "please specify [hosts] as a non-empty string list");
@@ -151,17 +152,14 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
 
         esSinkBuilder.setRestClientFactory(
                 restClientBuilder -> {
-            restClientBuilder.setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
-                @Override
-                public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpClientBuilder) {
+            restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
 
-                    CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-                    if(!StringUtils.isEmpty(USERNAME) || !StringUtils.isEmpty(PASSWORD)) {
-                        // elasticsearch username and password
-                        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME,  PASSWORD));
-                    }
-                    return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+                if(!StringUtils.isEmpty(USERNAME) || !StringUtils.isEmpty(PASSWORD)) {
+                    // elasticsearch username and password
+                    credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(USERNAME,  PASSWORD));
                 }
+                return httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
             });
         });
 

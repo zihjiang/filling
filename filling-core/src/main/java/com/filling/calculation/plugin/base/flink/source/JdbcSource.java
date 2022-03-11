@@ -25,6 +25,13 @@ public class JdbcSource implements FlinkStreamSource<Row> {
 
     private static final Logger LOG = LoggerFactory.getLogger(JdbcSource.class);
 
+    public static final String DRIVER = "driver";
+    public static final String URL = "url";
+    public static final String USERNAME = "username";
+    public static final String PASSWORD = "password";
+    public static final String QUERY = "query";
+    public static final String FETCH_SIZE = "fetch_size";
+
     private JSONObject config;
     private String driverName;
     private String dbUrl;
@@ -124,22 +131,22 @@ public class JdbcSource implements FlinkStreamSource<Row> {
 
     @Override
     public CheckResult checkConfig() {
-        return CheckConfigUtil.check(config, "driver", "url", "query");
+        return CheckConfigUtil.check(config, DRIVER, URL, QUERY);
     }
 
     @Override
     public void prepare(FlinkEnvironment env) {
-        driverName = config.getString("driver");
-        dbUrl = config.getString("url");
-        username = config.getString("username");
-        query = config.getString("query");
+        driverName = config.getString(DRIVER);
+        dbUrl = config.getString(URL);
+        username = config.getString(USERNAME);
+        query = config.getString(QUERY);
         getFastRow = config.getString("getFastRow");
 
-        if (config.containsKey("password")) {
-            password = config.getString("password");
+        if (config.containsKey(PASSWORD)) {
+            password = config.getString(PASSWORD);
         }
-        if (config.containsKey("fetch_size")) {
-            fetchSize = config.getInteger("fetch_size");
+        if (config.containsKey(FETCH_SIZE)) {
+            fetchSize = config.getInteger(FETCH_SIZE);
         }
 
         jdbcInputFormat = JdbcInputFormat
@@ -185,7 +192,7 @@ public class JdbcSource implements FlinkStreamSource<Row> {
     }
 
     private String getFastRow(String query) {
-        String limitString = "select * from ({query}) limit 1".replaceAll("\\{query}", query);
+        String limitString = "select * from ({query}) t1 limit 1".replaceAll("\\{query}", query);
         if (getFastRow == null) {
             LOG.warn("getFastRow not set, use default: {}", limitString);
             return limitString;

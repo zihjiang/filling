@@ -129,7 +129,7 @@ public enum ColumnType {
             throw new RuntimeException("null ColumnType!");
         }
 
-        if(type.toUpperCase().startsWith("DECIMAL")) {
+        if(type.toUpperCase().startsWith(ColumnType.DECIMAL.toString())) {
             return DECIMAL;
         }
 

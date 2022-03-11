@@ -8,8 +8,6 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.api.scala.typeutils.Types;
-import org.apache.flink.formats.avro.typeutils.AvroSchemaConverter;
-import org.apache.flink.table.descriptors.Schema;
 import org.apache.flink.table.utils.TypeStringUtils;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Preconditions;
@@ -77,12 +75,21 @@ public class SchemaUtil {
         return new RowTypeInfo(informations, fields);
     }
 
+    /**
+     * json转row
+     * @param json
+     * @return
+     */
+    public static Row getRow(JSONObject json) {
 
+        return null;
+    }
 
     /**
      * row数据转json map
      * @param row row为具有field名称的row
-     * @param rowTypeInfo 字段类型信息
+     * @param fields 字段名
+     * @param fieldTypes 字段类型
      * @return
      */
     public static Map<String, Object> rowToJsonMap(Row row, List<String> fields, List<TypeInformation> fieldTypes) {
