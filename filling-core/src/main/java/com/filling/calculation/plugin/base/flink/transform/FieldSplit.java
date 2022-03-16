@@ -39,20 +39,19 @@ public class FieldSplit implements FlinkStreamTransform<Row, Row> {
 
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private void process(TableEnvironment tableEnvironment) {
 
         String FUNCTION_NAME = "split";
         String sql = "select info_row.*, * from (select *,{function_name}(`{source_field}`) as info_row  from {source_table_name}) t1"
             .replaceAll("\\{source_table_name}", config.getString(SOURCE_TABLE_NAME))
             .replaceAll("\\{function_name}", FUNCTION_NAME)
             .replaceAll("\\{source_field}", config.getString(SOURCE_FIELD_NAME));
-        Table table = tableEnvironment.sqlQuery(sql);
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), tableEnvironment.sqlQuery(sql));
     }
 
     @Override

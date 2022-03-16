@@ -42,14 +42,14 @@ public class DataSelector implements FlinkStreamTransform<Row, Row> {
     String SUFFIX= ".where";
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private void process(TableEnvironment tableEnvironment) {
 
 
         for (String table_name: SELECT_RESULT_TABLE_NAME) {
@@ -59,11 +59,7 @@ public class DataSelector implements FlinkStreamTransform<Row, Row> {
                     .replace("{where}",config.getString(TABLE_AND_WHERE.get(table_name)));
 
             tableEnvironment.createTemporaryView(table_name, tableEnvironment.sqlQuery(sql));
-//            Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)).where(config.getString(TABLE_AND_WHERE.get(table_name)));
-//            tableEnvironment.createTemporaryView(table_name, table);
         }
-
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), false);
     }
 
     @Override

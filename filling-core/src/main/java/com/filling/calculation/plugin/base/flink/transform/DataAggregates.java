@@ -50,7 +50,7 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
     Long rowtimeWatermarkFieldDelayMs;
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
         DataStream<Row> dataStreamForWT = dataStream.assignTimestampsAndWatermarks(new DefaultWaterMark(rowtimeWatermarkField, rowtimeWatermarkFieldDelayMs));
          Table table = tableEnvironment.fromDataStream(
@@ -69,7 +69,7 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
                         _(getSelectField(rowtimeWatermarkField + WATERMARK_SUFFIX, SELECT_FIELDS))
                 );
 
-        return TableUtil.tableToDataStream(tableEnvironment, result, true);
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), result);
     }
 
     @Override

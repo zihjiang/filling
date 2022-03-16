@@ -10,6 +10,7 @@ import com.filling.calculation.plugin.Plugin;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.types.Row;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,18 +50,14 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
             }
 
         }
-        DataStream input = data.get(0);
         for (FlinkStreamTransform transform : transforms) {
             try {
                 prepare(flinkEnvironment, transform);
                 baseCheckConfig(transform);
                 DataStream stream = fromSourceTable(transform);
-                if (Objects.isNull(stream)) {
-                    stream = input;
-                }
                 transform.registerFunction(flinkEnvironment);
-                input = transform.processStream(flinkEnvironment, stream);
-                registerResultTable(transform, input);
+                transform.processStream(flinkEnvironment, stream);
+                // registerResultTable(transform, input);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -71,9 +68,6 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
             baseCheckConfig(sink);
             prepare(flinkEnvironment, sink);
             DataStream stream = fromSourceTable(sink);
-            if (Objects.isNull(stream)) {
-                stream = input;
-            }
             sink.outputStream(flinkEnvironment, stream);
         }
 
@@ -91,12 +85,14 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
         }
     }
 
-    private DataStream fromSourceTable(Plugin plugin) {
+    private DataStream<Row> fromSourceTable(Plugin plugin) {
         JSONObject config = plugin.getConfig();
         if (config.containsKey(SOURCE_TABLE_NAME)) {
             StreamTableEnvironment tableEnvironment = flinkEnvironment.getStreamTableEnvironment();
             Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME));
-            return TableUtil.tableToDataStream(tableEnvironment, table, true);
+//            tableEnvironment.toChangelogStream(table).shuffle();
+            return tableEnvironment.toChangelogStream(table);
+//            return TableUtil.tableToDataStream(tableEnvironment, table, true);
         }
         return null;
     }

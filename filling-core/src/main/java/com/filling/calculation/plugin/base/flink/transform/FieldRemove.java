@@ -24,14 +24,14 @@ public class FieldRemove implements FlinkStreamTransform<Row, Row> {
     private static String FIELD = null;
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private void process(TableEnvironment tableEnvironment) {
 
         String sql = "select * from {table_name}"
             .replaceAll("\\{table_name}", config.getString(SOURCE_TABLE_NAME));
@@ -47,7 +47,7 @@ public class FieldRemove implements FlinkStreamTransform<Row, Row> {
             table = table.dropColumns(FIELD);
         }
 
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), table);
     }
 
     @Override

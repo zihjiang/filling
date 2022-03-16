@@ -75,6 +75,15 @@ public class KafkaTableStreamTest {
     }
 
     @Test
+    public void KafkaOffset2Console() throws Exception {
+
+        configPath = "flink/KafkaOffset2Console.json";
+        String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
+
+        Filling.entryPoint(str, Engine.FLINK);
+    }
+
+    @Test
     public void testkafk2ck() throws Exception {
 
         configPath = "flink/kafka2ck.json";

@@ -45,7 +45,7 @@ public class StandaloneClusterClient implements ClusterClient {
             jarInfo = getLastFile();
             System.out.println("getLastFile: " + jarInfo.toJSONString());
         } else {
-            throw  new IOException("file " + flink.getJar() + "not exists");
+            throw  new IOException("file " + flink.getJar() + " not exists");
         }
     }
 
