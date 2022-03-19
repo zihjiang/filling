@@ -87,11 +87,6 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
     @Override
     public DataStreamSink<Row> outputStream(FlinkEnvironment env, DataStream<Row> dataStream) throws Exception {
 
-        RowTypeInfo rowTypeInfo = (RowTypeInfo) dataStream.getType();
-        List<TypeInformation> fieldTypes = new ArrayList<>();
-        for (int i = 0; i < rowTypeInfo.getFieldTypes().length; i++) {
-            fieldTypes.add(rowTypeInfo.getFieldTypes()[i]);
-        }
 
         List<HttpHost> httpHosts = new ArrayList<>();
         List<String> hosts = config.getObject("hosts", List.class);
@@ -102,7 +97,7 @@ public class Elasticsearch implements FlinkStreamSink<Row, Row> {
 
         ElasticsearchSink.Builder<Row> esSinkBuilder = new ElasticsearchSink.Builder<>(httpHosts, new ElasticsearchSinkFunction<Row>() {
             public IndexRequest createIndexRequest(Row element) {
-                Map<String, Object> dataMap = SchemaUtil.rowToJsonMap(element,  Arrays.asList(rowTypeInfo.getFieldNames()), fieldTypes);
+                Map<String, Object> dataMap = SchemaUtil.rowToJsonMap(element);
 
                 IndexRequest indexRequest = Requests.indexRequest()
                         .index(indexName)

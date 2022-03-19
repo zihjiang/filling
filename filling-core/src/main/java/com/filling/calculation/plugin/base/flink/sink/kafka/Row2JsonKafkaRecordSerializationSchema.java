@@ -1,7 +1,10 @@
 package com.filling.calculation.plugin.base.flink.sink.kafka;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.types.Row;
 
@@ -22,10 +25,7 @@ public class Row2JsonKafkaRecordSerializationSchema implements SerializationSche
 
     @Override
     public byte[] serialize(Row row) {
-        JSONObject jsonObject = new JSONObject();
-        for (String fieldName : row.getFieldNames(true)) {
-            jsonObject.put(fieldName, row.getField(fieldName));
-        }
-        return jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8);
+
+        return JSON.toJSONBytes(SchemaUtil.rowToJsonMap(row), SerializerFeature.WriteMapNullValue);
     }
 }

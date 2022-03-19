@@ -45,7 +45,6 @@ public class KafkaSink implements FlinkStreamSink<Row, Row> {
 
     @Override
     public DataStreamSink<Row> outputStream(FlinkEnvironment env, DataStream<Row> dataStream) {
-        dataStream.print();
         KafkaSinkBuilder<Row> builder = org.apache.flink.connector.kafka.sink.KafkaSink.builder();
         builder.setBootstrapServers(kafkaParams.getProperty("bootstrap.servers"));
         builder.setKafkaProducerConfig(kafkaParams);

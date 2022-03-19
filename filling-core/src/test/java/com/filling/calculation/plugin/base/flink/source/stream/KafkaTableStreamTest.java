@@ -172,4 +172,20 @@ public class KafkaTableStreamTest {
         Filling.entryPoint(str, Engine.FLINK);
     }
 
+    @Test
+    public void testKafkaOffset2Console() throws Exception {
+        configPath = "flink/KafkaNestaed2Console.json";
+        String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
+
+        Filling.entryPoint(str, Engine.FLINK);
+    }
+
+    @Test
+    public void testKafkaNestaed2Kafka() throws Exception {
+        configPath = "flink/KafkaNestaed2Kafka.json";
+        String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
+
+        Filling.entryPoint(str, Engine.FLINK);
+    }
+
 }

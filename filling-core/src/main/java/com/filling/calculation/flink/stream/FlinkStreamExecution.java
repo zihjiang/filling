@@ -90,7 +90,6 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
         if (config.containsKey(SOURCE_TABLE_NAME)) {
             StreamTableEnvironment tableEnvironment = flinkEnvironment.getStreamTableEnvironment();
             Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME));
-//            tableEnvironment.toChangelogStream(table).shuffle();
             return tableEnvironment.toChangelogStream(table);
 //            return TableUtil.tableToDataStream(tableEnvironment, table, true);
         }

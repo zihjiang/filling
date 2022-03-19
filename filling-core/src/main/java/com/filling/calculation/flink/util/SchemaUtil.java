@@ -34,6 +34,7 @@ public class SchemaUtil {
 
     /**
      * 根据JSON, 获取RowTypeInfo
+     *
      * @param json json格式的数据
      * @return RowTypeInfo
      */
@@ -56,10 +57,10 @@ public class SchemaUtil {
                 informations[i] = Types.DOUBLE();
             } else if (value instanceof JSONObject) {
                 informations[i] = getTypeInformation((JSONObject) value);
-            }else if (value instanceof JSONArray) {
+            } else if (value instanceof JSONArray) {
                 Object object = ((JSONArray) value).getObject(0, Object.class);
                 // 判断, 如果是json
-                if(object instanceof JSONObject) {
+                if (object instanceof JSONObject) {
                     JSONObject demo = ((JSONArray) value).getJSONObject(0);
                     informations[i] = ObjectArrayTypeInfo.getInfoFor(Row[].class, getTypeInformation(demo));
                 } else {
@@ -76,19 +77,51 @@ public class SchemaUtil {
     }
 
     /**
-     * json转row
-     * @param json
+     * map转row
+     *
+     * @param map
      * @return
      */
-    public static Row getRow(JSONObject json) {
+    public static Row JsonMapToRow(Map<String, Object> map) {
+        Row row = Row.withNames();
+        for (Map.Entry<String, Object> stringObjectEntry : map.entrySet()) {
+            String key = stringObjectEntry.getKey();
+            Object value = stringObjectEntry.getValue();
+            if(value instanceof HashMap) {
+                row.setField(key, JsonMapToRow((HashMap<String, Object>) map.get(key)));
+            } else if(value instanceof ArrayList) {
+                ArrayList arrayList = (ArrayList) value;
+                row.setField(key, JsonMapArrayToRow(arrayList));
+            } else {
+                row.setField(key, value);
+            }
+        }
+        return row;
+    }
 
-        return null;
+    private static Object JsonMapArrayToRow(ArrayList arrayList) {
+        Row row = Row.withNames();
+        for (Object o : arrayList) {
+            if(o instanceof HashMap) {
+                HashMap<String, Object> map = (HashMap<String, Object>) o;
+                for (Map.Entry<String, Object> stringObjectEntry : map.entrySet()) {
+                    row.setField(stringObjectEntry.getKey(), map.get(stringObjectEntry.getKey()));
+                }
+            } else {
+                // TODO 解析数组类型
+                return o.toString();
+//                row.setField();
+            }
+        }
+
+        return row;
     }
 
     /**
      * row数据转json map
-     * @param row row为具有field名称的row
-     * @param fields 字段名
+     *
+     * @param row        row为具有field名称的row
+     * @param fields     字段名
      * @param fieldTypes 字段类型
      * @return
      */
@@ -119,7 +152,7 @@ public class SchemaUtil {
                     // 判断类型,
                     switch (fieldTypes.get(i).getClass().getTypeName()) {
                         case "org.apache.flink.api.java.typeutils.RowTypeInfo":
-                            currMap.put(key, rowObjectToJsonMap(col));
+//                            currMap.put(key, rowObjectToJsonMap(col));
                             break;
                         case "org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo":
                             currMap.put(key, rowArrayToJsonMap(col));
@@ -143,13 +176,38 @@ public class SchemaUtil {
         return jsonMap;
     }
 
-    static Map<String, Object> rowObjectToJsonMap(Object col) {
+
+    public static Map<String, Object> rowToJsonMap(Row row) {
+
+        Map<String, Object> jsonMap = Maps.newHashMap();
+        for (String field : row.getFieldNames(true)) {
+            String key = field.split("\\.")[field.split("\\.").length - 1];
+            Object col = row.getField(field);
+            if (col != null) {
+                // 判断类型,
+                if (col instanceof Row) {
+
+                    jsonMap.put(key, rowToJsonMap((Row) col));
+                } else if (col instanceof Row[]) {
+                    jsonMap.put(key, rowArrayToJsonMap(col));
+                } else {
+                    jsonMap.put(key, col);
+                }
+            } else {
+                jsonMap.put(key, null);
+            }
+        }
+
+        return jsonMap;
+    }
+
+    private Map<String, Object> rowObjectToJsonMap(Object col) {
         Row row = (Row) col;
         Map result = new HashMap(row.getArity());
         for (String fieldName : row.getFieldNames(true)) {
-            if( "org.apache.flink.api.java.typeutils.RowTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName()) ) {
+            if ("org.apache.flink.api.java.typeutils.RowTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName())) {
                 result.put(fieldName, rowObjectToJsonMap(row.getFieldAs(fieldName)));
-            } else if("org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName())) {
+            } else if ("org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName())) {
                 result.put(fieldName, rowArrayToJsonMap(row.getFieldAs(fieldName)));
             } else {
                 result.put(fieldName, row.getFieldAs(fieldName).toString());
@@ -161,27 +219,13 @@ public class SchemaUtil {
 
     static List rowArrayToJsonMap(Object col) {
         List result = new ArrayList();
-        if(col instanceof String[]) {
+        if (col instanceof String[]) {
             String[] strings = (String[]) col;
             result = Arrays.asList(strings);
         } else {
             Row[] rows = (Row[]) col;
             for (Row row : rows) {
-                for (String fieldName : row.getFieldNames(true)) {
-                    System.out.println("row.getFieldAs(fieldName).getClass().getTypeName()): " + row.getFieldAs(fieldName).getClass().getTypeName());
-                    if( "org.apache.flink.api.java.typeutils.RowTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName()) ) {
-                        Map<String, Object> _result = new HashMap<>();
-                        _result.put(fieldName, rowObjectToJsonMap(row.getFieldAs(fieldName)));
-                        result.add(_result);
-                    } else if("org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo".equals(row.getFieldAs(fieldName).getClass().getTypeName())) {
-                        List<Map<String, Object>> _result = rowArrayToJsonMap(row.getFieldAs(fieldName));
-                        result.addAll(_result);
-                    } else {
-                        Map<String, Object> _result = new HashMap<>();
-                        _result.put(fieldName, row.getField(fieldName));
-                        result.add(_result);
-                    }
-                }
+                result.add(rowToJsonMap(row));
             }
         }
 

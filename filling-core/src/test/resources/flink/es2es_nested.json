@@ -23,7 +23,15 @@
         "192.168.100.203:9201"
       ],
       "index": "test004",
-      "parallelism": 9
+      "parallelism": 1
+    },
+    {
+      "source_table_name": "es01",
+      "plugin_name": "KafkaSink",
+      "producer.bootstrap.servers": "192.168.100.203:9092",
+      "topics": "test011",
+      "parallelism": 1,
+      "name": "my-kafka-sink"
     }
   ]
 }

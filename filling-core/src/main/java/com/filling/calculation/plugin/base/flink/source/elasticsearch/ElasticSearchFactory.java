@@ -1,6 +1,7 @@
 package com.filling.calculation.plugin.base.flink.source.elasticsearch;
 
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -48,26 +49,7 @@ public class ElasticSearchFactory extends RichParallelSourceFunction<Row> {
             if (searchResponse != null) {
                 // 第一次查询,
                 for (SearchHit hit : searchResponse.getHits().getHits()) {
-                    Row row = Row.withNames();
-
-                    for (int i = 0; i < elasticsearchConf.getFieldNames().length; i++) {
-                        String fieldName = elasticsearchConf.getFieldNames()[i];
-                        Object value = hit.getSourceAsMap().get(fieldName);
-                        if (value instanceof String) {
-                            row.setField(fieldName, value);
-                        } else if (value instanceof Map) {
-
-                            Map<String, Object> value1 = ((Map<String, Object>) value);
-
-                            Row _row = Row.withNames();
-
-                            String[] fieldNames = ((RowTypeInfo) ((RowTypeInfo) typeInfo).getFieldTypes()[1]).getFieldNames();
-                            for (String vals : fieldNames) {
-                                _row.setField(vals, value1.get(vals));
-                            }
-                            row.setField(fieldName, _row);
-                        }
-                    }
+                    Row row =  SchemaUtil.JsonMapToRow(hit.getSourceAsMap());
                     sourceContext.collect(row);
                 }
                 // 根据ScrollId, 循环查询
@@ -77,29 +59,7 @@ public class ElasticSearchFactory extends RichParallelSourceFunction<Row> {
                         return;
                     }
                     for (SearchHit hit : searchResponse.getHits().getHits()) {
-                        Row row = Row.withNames();
-
-                        for (int i = 0; i < elasticsearchConf.getFieldNames().length; i++) {
-                            String fieldName = elasticsearchConf.getFieldNames()[i];
-                            Object value = hit.getSourceAsMap().get(fieldName);
-                            if (value instanceof String) {
-                                row.setField(fieldName, value);
-                            } else if (value instanceof Map) {
-
-                                Map<String, Object> value1 = ((Map<String, Object>) value);
-
-                                Row _row = Row.withNames();
-
-                                String[] fieldNames = ((RowTypeInfo) ((RowTypeInfo) typeInfo).getFieldTypes()[1]).getFieldNames();
-
-                                for (String vals : fieldNames) {
-                                    _row.setField(vals, value1.get(vals));
-                                }
-                                row.setField(fieldName, _row);
-                            }
-
-
-                        }
+                        Row row =  SchemaUtil.JsonMapToRow(hit.getSourceAsMap());
                         sourceContext.collect(row);
                     }
                 }
