@@ -1,0 +1,31 @@
+{
+  "transform": [],
+  "sink": [
+    {
+      "source_table_name": "kafka_285ac796_b389",
+      "plugin_name": "KafkaSink",
+      "producer.bootstrap.servers": "10.10.14.100:9092",
+      "topics": "test011",
+      "parallelism": 1,
+      "name": "my-kafka-sink"
+    }
+  ],
+  "source": [
+    {
+      "schema": "{\"stringType\":\"myname\",\"intType\":123,\"floatType\":1.2351234,\"objectType\":{\"class\":\"zhongban01\",\"code\":1233},\"arrayType\":[1,2,3,4,5,5],\"arrayObjectType\":[{\"name\":\"student\"}]}",
+      "offset.reset": "earliest",
+      "consumer.group.id": "filling-group04",
+      "topics": "test010",
+      "parallelism": "10",
+      "name": "kafka-source",
+      "result_table_name": "kafka_285ac796_b389",
+      "plugin_name": "KafkaTableStream",
+      "format.type": "json",
+      "consumer.bootstrap.servers": "10.10.14.100:9092"
+    }
+  ],
+  "env": {
+    "execution.parallelism": 1,
+    "job.name": "我的测试"
+  }
+}

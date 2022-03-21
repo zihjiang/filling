@@ -7,9 +7,16 @@ import com.filling.calculation.common.PropertiesUtil;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
 import com.filling.calculation.flink.util.SchemaUtil;
+import com.filling.calculation.plugin.base.flink.sink.kafka.Row2JsonKafkaRecordSerializationSchema;
 import org.apache.commons.lang.StringUtils;
+import org.apache.flink.api.common.serialization.SerializationSchema;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.connector.base.DeliveryGuarantee;
+import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
+import org.apache.flink.connector.kafka.sink.KafkaSinkBuilder;
+import org.apache.flink.formats.json.JsonRowDataSerializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
@@ -38,26 +45,20 @@ public class KafkaSink implements FlinkStreamSink<Row, Row> {
 
     @Override
     public DataStreamSink<Row> outputStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+        KafkaSinkBuilder<Row> builder = org.apache.flink.connector.kafka.sink.KafkaSink.builder();
+        builder.setBootstrapServers(kafkaParams.getProperty("bootstrap.servers"));
+        builder.setKafkaProducerConfig(kafkaParams);
+        builder.setRecordSerializer(KafkaRecordSerializationSchema.builder()
+                .setTopic(topic)
+                .setValueSerializationSchema(new Row2JsonKafkaRecordSerializationSchema())
+                .build()
+        );
+        builder.setDeliverGuarantee(DeliveryGuarantee.AT_LEAST_ONCE);
+        org.apache.flink.connector.kafka.sink.KafkaSink<Row> sink = builder
+                .build();
 
-        RowTypeInfo rowTypeInfo = (RowTypeInfo) dataStream.getType();
-        List<TypeInformation> fieldTypes = new ArrayList<>();
-        for (int i = 0; i < rowTypeInfo.getFieldTypes().length; i++) {
-            fieldTypes.add(rowTypeInfo.getFieldTypes()[i]);
-        }
-
-        FlinkKafkaProducer<Row> myProducer = new FlinkKafkaProducer<>(
-                topic,
-                (KafkaSerializationSchema<Row>) (element, timestamp) -> {
-                    Map<String, Object> stringObjectMap = SchemaUtil.rowToJsonMap(element, Arrays.asList(rowTypeInfo.getFieldNames()), fieldTypes);
-                    JSONObject jsonObject = new JSONObject(stringObjectMap);
-
-                    return new ProducerRecord<>(topic, jsonObject.toJSONString().getBytes(StandardCharsets.UTF_8));
-                },
-                kafkaParams,
-                FlinkKafkaProducer.Semantic.AT_LEAST_ONCE);
-
-
-        return dataStream.addSink(myProducer).setParallelism(getParallelism()).name(getName());
+        dataStream.sinkTo(sink);
+        return null;
     }
 
     @Override

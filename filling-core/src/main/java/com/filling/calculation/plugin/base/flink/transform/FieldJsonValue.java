@@ -6,7 +6,6 @@ import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamTransform;
-import com.filling.calculation.flink.util.TableUtil;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -22,7 +21,7 @@ import java.util.Map;
  * @author: zihjiang
  * @create: 2021-06-26 16:10
  **/
-public class DataSelector implements FlinkStreamTransform<Row, Row> {
+public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
 
 
 //        "source_table_name": "sql_table29",

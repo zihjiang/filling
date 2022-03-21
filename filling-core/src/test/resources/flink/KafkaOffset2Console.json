@@ -1,0 +1,27 @@
+{
+  "transform": [],
+  "sink": [
+    {
+      "source_table_name": "kafka_285ac796_b389",
+      "plugin_name": "ConsoleSink"
+    }
+  ],
+  "source": [
+    {
+      "schema": "{\"_time_watermark_end\":\"2022-03-16 12:42:46\",\"id_count\":\"20509\",\"_time_watermark_start\":\"2022-03-16 12:42:45\",\"id\":\"1\",\"max_1\":\"1\"}",
+      "offset.reset": "earliest",
+      "consumer.group.id": "filling-group04",
+      "topics": "test03",
+      "parallelism": "1",
+      "name": "kafka-source",
+      "result_table_name": "kafka_285ac796_b389",
+      "plugin_name": "KafkaTableStream",
+      "format.type": "json",
+      "consumer.bootstrap.servers": "10.10.14.100:9092"
+    }
+  ],
+  "env": {
+    "execution.parallelism": 2,
+    "job.name": "我的测试"
+  }
+}

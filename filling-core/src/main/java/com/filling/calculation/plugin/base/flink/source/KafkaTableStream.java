@@ -10,14 +10,18 @@ import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamSource;
 import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.connector.kafka.source.KafkaSource;
+import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.formats.csv.CsvRowDeserializationSchema;
 import org.apache.flink.formats.json.JsonRowDeserializationSchema;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 import org.apache.flink.types.Row;
+import org.apache.kafka.clients.consumer.OffsetResetStrategy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +34,11 @@ public class KafkaTableStream implements FlinkStreamSource<Row> {
     private Properties kafkaParams = new Properties();
     private List<String> topics = new ArrayList<>();
     private Object schemaInfo;
-    private String tableName;
     private final String consumerPrefix = "consumer.";
     private String format;
     private String format_field_delimiter;
+    private String bootstrap_servers;
+    private String group_id;
 
     private static final String TOPICS = "topics";
     private static final String SCHEMA = "schema";
@@ -80,49 +85,26 @@ public class KafkaTableStream implements FlinkStreamSource<Row> {
                 topics.add(config.getString(TOPICS));
             }
         }
-
         PropertiesUtil.setProperties(config, kafkaParams, consumerPrefix, false);
-        tableName = config.getString(RESULT_TABLE_NAME);
         format = config.getString(SOURCE_FORMAT);
         config.putIfAbsent(FORMAT_FIELD_DELIMITER, ",");
+        bootstrap_servers = kafkaParams.getProperty(BOOTSTRAP_SERVERS);
+        group_id = kafkaParams.getProperty(GROUP_ID);
     }
 
     @Override
     public DataStream<Row> getStreamData(FlinkEnvironment env) {
 
+        KafkaSource<Row> source = KafkaSource.<Row>builder()
+                .setProperties(kafkaParams)
+                .setBootstrapServers(bootstrap_servers)
+                .setTopics(topics)
+                .setGroupId(group_id)
+                .setStartingOffsets(getOffsetType())
+                .setValueOnlyDeserializer(getSchema())
+                .build();
 
-        FlinkKafkaConsumer<Row> kafkaConsumer = new FlinkKafkaConsumer<>(
-                topics,
-                getSchema(),
-                kafkaParams);
-
-        if (config.containsKey(OFFSET_RESET)) {
-            String reset = config.getString(OFFSET_RESET);
-            switch (reset) {
-                case "latest":
-                    kafkaConsumer.setStartFromLatest();
-                    break;
-                case "earliest":
-                    kafkaConsumer.setStartFromEarliest();
-                    break;
-                case "fromTimestamp":
-                    kafkaConsumer.setStartFromTimestamp(1);
-                    break;
-                case "fromGroupOffsets":
-                    kafkaConsumer.setStartFromGroupOffsets();
-                    break;
-                default:
-                    System.out.println("不识别参数offset.reset=" + reset + "参数应该为: latest, earliest, fromTimestamp, fromGroupOffsets, 默认为 fromGroupOffsets");
-                    kafkaConsumer.setStartFromGroupOffsets();
-                    break;
-            }
-        }
-        kafkaConsumer.setCommitOffsetsOnCheckpoints(true);
-
-        DataStream<Row> stream = env.getStreamExecutionEnvironment()
-                .addSource(kafkaConsumer).setParallelism(getParallelism()).name(getName());
-
-        return stream;
+        return env.getStreamExecutionEnvironment().fromSource(source, WatermarkStrategy.noWatermarks(), getName()).setParallelism(getParallelism());
     }
 
     private DeserializationSchema getSchema() {
@@ -147,6 +129,28 @@ public class KafkaTableStream implements FlinkStreamSource<Row> {
                 break;
         }
         return result;
+    }
+
+    private OffsetsInitializer getOffsetType() {
+        if (config.containsKey(OFFSET_RESET)) {
+            String reset = config.getString(OFFSET_RESET);
+            switch (reset) {
+                case "latest":
+                    return OffsetsInitializer.latest();
+                case "earliest":
+                    return OffsetsInitializer.earliest();
+                case "fromTimestamp":
+                    return OffsetsInitializer.timestamp(1);
+                case "fromGroupOffsets":
+                    return OffsetsInitializer.committedOffsets(OffsetResetStrategy.EARLIEST);
+                default:
+                    System.out.println("不识别参数offset.reset=" + reset + "参数应该为: latest, earliest, fromTimestamp, fromGroupOffsets, 默认为 fromGroupOffsets");
+                    return OffsetsInitializer.committedOffsets();
+            }
+        }
+
+        System.out.println(" 默认为 fromGroupOffsets");
+        return OffsetsInitializer.committedOffsets();
     }
 
     @Override
