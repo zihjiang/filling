@@ -1,0 +1,90 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "dataGenSource",
+      "result_table_name": "dataGenSourceTable",
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+      "rows-per-second": 10,
+      "number-of-rows": 100,
+      "fields": [
+        {
+          "id": {
+            "type": "Int",
+            "min": 1,
+            "max": 2
+          }
+        },
+        {
+          "host": {
+            "type": "String",
+            "length": 5
+          }
+        },
+        {
+          "source": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "MetricsName": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "value": {
+            "type": "Int",
+            "min": 1,
+            "max": 2
+          }
+        }
+      ],
+      "parallelism": 1,
+      "name": "mysource"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "dataGenSourceTable",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldOperation",
+      "target_field": "_time",
+      "script": "localTimestamp"
+    },
+    {
+      "source_table_name": "FieldOperation_time",
+      "result_table_name": "FieldOperation_sdfsdf",
+      "plugin_name": "FieldOperation",
+      "target_field": "message123",
+      "script": "'{\"message\": \"{\\\"name\\\": \\\"张三\\\"}\"}'"
+    },
+    {
+      "source_table_name": "FieldOperation_sdfsdf",
+      "result_table_name": "FieldJsonValue",
+      "plugin_name": "FieldJsonValue",
+      "source_field": "message123",
+      "path": "$.message",
+      "target_field": "message1231"
+    },
+    {
+      "source_table_name": "FieldJsonValue",
+      "result_table_name": "FieldJsonValue_34545",
+      "plugin_name": "FieldJsonValue",
+      "source_field": "message1231",
+      "path": "$.name",
+      "target_field": "message1232"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "FieldJsonValue_34545",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}
