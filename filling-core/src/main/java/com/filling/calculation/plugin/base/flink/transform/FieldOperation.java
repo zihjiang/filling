@@ -26,21 +26,20 @@ public class FieldOperation implements FlinkStreamTransform<Row, Row> {
     private static final String TARGET_FIELD_NAME = "target_field";
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return (DataStream<Row>) process(tableEnvironment);
+        process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment) {
+    private void process(TableEnvironment tableEnvironment) {
 
         String sql = "select *,(" +config.getString(SCRIPT_NAME)+ ") as {target_field_name} from {table_name}"
             .replaceAll("\\{target_field_name}", config.getString(TARGET_FIELD_NAME))
             .replaceAll("\\{table_name}", config.getString(SOURCE_TABLE_NAME));
 
-        Table table = tableEnvironment.sqlQuery(sql);
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), tableEnvironment.sqlQuery(sql));
     }
 
     @Override

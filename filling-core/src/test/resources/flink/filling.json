@@ -1,41 +1,38 @@
 {
-  "transform": [
-    {
-      "target_field": "newfield_gmt_create",
-      "parallelism": "1",
-      "name": "FieldOperation-transform",
-      "source_table_name": "kafka_f349d92b_3551",
-      "result_table_name": "FieldOperation_9b836813_b7af",
-      "plugin_name": "FieldOperation",
-      "script": "JSON_VALUE(message,'$.accessid')"
-    }
-  ],
+  "transform": [],
   "sink": [
     {
-      "producer.bootstrap.servers": "10.10.14.100:9092",
-      "topics": "test02",
+      "hosts": [
+        "10.10.14.42:9200"
+      ],
       "parallelism": "1",
-      "name": "KafkaSink",
-      "source_table_name": "FieldOperation_9b836813_b7af",
-      "plugin_name": "KafkaSink"
+      "index_id_field": "",
+      "index": "test15",
+      "es.bulk.flush.interval.ms": 1000,
+      "source_table_name": "ElasticSearch_98477a63_8398",
+      "plugin_name": "Elasticsearch",
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": "8",
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.max.actions": 1000,
+      "name": "Elasticsearch-sink",
+      "es.bulk.flush.backoff.enable": "true"
     }
   ],
   "source": [
     {
-      "schema": "{\"host\":\"test-3\",\"processor\":\"ArcanaJSON\",\"sourceType\":null,\"source\":\"edge\",\"edgeId\":null,\"message\":\"{\\\"accessid\\\":74452520977694720,\\\"edgeid\\\":\\\"0343075a-4988-41db-8b9d-9dcb351a9549\\\",\\\"metric\\\":\\\"kafka\\\",\\\"datetag\\\":\\\"202202221847\\\",\\\"type\\\":\\\"120\\\",\\\"KafkaObject\\\":{\\\"groupid\\\":\\\"store_group\\\",\\\"state\\\":\\\"EMPTY\\\",\\\"owner\\\":\\\"NONE\\\",\\\"topic\\\":\\\"input-topic-61dbc35bb3dae46c02f7bb2a\\\",\\\"partition\\\":0,\\\"offset\\\":21,\\\"createTime\\\":1645526864391,\\\"minute\\\":1847}}\",\"timestamp\":null,\"timeField\":null,\"timeMode\":null,\"instanceId\":null,\"index\":\"internal\",\"forwardServer\":null,\"extData\":null,\"fields\":null,\"metadata\":{\"_pttid\":1645515311434,\"_offset\":\"0\",\"_eid\":\"eventMonitorcollector\"}}",
-      "offset.reset": "earliest",
-      "consumer.group.id": "filling-group01",
-      "topics": "test03",
+      "hosts": [
+        "10.10.14.42:9200"
+      ],
       "parallelism": "1",
-      "name": "kafka-source",
-      "result_table_name": "kafka_f349d92b_3551",
-      "plugin_name": "KafkaTableStream",
-      "format.type": "json",
-      "consumer.bootstrap.servers": "10.10.14.100:9092"
+      "name": "ElasticSearch",
+      "index": "test14",
+      "result_table_name": "ElasticSearch_98477a63_8398",
+      "plugin_name": "ElasticSearchSource"
     }
   ],
   "env": {
     "execution.parallelism": 2,
-    "job.name": "测试嵌套格式数据"
+    "job.name": "es2es"
   }
 }

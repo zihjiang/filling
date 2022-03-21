@@ -35,12 +35,12 @@ public class DataParsing implements FlinkStreamTransform<Row, Row> {
 
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        process(tableEnvironment, dataStream, "stream");
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private void process(TableEnvironment tableEnvironment, Object data, String type) {
 
         String FUNCTION_NAME = "dataParsing";
         String sql = "select * from (select *,{function_name}(`{source_field}`) as info_row  from {source_table_name}) t1"
@@ -49,8 +49,7 @@ public class DataParsing implements FlinkStreamTransform<Row, Row> {
             .replaceAll("\\{source_field}", config.getString(SOURCE_FIELD_NAME));
         Table table = tableEnvironment.sqlQuery(sql);
 
-//        Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)).select(call(ScalarParsing.class, $(config.getString(SOURCE_FIELD_NAME))));
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), table);
     }
 
     @Override

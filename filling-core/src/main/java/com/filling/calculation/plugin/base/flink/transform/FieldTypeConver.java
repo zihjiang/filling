@@ -28,14 +28,14 @@ public class FieldTypeConver implements FlinkStreamTransform<Row, Row> {
     private static String TARGET_FIELD_TYPE = null;
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private void process(TableEnvironment tableEnvironment) {
 
         String sql;
         // 判断参数是否为数组
@@ -64,8 +64,7 @@ public class FieldTypeConver implements FlinkStreamTransform<Row, Row> {
                     .replaceAll("\\{table_name}", config.getString(SOURCE_TABLE_NAME));
         }
 
-        Table table = tableEnvironment.sqlQuery(sql);
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), tableEnvironment.sqlQuery(sql));
     }
 
     @Override

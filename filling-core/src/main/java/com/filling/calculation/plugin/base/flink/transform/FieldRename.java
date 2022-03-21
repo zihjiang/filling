@@ -23,21 +23,22 @@ public class FieldRename implements FlinkStreamTransform<Row, Row> {
     private static String TARGET_FIELD_NAME = "target_field";
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+        process(tableEnvironment);
     }
 
-    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+    private void process(TableEnvironment tableEnvironment) {
 
         String sql = "select *,`{source_field}` as `{target_field}` from {source_table_name}"
             .replaceAll("\\{source_table_name}", config.getString(SOURCE_TABLE_NAME))
             .replaceAll("\\{source_field}", config.getString(SOURCE_FIELD_NAME))
             .replaceAll("\\{target_field}", config.getString(TARGET_FIELD_NAME));
         Table table = tableEnvironment.sqlQuery(sql).dropColumns(config.getString(SOURCE_FIELD_NAME));
-        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
+        
+        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), table);
     }
 
     @Override

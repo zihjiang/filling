@@ -6,5 +6,5 @@ import org.apache.flink.streaming.api.datastream.DataStream;
 
 public interface FlinkStreamTransform<IN, OUT> extends BaseFlinkTransform {
 
-    DataStream<OUT> processStream(FlinkEnvironment env, DataStream<IN> dataStream);
+    void processStream(FlinkEnvironment env, DataStream<IN> dataStream);
 }

@@ -1,29 +1,39 @@
 {
-  "env": {
-    "execution.parallelism": 1,
-    "execution.time-characteristic": "event-time",
-    "job.name": "wattttt"
-  },
-  "source": [
-    {
-      "plugin_name": "ElasticSearchSource",
-      "result_table_name": "es01",
-      "hosts": ["192.168.100.203:9201"],
-      "index": "internal",
-      "name": "es-source",
-      "parallelism": 1
-    }
-  ],
   "transform": [],
   "sink": [
     {
-      "source_table_name": "es01",
-      "plugin_name": "Elasticsearch",
       "hosts": [
-        "192.168.100.203:9201"
+        "10.10.14.42:9200"
       ],
-      "index": "test004",
-      "parallelism": 9
+      "parallelism": "1",
+      "index_id_field": "",
+      "index": "test15",
+      "es.bulk.flush.interval.ms": 1000,
+      "source_table_name": "ElasticSearch_98477a63_8398",
+      "plugin_name": "Elasticsearch",
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": "8",
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.max.actions": 1000,
+      "name": "Elasticsearch-sink",
+      "es.bulk.flush.backoff.enable": "true"
     }
-  ]
+  ],
+  "source": [
+    {
+      "hosts": [
+        "10.10.14.42:9200",
+        "10.10.14.43:9200"
+      ],
+      "parallelism": "1",
+      "name": "ElasticSearch",
+      "index": "test14",
+      "result_table_name": "ElasticSearch_98477a63_8398",
+      "plugin_name": "ElasticSearchSource"
+    }
+  ],
+  "env": {
+    "execution.parallelism": 2,
+    "job.name": "es2es"
+  }
 }
