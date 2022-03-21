@@ -1,64 +1,48 @@
 package com.filling.calculation.plugin.base.flink.transform;
 
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamTransform;
+import com.filling.calculation.flink.util.TableUtil;
+import org.apache.commons.lang.StringUtils;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.api.JsonValueOnEmptyOrError;
+import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.types.DataType;
 import org.apache.flink.types.Row;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.apache.flink.table.api.Expressions.$;
 
-/**
- * @program: calculation-core
- * @description:
- * @author: zihjiang
- * @create: 2021-06-26 16:10
- **/
+
 public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
 
 
-//        "source_table_name": "sql_table29",
-//            "result_table_name": "sql_ta9le30",
-//            "plugin_name": "DataSelector",
-//            "select.result_table_name": ["sql_ta9le31", "sql_table32"]
-//            "select.sql_ta9le31.where": "hostid in ('filling01', 'filling02')",
-//            "select.sql_ta9le32.where": "hostid not in ('filling01', 'filling02')"
     private JSONObject config;
 
-    private static String SELECT_RESULT_TABLE_NAME_NAME = "select.result_table_name";
-    private static List<String> SELECT_RESULT_TABLE_NAME= null;
-
-    private static Map<String, String> TABLE_AND_WHERE = new HashMap<>();
-
-    String PRE = "select.";
-    String SUFFIX= ".where";
+    private static String SOURCE_FIELD_NAME = "source_field";
+    private static String FIELD_PATH = "path";
+    private static String TARGET_FIELD = "target_field";
+    private static String RETURN_TYPE = "return_type";
+    private static String source_field_name = null;
+    private static String path = null;
+    private static String target_field_name = null;
+    private static String return_type = null;
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        process(tableEnvironment);
-    }
-
-    private void process(TableEnvironment tableEnvironment) {
-
-
-        for (String table_name: SELECT_RESULT_TABLE_NAME) {
-
-            String sql = "select * from {source_table_name} where 1=1 and {where}"
-                    .replace("{source_table_name}", config.getString(SOURCE_TABLE_NAME))
-                    .replace("{where}",config.getString(TABLE_AND_WHERE.get(table_name)));
-
-            tableEnvironment.createTemporaryView(table_name, tableEnvironment.sqlQuery(sql));
-        }
+        return tableEnvironment.toChangelogStream(tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))
+                .addColumns($(source_field_name)
+                        .jsonValue(path, getDataTypes(return_type), JsonValueOnEmptyOrError.NULL).as(target_field_name)));
     }
 
     @Override
@@ -66,6 +50,25 @@ public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
         this.config = config;
     }
 
+    private DataType getDataTypes(String str) {
+
+        switch (str) {
+            case "INT":
+                return DataTypes.INT();
+            case "DOUBLE":
+                return DataTypes.DOUBLE();
+            case "FLOAT":
+                return DataTypes.FLOAT();
+            case "DATE":
+                return DataTypes.DATE();
+            case "BIGINT":
+                return DataTypes.BIGINT();
+            case "BOOLEAN":
+                return DataTypes.BOOLEAN();
+            default:
+                return DataTypes.STRING();
+        }
+    }
     @Override
     public JSONObject getConfig() {
         return config;
@@ -74,21 +77,14 @@ public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public CheckResult checkConfig() {
-        for (String table: SELECT_RESULT_TABLE_NAME) {
-            if(!CheckConfigUtil.check(config, PRE + table + SUFFIX).isSuccess()) {
-                return CheckConfigUtil.check(config, PRE + table + SUFFIX);
-            }
-        }
-        return CheckConfigUtil.check(config,SELECT_RESULT_TABLE_NAME_NAME);
+        return CheckConfigUtil.check(config, SOURCE_FIELD_NAME,FIELD_PATH, TARGET_FIELD);
     }
 
     @Override
     public void prepare(FlinkEnvironment env) {
-        SELECT_RESULT_TABLE_NAME = config.getObject(SELECT_RESULT_TABLE_NAME_NAME, List.class);
-
-        for (String table_name: SELECT_RESULT_TABLE_NAME) {
-            String where = PRE + table_name + SUFFIX;
-            TABLE_AND_WHERE.put(table_name, where );
-        }
+        source_field_name = config.getString(SOURCE_FIELD_NAME);
+        path = config.getString(FIELD_PATH);
+        target_field_name = config.getString(TARGET_FIELD);
+        return_type = config.getOrDefault(RETURN_TYPE, "STRING").toString();
     }
 }

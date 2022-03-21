@@ -17,6 +17,7 @@ import selectIocn from './images/selected.svg';
 import BaseEndpoint from '../EditorGraph/endpoint';
 import ClickHouseIcon from './images/clickhouse.svg';
 import MysqlIcon from './images/mysql.svg';
+import jsonIcon from './images/json.svg';
 
 import _ from 'lodash';
 const source = [
@@ -422,7 +423,7 @@ const source = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -456,6 +457,83 @@ const source = [
             color: 'system-green'
         }],
         content: MysqlIcon,
+        height: 90,
+        width: "100%"
+    },
+    {
+        id: 'ElasticSearch',
+        text: 'ElasticSearch',
+        type: 'png',
+        Data: {},
+        pluginType: 'source',
+        pluginName: "ElasticSearchSource",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "ElasticSearch",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "ElasticSearchSource",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "string"
+            }, {
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": true,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            },
+            {
+                "name": "hosts",
+                "label": "hosts",
+                "text": "hosts",
+                "paramsDesc": "elasticsearch 的主机地址, 格式为 ip:port",
+                "defaultValue": ["127.0.0.1:9200"],
+                "required": true,
+                "paramsDesc": "elasticsearch 的主机地址, 格式为 ip:port",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "array"
+            },
+            {
+                "name": "index",
+                "label": "index",
+                "text": "index",
+                "paramsDesc": "elasticsearch 的索引名称",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "elasticsearch 的索引名称",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            }
+        ],
+        endpoints: [{
+            id: 'elasticsearch_source_table_name',
+            orientation: [1, 0],
+            pos: [0, 0.5],
+            Class: BaseEndpoint,
+            color: 'system-green'
+        }],
+        content: elasticsearchIcon,
         height: 90,
         width: "100%"
     }
@@ -536,7 +614,7 @@ const transform = [
                 "desc": " ",
                 "readOnly": false,
                 "type": "array"
-            },{
+            }, {
                 "name": "custom.field.{field}.script",
                 "text": "{field}字段表达式",
                 "defaultValue": "",
@@ -623,7 +701,7 @@ const transform = [
                 "display": "none",
                 "readOnly": false,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -700,7 +778,7 @@ const transform = [
                 "display": "none",
                 "readOnly": false,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -767,7 +845,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "join.secondary.where",
                 "text": "join的条件",
                 "defaultValue": "{main}.field = {secondary}.field",
@@ -796,7 +874,7 @@ const transform = [
                         "label": "右关联"
                     }
                 ]
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -814,7 +892,7 @@ const transform = [
             pos: [0, 0.5],
             Class: BaseEndpoint,
             color: 'system-green'
-        },{
+        }, {
             id: 'DataJoin_join_source_table_name',
             orientation: [-1, 0],
             pos: [0, 0.8],
@@ -859,7 +937,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "select.result_table_name",
                 "text": "生成的流",
                 "defaultValue": [],
@@ -869,7 +947,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "array"
-            },{
+            }, {
                 "name": "select.{id}_t1.where",
                 "text": "数据{id}_t1, 的条件",
                 "defaultValue": "",
@@ -879,7 +957,7 @@ const transform = [
                 "display": "none",
                 "readOnly": false,
                 "type": "text_rex_id"
-            },{
+            }, {
                 "name": "select.{id}_t2.where",
                 "text": "数据{id}_t2, 的条件",
                 "defaultValue": "",
@@ -889,7 +967,7 @@ const transform = [
                 "display": "none",
                 "readOnly": false,
                 "type": "text_rex_id"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -907,7 +985,7 @@ const transform = [
             pos: [0, 0.5],
             Class: BaseEndpoint,
             color: 'system-green'
-        },{
+        }, {
             id: 'DataSelector_t1_result_table_name',
             orientation: [1, 0],
             pos: [0, 0.5],
@@ -952,7 +1030,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "target_field_type",
                 "text": "目标字段类型",
                 "defaultValue": "int",
@@ -974,7 +1052,7 @@ const transform = [
                         "label": "Long"
                     }
                 ]
-            },{
+            }, {
                 "name": "source_field",
                 "text": "源字段名称",
                 "defaultValue": [],
@@ -998,19 +1076,19 @@ const transform = [
             }
         ],
         endpoints: [
-        {
-            id: 'fieldTypeConver_source_table_name',
-            orientation: [1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }, {
-            id: 'fieldTypeConver_result_table_name',
-            orientation: [-1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }],
+            {
+                id: 'fieldTypeConver_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'fieldTypeConver_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
         content: converIcon,
         height: 90,
         width: "100%"
@@ -1043,7 +1121,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "target_field",
                 "text": "目标字段",
                 "defaultValue": "",
@@ -1053,7 +1131,7 @@ const transform = [
                 "display": "none",
                 "readOnly": false,
                 "type": "string"
-            },{
+            }, {
                 "name": "script",
                 "text": "表达式(支持sql函数)",
                 "defaultValue": "",
@@ -1077,20 +1155,146 @@ const transform = [
             }
         ],
         endpoints: [
-        {
-            id: 'fieldOperation_source_table_name',
-            orientation: [1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }, {
-            id: 'fieldOperation_result_table_name',
-            orientation: [-1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }],
+            {
+                id: 'fieldOperation_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'fieldOperation_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
         content: fieldIcon,
+        height: 90,
+        width: "100%"
+    },
+    {
+        id: 'FieldJsonValue',
+        text: 'FieldJsonValue',
+        type: 'png',
+        Data: {},
+        pluginType: 'transform',
+        pluginName: "FieldJsonValue",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "FieldJsonValue-transform",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "FieldJsonValue",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "string"
+            }, {
+                "name": "source_field",
+                "text": "源字段",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "json字符串的字段",
+                "desc": " ",
+                "display": "none",
+                "readOnly": false,
+                "type": "string"
+            }, {
+                "name": "path",
+                "text": "表达式(xpath语法)",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "表达式(xpath语法)",
+                "desc": " ",
+                "display": "none",
+                "readOnly": false,
+                "type": "string"
+            },
+            {
+                "name": "target_field",
+                "text": "目标字段名称",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "目标字段名称",
+                "desc": " ",
+                "display": "none",
+                "readOnly": false,
+                "type": "string"
+            },
+            {
+                "name": "return_type",
+                "text": "返回类型",
+                "defaultValue": "STRING",
+                "required": true,
+                "paramsDesc": "表达式(xpath语法)",
+                "desc": " ",
+                "display": "none",
+                "readOnly": false,
+                "type": "select",
+                "selectOptions": [
+                    {
+                        "value": "STRING",
+                        "label": "STRING"
+                    },
+                    {
+                        "value": "INT",
+                        "label": "INT"
+                    }, {
+                        "value": "DOUBLE",
+                        "label": "DOUBLE"
+                    }, {
+                        "value": "FLOAT",
+                        "label": "FLOAT"
+                    }, {
+                        "value": "DATE",
+                        "label": "DATE"
+                    }, {
+                        "value": "BIGINT",
+                        "label": "BIGINT"
+                    }, {
+                        "value": "BOOLEAN",
+                        "label": "BOOLEAN"
+                    }
+                ]
+            },
+            {
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": false,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            }
+        ],
+        endpoints: [
+            {
+                id: 'fieldOperation_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'fieldOperation_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
+        content: jsonIcon,
         height: 90,
         width: "100%"
     },
@@ -1122,7 +1326,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "sql",
                 "text": "sql语句(用{source_table_name}表示上个算子的表名) ",
                 "defaultValue": "select * from {source_table_name}",
@@ -1147,19 +1351,19 @@ const transform = [
             }
         ],
         endpoints: [
-        {
-            id: 'sql_source_table_name',
-            orientation: [1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }, {
-            id: 'sql_result_table_name',
-            orientation: [-1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }],
+            {
+                id: 'sql_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'sql_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
         content: sqlIcon,
         height: 90,
         width: "100%"
@@ -1192,7 +1396,7 @@ const transform = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "field",
                 "text": "需要保留的字段",
                 "defaultValue": [],
@@ -1216,19 +1420,19 @@ const transform = [
             }
         ],
         endpoints: [
-        {
-            id: 'fieldSelect_source_table_name',
-            orientation: [1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }, {
-            id: 'fieldSelect_result_table_name',
-            orientation: [-1, 0],
-            pos: [0, 0.5],
-            Class: BaseEndpoint,
-            color: 'system-green'
-        }],
+            {
+                id: 'fieldSelect_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'fieldSelect_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
         content: selectIocn,
         height: 90,
         width: "100%"
@@ -1264,7 +1468,7 @@ const sink = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -1315,7 +1519,7 @@ const sink = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -1468,7 +1672,7 @@ const sink = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -1544,7 +1748,7 @@ const sink = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
@@ -1673,7 +1877,7 @@ const sink = [
                 "display": "none",
                 "readOnly": true,
                 "type": "string"
-            },{
+            }, {
                 "name": "parallelism",
                 "text": "并行度",
                 "defaultValue": "1",
