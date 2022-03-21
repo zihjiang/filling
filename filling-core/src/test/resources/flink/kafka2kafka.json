@@ -1,0 +1,31 @@
+{
+  "env": {
+    "execution.parallelism": 1
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "waterdrop5",
+      "topics": "test013",
+      "result_table_name": "KafkaTableStreamTable",
+      "format.type": "json",
+      "schema": "{\"floatType\":1.2351234,\"arrayType\":[1,2,3,4,5,5],\"arrayObjectType\":[{\"name\":\"student\"}],\"stringType\":\"myname\",\"intType\":123,\"objectType\":{\"code\":1233,\"class\":\"zhongban01\"}}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "10.10.14.100:9092"
+    }
+  ],
+  "transform": [
+  ],
+  "sink": [
+    {
+      "source_table_name": "KafkaTableStreamTable",
+      "plugin_name": "KafkaSink",
+      "producer.bootstrap.servers": "10.10.14.100:9092",
+      "topics": "test014",
+      "parallelism": 1,
+      "name": "my-kafka-sink"
+    }
+  ]
+}

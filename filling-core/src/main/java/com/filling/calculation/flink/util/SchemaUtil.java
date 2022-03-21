@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.DtStringUtil;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
@@ -47,33 +48,44 @@ public class SchemaUtil {
             String key = entry.getKey();
             Object value = entry.getValue();
             fields[i] = key;
-            if (value instanceof String) {
-                informations[i] = Types.STRING();
-            } else if (value instanceof Integer) {
-                informations[i] = Types.INT();
-            } else if (value instanceof Long) {
-                informations[i] = Types.LONG();
-            } else if (value instanceof BigDecimal) {
-                informations[i] = Types.DOUBLE();
-            } else if (value instanceof JSONObject) {
-                informations[i] = getTypeInformation((JSONObject) value);
-            } else if (value instanceof JSONArray) {
-                Object object = ((JSONArray) value).getObject(0, Object.class);
-                // 判断, 如果是json
-                if (object instanceof JSONObject) {
-                    JSONObject demo = ((JSONArray) value).getJSONObject(0);
-                    informations[i] = ObjectArrayTypeInfo.getInfoFor(Row[].class, getTypeInformation(demo));
-                } else {
-                    // 数组形式, 默认都是striing
-                    informations[i] = ObjectArrayTypeInfo.getInfoFor(Types.STRING());
-                }
-            } else {
-                // 数组形式, 默认都是striing
-                informations[i] = ObjectArrayTypeInfo.getInfoFor(Types.STRING());
-            }
+            informations[i] = getTypeInformation(value);
             i++;
         }
         return new RowTypeInfo(informations, fields);
+    }
+
+    /**
+     * 根据传入值, 判断值的TypeInformation
+     * @param value 传入的值
+     * @return 值的类型
+     */
+    private static TypeInformation getTypeInformation(Object value) {
+        TypeInformation result;
+        if (value instanceof String) {
+            result = Types.STRING();
+        } else if (value instanceof Integer) {
+            result = Types.INT();
+        } else if (value instanceof Long) {
+            result = Types.LONG();
+        } else if (value instanceof BigDecimal) {
+            result = Types.DOUBLE();
+        } else if (value instanceof JSONObject) {
+            result = getTypeInformation((JSONObject) value);
+        } else if (value instanceof JSONArray) {
+            Object object = ((JSONArray) value).getObject(0, Object.class);
+            // 判断, 如果是json
+            if (object instanceof JSONObject) {
+                JSONObject demo = ((JSONArray) value).getJSONObject(0);
+                result = ObjectArrayTypeInfo.getInfoFor(Row[].class, getTypeInformation(demo));
+            } else {
+
+                result = Types.OBJECT_ARRAY(getTypeInformation(object));
+            }
+        } else {
+            System.out.println("值无法解析: "+ value +" 默认为string");
+            result = ObjectArrayTypeInfo.getInfoFor(Types.STRING());
+        }
+        return result;
     }
 
     /**

@@ -2,34 +2,37 @@
   "transform": [],
   "sink": [
     {
-      "source_table_name": "kafka_285ac796_b389",
-      "plugin_name": "ConsoleSink"
-    },
-    {
-      "producer.bootstrap.servers": "10.10.14.100:9092",
-      "topics": "test05",
+      "hosts": [
+        "10.10.14.42:9200"
+      ],
       "parallelism": "1",
-      "name": "KafkaSink",
-      "source_table_name": "kafka_285ac796_b389",
-      "plugin_name": "KafkaSink"
+      "index_id_field": "",
+      "index": "test15",
+      "es.bulk.flush.interval.ms": 1000,
+      "source_table_name": "ElasticSearch_98477a63_8398",
+      "plugin_name": "Elasticsearch",
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": "8",
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.max.actions": 1000,
+      "name": "Elasticsearch-sink",
+      "es.bulk.flush.backoff.enable": "true"
     }
   ],
   "source": [
     {
-      "schema": "{\"_time_watermark_end\":\"2022-03-16 12:42:46\",\"id_count\":\"20509\",\"_time_watermark_start\":\"2022-03-16 12:42:45\",\"id\":\"1\",\"max_1\":\"1\"}",
-      "offset.reset": "earliest",
-      "consumer.group.id": "filling-group04",
-      "topics": "test03",
+      "hosts": [
+        "10.10.14.42:9200"
+      ],
       "parallelism": "1",
-      "name": "kafka-source",
-      "result_table_name": "kafka_285ac796_b389",
-      "plugin_name": "KafkaTableStream",
-      "format.type": "json",
-      "consumer.bootstrap.servers": "10.10.14.100:9092"
+      "name": "ElasticSearch",
+      "index": "test14",
+      "result_table_name": "ElasticSearch_98477a63_8398",
+      "plugin_name": "ElasticSearchSource"
     }
   ],
   "env": {
     "execution.parallelism": 2,
-    "job.name": "我的测试"
+    "job.name": "es2es"
   }
 }

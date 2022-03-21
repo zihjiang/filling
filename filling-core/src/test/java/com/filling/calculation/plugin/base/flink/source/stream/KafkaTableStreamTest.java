@@ -188,4 +188,12 @@ public class KafkaTableStreamTest {
         Filling.entryPoint(str, Engine.FLINK);
     }
 
+    @Test
+    public void testKafka2kafka() throws Exception{
+        configPath = "flink/kafka2kafka.json";
+        String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
+
+        Filling.entryPoint(str, Engine.FLINK);
+    }
+
 }
