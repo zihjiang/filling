@@ -1,26 +1,26 @@
 package com.filling.calculation.plugin.base.flink.transform;
 
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamTransform;
-import com.filling.calculation.flink.util.TableUtil;
-import org.apache.commons.lang.StringUtils;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.JsonValueOnEmptyOrError;
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.types.DataType;
 import org.apache.flink.types.Row;
 
 import static org.apache.flink.table.api.Expressions.$;
 
-
+/**
+ * @program: calculation-core
+ * @description:
+ * @author: zihjiang
+ * @create: 2022-03-22 18:36
+ **/
 public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
 
 
@@ -36,11 +36,11 @@ public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
     private static String return_type = null;
 
     @Override
-    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        return tableEnvironment.toChangelogStream(tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))
+        tableEnvironment.toChangelogStream(tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))
                 .addColumns($(source_field_name)
                         .jsonValue(path, getDataTypes(return_type), JsonValueOnEmptyOrError.NULL).as(target_field_name)));
     }
@@ -69,6 +69,7 @@ public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
                 return DataTypes.STRING();
         }
     }
+
     @Override
     public JSONObject getConfig() {
         return config;
@@ -77,7 +78,7 @@ public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public CheckResult checkConfig() {
-        return CheckConfigUtil.check(config, SOURCE_FIELD_NAME,FIELD_PATH, TARGET_FIELD);
+        return CheckConfigUtil.check(config, SOURCE_FIELD_NAME, FIELD_PATH, TARGET_FIELD);
     }
 
     @Override
