@@ -122,7 +122,6 @@ class EditorToolbar extends Component {
             return;
         }
         if (this.state.jobId) {
-            this.save();
             const hide = message.loading('启动中');
             const job = await startFillingJobs(this.state.jobId);
             console.log("job", job.status);
