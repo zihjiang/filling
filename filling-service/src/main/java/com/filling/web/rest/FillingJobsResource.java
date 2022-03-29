@@ -7,24 +7,31 @@ import com.filling.repository.FillingJobsRepository;
 import com.filling.service.FillingJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
 import com.filling.web.rest.vm.ResultVM;
+import liquibase.pro.packaged.l;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -236,5 +243,50 @@ public class FillingJobsResource {
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
 
         response.sendRedirect(flink.getUrl() + "/#/job/" + fillingJobs.get().getApplicationId() + "/overview");
+    }
+
+    @GetMapping(value = "/filling-job/{id}/export", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> exportFillingJobs(@PathVariable Long id) throws Exception {
+
+        Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
+        if(fillingJobs.isPresent()) {
+            FillingJobs fillingJobs1 = fillingJobs.get();
+            fillingJobs1.setId(null);
+            fillingJobs1.setFillingJobsHistories(null);
+            fillingJobs1.setStatus(null);
+            fillingJobs1.setApplicationId(null);
+            String jsonStr = JSONObject.toJSONString(fillingJobs1);
+            return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fillingJobs.get().getName(),"UTF-8") + ".json\"")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(new InputStreamResource(new ByteArrayInputStream(jsonStr.getBytes(Charset.forName("UTF-8")))));
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 上传文件
+     * @param multipartFile
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/filling-job/upload-file", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Object> uploadFile(@RequestParam("file") MultipartFile multipartFile) throws IOException {
+
+        return ResponseEntity.ok()
+            .body(fillingJobsService.uploadFile(multipartFile).getName());
+    }
+
+    /**
+     * 导入
+     * @param fileNames 文件名
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/filling-job/import")
+    public void importFillingJobs(@RequestBody List<String> fileNames ) throws IOException {
+        log.debug("REST request to overview /filling-job/import : {}", fileNames);
+        fillingJobsService.importFilling(fileNames);
     }
 }

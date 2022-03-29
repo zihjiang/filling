@@ -7,12 +7,19 @@ import com.filling.repository.FillingJobsRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.loader.tools.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -27,6 +34,8 @@ public class FillingJobsService {
     private final FillingJobsRepository fillingJobsRepository;
 
     private final ClusterClient clusterClient;
+
+    private final String TemplateDir = System.getProperty("java.io.tmpdir");
 
     public FillingJobsService(FillingJobsRepository fillingJobsRepository, ClusterClient clusterClient) {
         this.fillingJobsRepository = fillingJobsRepository;
@@ -179,5 +188,28 @@ public class FillingJobsService {
      */
     public JSONObject plan(FillingJobs fillingJobs) {
         return clusterClient.plan(fillingJobs.toJobString());
+    }
+
+    /**
+     * 上传文件
+     *
+     * @param multipartFile
+     * @return 返回文件
+     */
+    public File uploadFile(MultipartFile multipartFile) throws IOException {
+        String fileName = multipartFile.getOriginalFilename();
+        File file = new File(TemplateDir + fileName);
+        multipartFile.transferTo(file);
+        return file;
+    }
+
+    public void importFilling(List<String> fileNames) throws IOException {
+        FillingJobs fillingJobs;
+        for (String fileName : fileNames) {
+            fillingJobs = JSONObject.parseObject(new String(Files.readAllBytes(Paths.get(TemplateDir + fileName))), FillingJobs.class);
+            if (fillingJobs != null) {
+                save(fillingJobs);
+            }
+        }
     }
 }
