@@ -1,4 +1,3 @@
-import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Input, Drawer } from 'antd';
 import React, { useState, useRef } from 'react';
 import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
@@ -243,7 +242,6 @@ const TableList = () => {
               }}
               initialValues={record}
             >
-              <CreateForm />
             </ModalForm>
           </a>
         );
@@ -259,10 +257,6 @@ const TableList = () => {
       }
     },
   ];
-  let initialValues = {};
-  if (!initialValues.confProp) {
-    initialValues.confProp = '{"execution.parallelism": 2}';
-  }
   return (
     <PageContainer>
       <ProTable
@@ -273,43 +267,7 @@ const TableList = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <ModalForm
-            title="新建任务"
-            trigger={
-              <Button type="primary"> 新建任务</Button>
-            }
-            modalProps={{
-              onCancel: () => console.log('run'),
-            }}
-            onFinish={async (values) => {
-              // await this.save(values);
-              // const job = await addFillingJobs({ data: entity });
-              console.log(values);
-              const job = addFillingJobs({ data: values });
-              job.then(d => {
-                // window.location.href
-                window.location.href = '/butterfly-dag/' + d.id;
-              })
-              message.success('提交成功');
-              return true;
-            }}
-            width="40%"
-            initialValues={initialValues}
-          >
-            <ProFormText
-              width="xl"
-              name="name"
-              label="任务名称"
-              tooltip="最长为 24 位"
-              placeholder="请输入名称"
-              rules={[{ required: true }]}
-            />
-
-            <ProFormGroup label="任务参数">
-              <ProFormTextArea width="xl" name="confProp" label="" />
-            </ProFormGroup>
-            <ProFormTextArea width="xl" name="description" label="说明" />
-          </ModalForm>
+          <CreateForm refresh={actionRef.current?.reloadAndRest}/>
           ,
         ]}
         request={fillingJobs}

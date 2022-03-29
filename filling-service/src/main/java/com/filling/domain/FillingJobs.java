@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -58,7 +59,7 @@ public class FillingJobs implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "fillingJobs")
+    @OneToMany(mappedBy = "fillingJobs", fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = {"fillingJobs"}, allowSetters = true)
     private Set<FillingJobsHistory> fillingJobsHistories = new HashSet<>();
 

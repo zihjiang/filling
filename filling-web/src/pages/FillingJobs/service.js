@@ -80,3 +80,19 @@ export async function planFillingJobs(id) {
     method: 'GET'
   });
 }
+  /** 导出任务 export /filling-job/export/{id} */
+
+  export async function exportFillingJob(id) {
+    return request('/api/filling-job/' + id + '/export', {
+      method: 'GET'
+    });
+  }
+
+  /** 入任务 export /filling-job/import */
+
+  export async function importFillingJob(options) {
+    return request('/api/filling-job/import', {
+      method: 'POST',
+      ...(options || {}),
+    });
+  }
