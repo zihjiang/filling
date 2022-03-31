@@ -198,7 +198,7 @@ public class FillingJobsService {
      */
     public File uploadFile(MultipartFile multipartFile) throws IOException {
         String fileName = multipartFile.getOriginalFilename();
-        File file = new File(TemplateDir + fileName);
+        File file = new File(TemplateDir + File.separator + fileName);
         multipartFile.transferTo(file);
         return file;
     }
