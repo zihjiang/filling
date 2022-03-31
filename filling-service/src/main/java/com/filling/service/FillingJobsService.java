@@ -198,7 +198,7 @@ public class FillingJobsService {
      */
     public File uploadFile(MultipartFile multipartFile) throws IOException {
         String fileName = multipartFile.getOriginalFilename();
-        File file = new File(TemplateDir + fileName);
+        File file = new File(TemplateDir + File.separator + fileName);
         multipartFile.transferTo(file);
         return file;
     }
@@ -206,7 +206,7 @@ public class FillingJobsService {
     public void importFilling(List<String> fileNames) throws IOException {
         FillingJobs fillingJobs;
         for (String fileName : fileNames) {
-            fillingJobs = JSONObject.parseObject(new String(Files.readAllBytes(Paths.get(TemplateDir + fileName))), FillingJobs.class);
+            fillingJobs = JSONObject.parseObject(new String(Files.readAllBytes(Paths.get(TemplateDir + File.separator + fileName))), FillingJobs.class);
             if (fillingJobs != null) {
                 save(fillingJobs);
             }
