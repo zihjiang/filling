@@ -206,7 +206,7 @@ public class FillingJobsService {
     public void importFilling(List<String> fileNames) throws IOException {
         FillingJobs fillingJobs;
         for (String fileName : fileNames) {
-            fillingJobs = JSONObject.parseObject(new String(Files.readAllBytes(Paths.get(TemplateDir + fileName))), FillingJobs.class);
+            fillingJobs = JSONObject.parseObject(new String(Files.readAllBytes(Paths.get(TemplateDir + File.separator + fileName))), FillingJobs.class);
             if (fillingJobs != null) {
                 save(fillingJobs);
             }
