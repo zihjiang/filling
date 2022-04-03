@@ -5,7 +5,7 @@ name: Maven Package
 on:                               
   push:
     branches:
-    - main
+    - .*
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -37,4 +37,4 @@ jobs:
       with:
         context: .
         push: true
-        tags: zihjiang/filling:latest
+        tags: zihjiang/filling:${GITHUB_REF##*/}
