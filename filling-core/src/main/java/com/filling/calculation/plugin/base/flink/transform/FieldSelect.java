@@ -23,14 +23,14 @@ public class FieldSelect implements FlinkStreamTransform<Row, Row> {
     private static String FIELD = null;
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        process(tableEnvironment);
+        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
     }
 
-    private void process(TableEnvironment tableEnvironment) {
+    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
 
         Table table = null;
         String sql = null;
@@ -58,7 +58,7 @@ public class FieldSelect implements FlinkStreamTransform<Row, Row> {
 
         table = tableEnvironment.sqlQuery(sql);
 
-        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), table);
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override

@@ -21,11 +21,10 @@ public class Sql implements FlinkStreamTransform<Row, Row> {
     private static final String SQL = "sql";
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
         Table table = tableEnvironment.sqlQuery(sql.replaceAll("\\{" +SOURCE_TABLE_NAME+ "}", config.getString(SOURCE_TABLE_NAME)));
-
-        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), table);
+        return TableUtil.tableToDataStream(tableEnvironment, table, false);
     }
 
     @Override

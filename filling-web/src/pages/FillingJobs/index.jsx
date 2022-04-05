@@ -222,6 +222,7 @@ const TableList = () => {
         result.push(
           <a key="copy">
             <ModalForm
+            width={'40%'}
               title="复制"
               trigger={
                 <div>复制</div>
@@ -242,6 +243,18 @@ const TableList = () => {
               }}
               initialValues={record}
             >
+              <ProFormText
+                width="xl"
+                name="name"
+                label="任务名称"
+                tooltip="最长为 24 位"
+                placeholder="请输入名称"
+                rules={[{ required: true }]}
+              />
+              <ProFormGroup label="任务参数">
+                <ProFormTextArea width="xl" name="confProp" label="" />
+              </ProFormGroup>
+              <ProFormTextArea width="xl" name="description" label="说明" />
             </ModalForm>
           </a>
         );
@@ -267,7 +280,7 @@ const TableList = () => {
           labelWidth: 120,
         }}
         toolBarRender={() => [
-          <CreateForm refresh={actionRef.current?.reloadAndRest}/>
+          <CreateForm refresh={actionRef.current?.reloadAndRest} />
           ,
         ]}
         request={fillingJobs}

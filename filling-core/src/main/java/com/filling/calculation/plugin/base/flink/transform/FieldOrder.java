@@ -23,14 +23,14 @@ public class FieldOrder implements FlinkStreamTransform<Row, Row> {
     private static String FIELD_AND_SORT = null;
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        process(tableEnvironment);
+        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
     }
 
-    private void process(TableEnvironment env) {
+    private Object process(TableEnvironment env, Object data, String type) {
         String sql = "select * from {table_name}"
             .replaceAll("\\{table_name}", config.getString(SOURCE_TABLE_NAME));
 
@@ -43,7 +43,8 @@ public class FieldOrder implements FlinkStreamTransform<Row, Row> {
         } else {
             table = table.orderBy(FIELD_AND_SORT);
         }
-        env.createTemporaryView(config.getString(RESULT_TABLE_NAME), table);
+
+        return TableUtil.tableToDataStream((StreamTableEnvironment) env, table, false);
     }
     @Override
     public void setConfig(JSONObject config) {

@@ -72,7 +72,7 @@ public class FillingJobsService {
                     if (fillingJobs.getApplicationId() != null) {
                         existingFillingJobs.setApplicationId(fillingJobs.getApplicationId());
                     }
-                    if (fillingJobs.getJobText() != null) {
+                    if (!"{}".equals(fillingJobs.getJobText())) {
                         existingFillingJobs.setJobText(fillingJobs.getJobText());
                     }
                     if (fillingJobs.getType() != null) {
@@ -81,7 +81,7 @@ public class FillingJobsService {
                     if (fillingJobs.getConfProp() != null) {
                         existingFillingJobs.setConfProp(fillingJobs.getConfProp());
                     }
-                    if (fillingJobs.getStatus() != null) {
+                    if (!"1".equals(fillingJobs.getStatus())) {
                         existingFillingJobs.setStatus(fillingJobs.getStatus());
                     }
                     if (fillingJobs.getCreatetime() != null) {

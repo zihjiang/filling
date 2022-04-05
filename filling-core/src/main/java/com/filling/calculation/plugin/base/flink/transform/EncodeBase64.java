@@ -23,14 +23,14 @@ public class EncodeBase64 implements FlinkStreamTransform<Row, Row> {
     private static String TARGET_FIELD_NAME = "target_field";
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
-        process(tableEnvironment);
+        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
     }
 
-    private void process(TableEnvironment tableEnvironment) {
+    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
 
         String FUNCTION_NAME = "TO_BASE64";
         String sql = "select *,{function_name}(`{source_field}`) as `{target_field}` from {source_table_name}"
@@ -39,7 +39,8 @@ public class EncodeBase64 implements FlinkStreamTransform<Row, Row> {
             .replaceAll("\\{source_field}", config.getString(SOURCE_FIELD_NAME))
             .replaceAll("\\{target_field}", config.getString(TARGET_FIELD_NAME));
 
-        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), tableEnvironment.sqlQuery(sql).dropColumns(config.getString(SOURCE_FIELD_NAME)));
+        Table table = tableEnvironment.sqlQuery(sql).dropColumns(config.getString(SOURCE_FIELD_NAME));
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override

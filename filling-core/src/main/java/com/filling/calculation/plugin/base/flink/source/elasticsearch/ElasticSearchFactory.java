@@ -1,12 +1,8 @@
 package com.filling.calculation.plugin.base.flink.source.elasticsearch;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.streaming.api.functions.source.RichParallelSourceFunction;
 import org.apache.flink.types.Row;
 import org.elasticsearch.action.search.SearchResponse;
