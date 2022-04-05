@@ -37,6 +37,8 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Generate App Version
       run: echo APP_VERSION=`git describe --tags --always` >> $GITHUB_ENV
+    - name: echo env
+      run: env
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
