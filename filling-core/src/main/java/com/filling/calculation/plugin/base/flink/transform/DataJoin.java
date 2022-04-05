@@ -51,12 +51,19 @@ public class DataJoin implements FlinkStreamTransform<Row, Row> {
     String SECONDARY = "secondary";
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
+        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
+    }
+
+    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+
         // 主表
+        Table mainTable = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME));
         for (String table_name : JOIN_SOURCE_TABLE_NAME) {
+
             String where = config.getString(TABLE_AND_WHERE.get(table_name));
             String joinType = config.getString(TABLE_AND_TYPE.get(table_name));
             String sql = "select * from {main} {joinType} join {secondary} on {where}"
@@ -65,8 +72,10 @@ public class DataJoin implements FlinkStreamTransform<Row, Row> {
                     .replaceAll("\\{main\\}", config.getString(SOURCE_TABLE_NAME))
                     .replaceAll("\\{secondary\\}", table_name);
 
-            tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), tableEnvironment.sqlQuery(sql));
+            mainTable = tableEnvironment.sqlQuery(sql);
         }
+
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, mainTable, false);
     }
 
     @Override
@@ -82,8 +91,8 @@ public class DataJoin implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public CheckResult checkConfig() {
-        for (String table : JOIN_SOURCE_TABLE_NAME) {
-            if (!CheckConfigUtil.check(config, PRE + table + WHERE_SUFFIX).isSuccess() || CheckConfigUtil.check(config, PRE + SECONDARY + WHERE_SUFFIX).isSuccess()) {
+        for (String table: JOIN_SOURCE_TABLE_NAME) {
+            if(!CheckConfigUtil.check(config, PRE + table + WHERE_SUFFIX).isSuccess() || CheckConfigUtil.check(config, PRE + SECONDARY + WHERE_SUFFIX).isSuccess()) {
                 return CheckConfigUtil.check(config, PRE + table + WHERE_SUFFIX);
             }
         }

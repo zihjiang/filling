@@ -28,12 +28,12 @@ public class FieldFlattener implements FlinkStreamTransform<Row, Row> {
     private static String SOURCE_FIELD_NAME = "source_field";
 
     @Override
-    public void processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+    public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
-        process(tableEnvironment);
+        return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
     }
 
-    private void process(TableEnvironment tableEnvironment) {
+    private Object process(TableEnvironment tableEnvironment, Object data, String type) {
 
         String FUNCTION_NAME = "flattener";
         String sql = "select * FROM {source_table_name} LEFT JOIN LATERAL  TABLE({function_name}(`_source`))  ON TRUE"
@@ -41,10 +41,11 @@ public class FieldFlattener implements FlinkStreamTransform<Row, Row> {
             .replaceAll("\\{function_name}", FUNCTION_NAME)
             .replaceAll("\\{source_field}", config.getString(SOURCE_FIELD_NAME));
 
+        Table table = tableEnvironment.sqlQuery(sql);
 //        Table table = tableEnvironment.from(config.getString(SOURCE_TABLE_NAME))
 //                .joinLateral(call("flattener", $("_id")));
 //                );
-        tableEnvironment.createTemporaryView(config.getString(RESULT_TABLE_NAME), tableEnvironment.sqlQuery(sql));
+        return TableUtil.tableToDataStream((StreamTableEnvironment) tableEnvironment, table, false);
     }
 
     @Override
