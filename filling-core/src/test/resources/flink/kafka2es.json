@@ -10,6 +10,8 @@
       "result_table_name": "KafkaTableStreamTable",
       "format.type": "json",
       "schema": "{\"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":\"49\",\"_time\":1626571020000}",
+      "format.allow-comments": "true",
+      "format.ignore-parse-errors": "true",
       "offset.reset": "earliest",
       "consumer.bootstrap.servers": "192.168.100.189:9092"
     }
