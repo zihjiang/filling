@@ -21,7 +21,7 @@ public class dataGenSource implements FlinkStreamSource<Row> {
 
     private JSONObject config;
 
-    private Object schemaInfo;
+    private JSONObject schemaInfo;
 
     private static final String SCHEMA = "schema";
 
@@ -43,7 +43,7 @@ public class dataGenSource implements FlinkStreamSource<Row> {
     @Override
     public CheckResult checkConfig() {
 
-        CheckResult result = CheckConfigUtil.check(config, SCHEMA, RESULT_TABLE_NAME, "fields");
+        CheckResult result = CheckConfigUtil.check(config, SCHEMA, RESULT_TABLE_NAME);
 
         return result;
     }
@@ -51,7 +51,7 @@ public class dataGenSource implements FlinkStreamSource<Row> {
     @Override
     public void prepare(FlinkEnvironment env) {
 
-        schemaInfo = JSONObject.parse(config.getString(SCHEMA), Feature.OrderedField);
+        schemaInfo = JSONObject.parseObject(config.getString(SCHEMA), Feature.OrderedField);
         rowsPerSecond = config.getInteger("rows-per-second");
         numberOfRows = config.getLong("number-of-rows");
 
@@ -61,9 +61,9 @@ public class dataGenSource implements FlinkStreamSource<Row> {
     @Override
     public DataStream<Row> getStreamData(FlinkEnvironment env) {
 
-        TypeInformation<Row> typeInfo = SchemaUtil.getTypeInformation((JSONObject) schemaInfo);
+        TypeInformation<Row> typeInfo = SchemaUtil.getTypeInformation(schemaInfo);
 
-        DataGenFactory dataGenFactory = new DataGenFactory(fields);
+        DataGenFactory dataGenFactory = new DataGenFactory(fields, schemaInfo);
         DataGeneratorSource dataGeneratorSource = new DataGeneratorSource(dataGenFactory, rowsPerSecond, numberOfRows);
 
         DataStream dataStream = env.getStreamExecutionEnvironment().addSource(dataGeneratorSource).returns(typeInfo).name(getName()).setParallelism(getParallelism());
