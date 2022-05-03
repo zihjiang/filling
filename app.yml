@@ -17,7 +17,7 @@ services:
     ports:
       - "8080:8080"
   jobmanager:
-    image: flink:1.13.1-scala_2.11-java11
+    image: flink:1.14.3-scala_2.11-java11
     ports:
       - "8081:8081"
     command: jobmanager
@@ -26,7 +26,7 @@ services:
         FLINK_PROPERTIES=
         jobmanager.rpc.address: jobmanager
   taskmanager:
-    image: flink:1.13.1-scala_2.11
+    image: flink:1.14.3-scala_2.11
     depends_on:
       - jobmanager
     command: taskmanager
