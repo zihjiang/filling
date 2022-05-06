@@ -1,26 +1,79 @@
 {
-  "env": {
-    "execution.parallelism": 1,
-    "execution.time-characteristic": "event-time",
-    "job.name": "wattttt"
-  },
-  "source": [
-    {
-      "plugin_name": "MysqlCdcSource",
-      "consumer.group.id": "waterdrop52",
-      "driver": "lyj012",
-      "url": "earliest",
-      "query": "KafkaTableStreamTable",
-      "result_table_name": "es01"
-    }
-  ],
   "transform": [
-
+    {
+      "select.result_table_name": [
+        "dataSelector_f33b69d0_c054_t1",
+        "dataSelector_f33b69d0_c054_t2"
+      ],
+      "select.dataSelector_f33b69d0_c054_t1.where": "`value`>50",
+      "parallelism": "1",
+      "name": "DataSelector-transform",
+      "select.dataSelector_f33b69d0_c054_t2.where": "`value`<50",
+      "source_table_name": "dataGen_78f10589_a4f3",
+      "result_table_name": "dataSelector_f33b69d0_c054",
+      "plugin_name": "DataSelector"
+    },
+    {
+      "field": [
+        "`value`"
+      ],
+      "parallelism": "1",
+      "name": "FieldSelect-transform",
+      "source_table_name": "dataGen_78f10589_a4f3",
+      "result_table_name": "FieldSelect_a503f77b_d585",
+      "plugin_name": "FieldSelect"
+    },
+    {
+      "source_field": [
+        "value"
+      ],
+      "parallelism": "1",
+      "name": "FieldTypeConver-transform",
+      "source_table_name": "FieldSelect_a503f77b_d585",
+      "result_table_name": "fieldTypeConver_8c5393f1_4685",
+      "plugin_name": "FieldTypeConver",
+      "target_field_type": "String"
+    }
   ],
   "sink": [
     {
-      "source_table_name": "es01",
-      "plugin_name": "ConsoleSink"
+      "producer.bootstrap.servers": "192.168.1.200:9092",
+      "topics": "filling-001",
+      "parallelism": "1",
+      "name": "Kafka-sink",
+      "source_table_name": "dataSelector_f33b69d0_c054_t1",
+      "plugin_name": "KafkaSink"
+    },
+    {
+      "producer.bootstrap.servers": "192.168.1.200:9092",
+      "topics": "filling-002",
+      "parallelism": "1",
+      "name": "Kafka-sink",
+      "source_table_name": "dataSelector_f33b69d0_c054_t2",
+      "plugin_name": "KafkaSink"
+    },
+    {
+      "producer.bootstrap.servers": "192.168.1.200:9092",
+      "topics": "filling-004",
+      "parallelism": "1",
+      "name": "Kafka-sink",
+      "source_table_name": "fieldTypeConver_8c5393f1_4685",
+      "plugin_name": "KafkaSink"
     }
-  ]
+  ],
+  "source": [
+    {
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+      "number-of-rows": "10000000",
+      "parallelism": "1",
+      "name": "dataGen-source",
+      "result_table_name": "dataGen_78f10589_a4f3",
+      "rows-per-second": "10000",
+      "plugin_name": "dataGenSource"
+    }
+  ],
+  "env": {
+    "execution.parallelism": 2,
+    "job.name": "test"
+  }
 }
