@@ -415,7 +415,7 @@ class EditorToolbar extends Component {
                 <ZoomInOutlined onClick={this.zoomIn} title="放大" />
                 <ZoomOutOutlined onClick={this.zoomInOut} title="缩小" />
                 <BugFilled title="调试" onClick={this.debugMode} />
-                <PreviewConfiguration  uiInfo={{}} data={this.state.data} deCodeDataMap={this.deCodeDataMap} />
+                <PreviewConfiguration  data={this.state.data} deCodeDataMap={this.deCodeDataMap} />
                 <SaveFilled title="保存" onClick={() => this.save()} />
                 <CheckCircleFilled title="检查" onClick={() => this.plan()} />
 

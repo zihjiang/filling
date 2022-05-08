@@ -419,25 +419,25 @@ class ParamsFrom extends Component {
       if (this.state.configGroupDefinition)
         return (this.state.configGroupDefinition.groupNameToLabelMapList).map((item, idx) => {
           return (
-              <TabPane tab={item.label} key={idx}>
-                {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
-                  if (_item.displayMode == "BASIC" && this.dependsShow(_item, initialValues)) {
-                    // this.isDepends(_item, initialValues);
-                    return this.generationFromItem(_item, _idx);
-                  }
-                })}
+            <TabPane tab={item.label} key={idx}>
+              {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
+                if (_item.displayMode == "BASIC" && this.dependsShow(_item, initialValues)) {
+                  // this.isDepends(_item, initialValues);
+                  return this.generationFromItem(_item, _idx);
+                }
+              })}
 
-                <Collapse >
-                  <Panel header="高级选项" key="1">
-                    {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
-                      if (_item.displayMode != "BASIC" && this.dependsShow(_item, initialValues)) {
-                        // this.isDepends(_item, initialValues);
-                        return this.generationFromItem(_item, _idx);
-                      }
-                    })}
-                  </Panel>
-                </Collapse>
-              </TabPane>
+              <Collapse >
+                <Panel header="高级选项" key="1">
+                  {this.state.configDefinitions.filter(d => (d.group == item.name)).map((_item, _idx) => {
+                    if (_item.displayMode != "BASIC" && this.dependsShow(_item, initialValues)) {
+                      // this.isDepends(_item, initialValues);
+                      return this.generationFromItem(_item, _idx);
+                    }
+                  })}
+                </Panel>
+              </Collapse>
+            </TabPane>
           )
         })
     };

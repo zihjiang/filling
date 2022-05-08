@@ -85,7 +85,7 @@ public class FillingJobsResource {
     /**
      * {@code PUT  /filling-jobs/:id} : Updates an existing fillingJobs.
      *
-     * @param id the id of the fillingJobs to save.
+     * @param id          the id of the fillingJobs to save.
      * @param fillingJobs the fillingJobs to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fillingJobs,
      * or with status {@code 400 (Bad Request)} if the fillingJobs is not valid,
@@ -119,7 +119,7 @@ public class FillingJobsResource {
     /**
      * {@code PATCH  /filling-jobs/:id} : Partial updates given fields of an existing fillingJobs, field will ignore if it is null
      *
-     * @param id the id of the fillingJobs to save.
+     * @param id          the id of the fillingJobs to save.
      * @param fillingJobs the fillingJobs to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fillingJobs,
      * or with status {@code 400 (Bad Request)} if the fillingJobs is not valid,
@@ -187,6 +187,7 @@ public class FillingJobsResource {
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
         return ResponseUtil.wrapOrNotFound(fillingJobs);
     }
+
     /**
      * {@code DELETE  /filling-jobs/:id} : delete the "id" fillingJobs.
      *
@@ -205,6 +206,7 @@ public class FillingJobsResource {
 
     /**
      * {@code start  /filling-jobs/:id/start} : start the "id" fillingJobs.
+     *
      * @param id
      * @return
      */
@@ -212,7 +214,7 @@ public class FillingJobsResource {
     public ResponseEntity<FillingJobs> startFillingJobs(@PathVariable Long id) {
         log.debug("REST request to start FillingJobs : {}", id);
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
-        if(fillingJobs.isPresent()) {
+        if (fillingJobs.isPresent()) {
             fillingJobsService.start(fillingJobs.get());
 
         }
@@ -223,7 +225,7 @@ public class FillingJobsResource {
     public ResponseEntity<FillingJobs> stopFillingJobs(@PathVariable Long id) {
         log.debug("REST request to stop FillingJobs : {}", id);
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
-        if(fillingJobs.isPresent()) {
+        if (fillingJobs.isPresent()) {
             fillingJobsService.stop(fillingJobs.get());
 
         }
@@ -249,7 +251,7 @@ public class FillingJobsResource {
     public ResponseEntity<Object> exportFillingJobs(@PathVariable Long id) throws Exception {
 
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
-        if(fillingJobs.isPresent()) {
+        if (fillingJobs.isPresent()) {
             FillingJobs fillingJobs1 = fillingJobs.get();
             fillingJobs1.setId(null);
             fillingJobs1.setFillingJobsHistories(null);
@@ -257,7 +259,7 @@ public class FillingJobsResource {
             fillingJobs1.setApplicationId(null);
             String jsonStr = JSONObject.toJSONString(fillingJobs1);
             return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fillingJobs.get().getName(),"UTF-8") + ".json\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fillingJobs.get().getName(), "UTF-8") + ".json\"")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(new InputStreamResource(new ByteArrayInputStream(jsonStr.getBytes(Charset.forName("UTF-8")))));
         } else {
@@ -267,6 +269,7 @@ public class FillingJobsResource {
 
     /**
      * 上传文件
+     *
      * @param multipartFile
      * @return
      * @throws Exception
@@ -280,12 +283,13 @@ public class FillingJobsResource {
 
     /**
      * 导入
+     *
      * @param fileNames 文件名
      * @return
      * @throws Exception
      */
     @PostMapping(value = "/filling-job/import")
-    public void importFillingJobs(@RequestBody List<String> fileNames ) throws IOException {
+    public void importFillingJobs(@RequestBody List<String> fileNames) throws IOException {
         log.debug("REST request to overview /filling-job/import : {}", fileNames);
         fillingJobsService.importFilling(fileNames);
     }
