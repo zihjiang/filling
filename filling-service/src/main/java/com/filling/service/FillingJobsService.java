@@ -4,21 +4,28 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
+import com.filling.utils.DebugUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.loader.tools.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -210,6 +217,32 @@ public class FillingJobsService {
             if (fillingJobs != null) {
                 save(fillingJobs);
             }
+        }
+    }
+
+    @Async
+    public void debugFillingJob(FillingJobs fillingJobs, String fileName) {
+        try {
+            File result = new File(TemplateDir + File.separator + fileName + ".log");
+            DebugUtils debugUtils = new DebugUtils();
+            debugUtils.flinkDebug(result, fillingJobs.getJobText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+//            return fileName;
+        }
+    }
+
+
+    public List<String> debugFillingJobByName(String fileName) {
+        List<String> strings = new ArrayList<>();
+        try {
+            Path path = Paths.get(TemplateDir + File.separator + fileName + ".log");
+            strings = Files.readAllLines(path, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            return strings;
         }
     }
 }

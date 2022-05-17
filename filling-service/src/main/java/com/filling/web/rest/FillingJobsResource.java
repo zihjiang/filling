@@ -7,6 +7,7 @@ import com.filling.repository.FillingJobsRepository;
 import com.filling.service.FillingJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
 import com.filling.web.rest.vm.ResultVM;
+import io.micrometer.core.annotation.Timed;
 import liquibase.pro.packaged.l;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -34,6 +37,9 @@ import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 /**
  * REST controller for managing {@link com.filling.domain.FillingJobs}.
@@ -292,5 +298,27 @@ public class FillingJobsResource {
     public void importFillingJobs(@RequestBody List<String> fileNames) throws IOException {
         log.debug("REST request to overview /filling-job/import : {}", fileNames);
         fillingJobsService.importFilling(fileNames);
+    }
+
+
+    /**
+     *  {@code POST  /debug-filling-jobs}
+//     * @param fillingJobs
+     * @return
+     */
+    @PostMapping(value = "/debug-filling-job")
+    public ResponseEntity<String> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+        log.debug("REST request to debug FillingJobs : {}", fillingJobs);
+        String fileName = UUID.randomUUID().toString();
+        fillingJobsService.debugFillingJob(fillingJobs, fileName);
+        return ResponseEntity.ok()
+            .body(fileName);
+    }
+
+    @GetMapping(value = "/debug-filling-job-by-name/{name}")
+    public ResponseEntity<List<String>> debugFillingJobByName(@PathVariable String name) {
+        log.debug("REST request to debug FillingJobsByName : {}", name);
+        return ResponseEntity.ok()
+            .body(fillingJobsService.debugFillingJobByName(name));
     }
 }
