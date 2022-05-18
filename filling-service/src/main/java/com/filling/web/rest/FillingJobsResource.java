@@ -34,10 +34,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
@@ -307,18 +304,37 @@ public class FillingJobsResource {
      * @return
      */
     @PostMapping(value = "/debug-filling-job")
-    public ResponseEntity<String> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+    public ResponseEntity<Map<String, String>> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
         log.debug("REST request to debug FillingJobs : {}", fillingJobs);
-        String fileName = UUID.randomUUID().toString();
-        fillingJobsService.debugFillingJob(fillingJobs, fileName);
+        String debugId = UUID.randomUUID().toString();
+        Map result = new HashMap(16);
+        result.put("id", result);
+        fillingJobsService.debugFillingJob(fillingJobs, debugId);
         return ResponseEntity.ok()
-            .body(fileName);
+            .body(result);
     }
 
-    @GetMapping(value = "/debug-filling-job-by-name/{name}")
-    public ResponseEntity<List<String>> debugFillingJobByName(@PathVariable String name) {
-        log.debug("REST request to debug FillingJobsByName : {}", name);
+    /**
+     * 根据debug的name, 查看日志
+     * @param name
+     * @return
+     */
+    @GetMapping(value = "/debug-filling-job/log-job-by-name/{name}")
+    public ResponseEntity<List<String>> debugFillingJobLogByName(@PathVariable String name) {
+        log.debug("REST request to debug FillingJobsLogByName : {}", name);
         return ResponseEntity.ok()
             .body(fillingJobsService.debugFillingJobByName(name));
+    }
+
+    /**
+     * 根据result table name 查询debug数据
+     * @param name
+     * @return
+     */
+    @GetMapping(value = "/debug-filling-job/detail-result-table/{name}")
+    public ResponseEntity<List<String>> detailResultTable(@PathVariable String name) {
+        log.debug("REST request to debug detail Result table : {}", name);
+        return ResponseEntity.ok()
+            .body(fillingJobsService.detailResultTable(name));
     }
 }

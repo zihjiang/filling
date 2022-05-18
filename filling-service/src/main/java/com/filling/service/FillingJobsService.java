@@ -1,5 +1,6 @@
 package com.filling.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
@@ -220,10 +221,15 @@ public class FillingJobsService {
         }
     }
 
+    /**
+     * 异步方法, 执行debug信息
+     * @param fillingJobs job信息
+     * @param debugId id
+     */
     @Async
-    public void debugFillingJob(FillingJobs fillingJobs, String fileName) {
+    public void debugFillingJob(FillingJobs fillingJobs, String debugId) {
         try {
-            File result = new File(TemplateDir + File.separator + fileName + ".log");
+            File result = new File(TemplateDir + File.separator + debugId + ".log");
             DebugUtils debugUtils = new DebugUtils();
             debugUtils.flinkDebug(result, fillingJobs.getJobText());
         } catch (Exception e) {
@@ -233,7 +239,11 @@ public class FillingJobsService {
         }
     }
 
-
+    /**
+     * 根据任务返回的debug名称, 获取日志
+     * @param fileName
+     * @return
+     */
     public List<String> debugFillingJobByName(String fileName) {
         List<String> strings = new ArrayList<>();
         try {
@@ -244,5 +254,20 @@ public class FillingJobsService {
         } finally {
             return strings;
         }
+    }
+
+    public List<String> detailResultTable(String resultName) {
+
+        List<String> strings;
+
+        Path path = Paths.get("/tmp/flink_" + resultName + ".json");
+        try {
+            strings = JSONArray.parseArray(Files.readString(path), String.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+            strings = new ArrayList<>();
+        }
+
+        return strings;
     }
 }

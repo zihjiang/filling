@@ -1,4 +1,4 @@
-import { React, Component } from 'react';
+import { React, Component, useState } from 'react';
 import { Button, message, Form, Input, Row, Col } from 'antd';
 import ProForm, {
     ModalForm,
@@ -15,63 +15,69 @@ import "ace-builds/src-noconflict/theme-terminal";
 
 const PreviewConfiguration = (e) => {
 
+    const [modalVisit, setModalVisit] = useState(false);
+
     const deCodeDataMap = e.deCodeDataMap;
 
     const [form] = Form.useForm();
 
     let sourceOptions = [];
 
+    let fillingJob = e.data;
+
+    // 选中的源
+    let selectSource;
+
     // 更新testOrigin的数据
     const changeTestOrigin = (values) => {
 
         const data = deCodeDataMap(window.canvas.getDataMap());
-        const selectSource = data.nodes.filter(_d => _d.id == values);
+        selectSource = data.nodes.filter(_d => _d.id == values);
 
         form.setFieldsValue({
             schema: selectSource[0].data.schema
         });
-        // console.log("previewData: ", previewData);
+        console.log("selectSource: ", selectSource);
 
         // $("#EditorDebug span").click();
     }
 
-    // 设置下拉框数据
-    const setSourceOptions = () => {
+    const submit = (changeData) => {
 
-        const data = deCodeDataMap(window.canvas.getDataMap());
-        sourceOptions = data.nodes.filter(_d => _d.PluginType == 'source').map(c => { return { 'label': c.data.name, 'value': c.id } });
+        const data = window.canvas.getDataMap();
+        const jobText = deCodeDataMap(data);
 
-        console.log(form.getFieldValue);
-        console.log(form.getFieldValue('testOrigin'));
+        jobText.nodes.map(d => {
+            if (d.data.result_table_name == changeData.result_table_name.replaceAll('-', '_')) {
+                d.data.schema = changeData.schema;
+                d.data['plugin_name'] = 'CustomDataSource';
+            }
+        });
+        fillingJob.jobText = JSON.stringify(jobText);
+
+        console.log("fillingJob", fillingJob);
 
     }
 
-
     let initialValues = {};
-
-    console.log(initialValues);
-
-
-
     return (
         <ModalForm
             title="调试配置"
+            visible={modalVisit}
             form={form}
             trigger={
-                <BugFilled title="调试" onClick={setSourceOptions} />
+                <BugFilled title="调试" onClick={setModalVisit} />
             }
             initialValues={initialValues}
             modalProps={{
-                onCancel: () => console.log('run'),
+                onCancel: () => { setModalVisit(false) },
             }}
             onFinish={async (values) => {
-                // console.log(values);
-                const data = window.canvas.getDataMap();
-                console.log(data);
-                // console.log(this.deCodeDataMap(data));
-                console.log(this.updateData);
-                await this.updateData(values);
+                console.log(values);
+                submit(values);
+                console.log("submit");
                 message.success('提交成功');
+                setModalVisit(false)
                 return true;
             }}
 
@@ -91,7 +97,7 @@ const PreviewConfiguration = (e) => {
             <ProForm.Group>
                 <ProFormSelect
                     width="md"
-                    name="testOrigin"
+                    name="result_table_name"
                     label="Preview Source"
                     tooltip="Preview Source"
                     placeholder="Preview Source"
@@ -108,10 +114,9 @@ const PreviewConfiguration = (e) => {
             <ProForm.Group>
                 <Form.Item
                     name='schema'
-                    label={'示例数据'}
+                    label={'样例数据'}
                     tooltip={'item.paramsDesc'}
                     placeholder={'item.paramsDesc'}
-                    shouldUpdate={(prevValues, currentValues) => console.log(prevValues, currentValues)}
                     valuePropName="value">
                     <AceEditor
                         placeholder={'item.description'}

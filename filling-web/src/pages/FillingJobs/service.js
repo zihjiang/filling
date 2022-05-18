@@ -96,3 +96,12 @@ export async function planFillingJobs(id) {
       ...(options || {}),
     });
   }
+
+    /** 提交一个debug任务 /debug-filling-job */
+
+    export async function importFillingJob(options) {
+      return request('/api/debug-filling-job', {
+        method: 'POST',
+        ...(options || {}),
+      });
+    }
