@@ -97,11 +97,19 @@ export async function planFillingJobs(id) {
     });
   }
 
-    /** 提交一个debug任务 /debug-filling-job */
+    /** 提交一个debug任务, 返回id名称 /debug-filling-job */
 
-    export async function importFillingJob(options) {
+    export async function debugFillingJob(options) {
       return request('/api/debug-filling-job', {
         method: 'POST',
         ...(options || {}),
+      });
+    }
+
+    /** 提交一个debug任务 /debug-filling-job/log-job-by-name/{name} */
+
+    export async function debugFillingJobByName(options) {
+      return request('/api/debug-filling-jobs/' + options.name, {
+        method: 'GET'
       });
     }

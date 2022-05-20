@@ -226,12 +226,12 @@ public class FillingJobsService {
      * @param fillingJobs job信息
      * @param debugId id
      */
-    @Async
+    @Async("taskExecutor")
     public void debugFillingJob(FillingJobs fillingJobs, String debugId) {
         try {
             File result = new File(TemplateDir + File.separator + debugId + ".log");
             DebugUtils debugUtils = new DebugUtils();
-            debugUtils.flinkDebug(result, fillingJobs.getJobText());
+            debugUtils.flinkDebug(result, fillingJobs.toJobString());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

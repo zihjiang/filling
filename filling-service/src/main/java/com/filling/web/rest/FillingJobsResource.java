@@ -304,11 +304,11 @@ public class FillingJobsResource {
      * @return
      */
     @PostMapping(value = "/debug-filling-job")
-    public ResponseEntity<Map<String, String>> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+    public ResponseEntity<JSONObject> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
         log.debug("REST request to debug FillingJobs : {}", fillingJobs);
         String debugId = UUID.randomUUID().toString();
-        Map result = new HashMap(16);
-        result.put("id", result);
+        JSONObject result = new JSONObject();
+        result.put("id", debugId);
         fillingJobsService.debugFillingJob(fillingJobs, debugId);
         return ResponseEntity.ok()
             .body(result);

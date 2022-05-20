@@ -347,6 +347,12 @@
             <version>2.8.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.zeroturnaround</groupId>
+            <artifactId>zt-exec</artifactId>
+            <version>1.11</version>
+        </dependency>
+
 
     </dependencies>
 

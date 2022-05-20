@@ -8,6 +8,8 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import { BugFilled } from '@ant-design/icons';
 import $ from 'jquery';
+import { debugFillingJob } from '@/pages/FillingJobs/service';
+
 
 import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
@@ -42,7 +44,7 @@ const PreviewConfiguration = (e) => {
         // $("#EditorDebug span").click();
     }
 
-    const submit = (changeData) => {
+    const  submit = async (changeData) => {
 
         const data = window.canvas.getDataMap();
         const jobText = deCodeDataMap(data);
@@ -56,6 +58,11 @@ const PreviewConfiguration = (e) => {
         fillingJob.jobText = JSON.stringify(jobText);
 
         console.log("fillingJob", fillingJob);
+
+        const job = await debugFillingJob({ data: fillingJob});
+
+        console.log("job", job);
+        
 
     }
 
