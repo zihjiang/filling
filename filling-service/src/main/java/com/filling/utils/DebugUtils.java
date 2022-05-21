@@ -14,7 +14,7 @@ public class DebugUtils {
     public File flinkDebug(File file, String jobString) throws IOException {
         log.info("create tempFile: {}", file.getAbsolutePath());
         try {
-            exec(file, "java", "-cp",  "/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-runtime_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-scala_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/scala-library-2.12.15.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-planner_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-streaming-java_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-core/target/filling-core-1.0-SNAPSHOT.jar", "com.filling.calculation.Filling",  Base64Utils.encode(jobString),  "debug");
+            exec(file, "java", "-cp",  "/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-api-java-bridge_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-runtime_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-scala_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/scala-library-2.12.15.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-planner_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-streaming-java_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-core/target/filling-core-1.0-SNAPSHOT.jar", "com.filling.calculation.Filling",  Base64Utils.encode(jobString),  "debug");
         } catch (Exception e) {
 
             e.printStackTrace();

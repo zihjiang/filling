@@ -47,7 +47,9 @@ const PreviewConfiguration = (e) => {
     const  submit = async (changeData) => {
 
         const data = window.canvas.getDataMap();
-        const jobText = deCodeDataMap(data);
+        const jobText = JSON.parse(JSON.stringify(deCodeDataMap(data)));
+
+
 
         jobText.nodes.map(d => {
             if (d.data.result_table_name == changeData.result_table_name.replaceAll('-', '_')) {
