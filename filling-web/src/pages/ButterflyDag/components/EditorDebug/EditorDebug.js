@@ -33,7 +33,6 @@ class EditorDebug extends Component {
 
   render() {
     const { Panel } = Collapse;
-
     return (
       <div id="EditorDebug">
         <Collapse
@@ -41,9 +40,9 @@ class EditorDebug extends Component {
           expandIconPosition={'right'}
           destroyInactivePanel={true}
         >
-          <Panel header="Preview data" key="1">
+          <Panel header="预览数据" key="1">
             <ProFormSelect
-              label="stage"
+              label="算子"
               showSearch
               allowClear={false}
               fieldProps={{

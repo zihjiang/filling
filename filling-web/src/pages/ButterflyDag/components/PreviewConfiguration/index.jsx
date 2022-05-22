@@ -1,5 +1,5 @@
 import { React, Component, useState } from 'react';
-import { Button, message, Form, Input, Row, Col } from 'antd';
+import { Button, message, Form, Spin } from 'antd';
 import ProForm, {
     ModalForm,
     ProFormSelect,
@@ -18,6 +18,7 @@ import "ace-builds/src-noconflict/theme-terminal";
 const PreviewConfiguration = (e) => {
 
     const [modalVisit, setModalVisit] = useState(false);
+    const [spinVisit, setSpinVisit] = useState(false);
 
     const deCodeDataMap = e.deCodeDataMap;
 
@@ -41,10 +42,9 @@ const PreviewConfiguration = (e) => {
         });
         console.log("selectSource: ", selectSource);
 
-        // $("#EditorDebug span").click();
     }
 
-    const  submit = async (changeData) => {
+    const submit = async (changeData) => {
 
         const data = window.canvas.getDataMap();
         const jobText = JSON.parse(JSON.stringify(deCodeDataMap(data)));
@@ -61,93 +61,100 @@ const PreviewConfiguration = (e) => {
 
         console.log("fillingJob", fillingJob);
 
-        const job = await debugFillingJob({ data: fillingJob});
+        const job = await debugFillingJob({ data: fillingJob });
 
         console.log("job", job);
-        
+        setSpinVisit(false);
+        setModalVisit(false);
+
+        $("#EditorDebug span").trigger("click");
+
 
     }
 
     let initialValues = {};
     return (
-        <ModalForm
-            title="调试配置"
-            visible={modalVisit}
-            form={form}
-            trigger={
-                <BugFilled title="调试" onClick={setModalVisit} />
-            }
-            initialValues={initialValues}
-            modalProps={{
-                onCancel: () => { setModalVisit(false) },
-            }}
-            onFinish={async (values) => {
-                console.log(values);
-                submit(values);
-                console.log("submit");
-                message.success('提交成功');
-                setModalVisit(false)
-                return true;
-            }}
-
-            width='40%'
-            submitter={{
-                // 配置按钮文本
-                searchConfig: {
-                    resetText: '取消',
-                    submitText: '运行',
+        <>
+            <ModalForm
+                title="调试配置"
+                visible={modalVisit}
+                form={form}
+                trigger={
+                    <BugFilled title="调试" onClick={setModalVisit} />
                 }
-            }}
-            drawerprops={{
-                forceRender: true,
-                destroyOnClose: true
-            }}
-        >
-            <ProForm.Group>
-                <ProFormSelect
-                    width="md"
-                    name="result_table_name"
-                    label="Preview Source"
-                    tooltip="Preview Source"
-                    placeholder="Preview Source"
-                    // options={sourceOptions}
-                    options={
-                        window.canvas == undefined ? sourceOptions : deCodeDataMap(window.canvas.getDataMap()).nodes.filter(_d => _d.PluginType == 'source').map(c => { return { 'label': c.data.name, 'value': c.id } })
+                initialValues={initialValues}
+                modalProps={{
+                    onCancel: () => { setModalVisit(false); },
+                }}
+                onFinish={async (values) => {
+                    console.log(values);
+                    submit(values);
+                    console.log("submit");
+                    message.success('提交成功');
+                    setSpinVisit(true);
+                    return true;
+                }}
+
+                width='40%'
+                submitter={{
+                    // 配置按钮文本
+                    searchConfig: {
+                        resetText: '取消',
+                        submitText: '运行',
                     }
-                    onChange={changeTestOrigin}
-                    addonAfter={<a>尝试获取样例数据</a>}
-                />
+                }}
+                drawerprops={{
+                    forceRender: true,
+                    destroyOnClose: true
+                }}
+            >
+                <Spin spinning={spinVisit} delay={500}>
+                    <ProForm.Group>
+                        <ProFormSelect
+                            width="md"
+                            name="result_table_name"
+                            label="Preview Source"
+                            tooltip="Preview Source"
+                            placeholder="Preview Source"
+                            // options={sourceOptions}
+                            options={
+                                window.canvas == undefined ? sourceOptions : deCodeDataMap(window.canvas.getDataMap()).nodes.filter(_d => _d.PluginType == 'source').map(c => { return { 'label': c.data.name, 'value': c.id } })
+                            }
+                            onChange={changeTestOrigin}
+                            addonAfter={<a>尝试获取样例数据</a>}
+                        />
 
-            </ProForm.Group>
+                    </ProForm.Group>
 
-            <ProForm.Group>
-                <Form.Item
-                    name='schema'
-                    label={'样例数据'}
-                    tooltip={'item.paramsDesc'}
-                    placeholder={'item.paramsDesc'}
-                    valuePropName="value">
-                    <AceEditor
-                        placeholder={'item.description'}
-                        mode={'json'}
-                        theme="terminal"
-                        fontSize={12}
-                        height={'200px'}
-                        showPrintMargin={true}
-                        showGutter={true}
-                        highlightActiveLine={true}
-                        editorProps={{ $blockScrolling: false }}
-                        setOptions={{
-                            enableBasicAutocompletion: true,
-                            enableLiveAutocompletion: true,
-                            enableSnippets: true,
-                            showLineNumbers: true,
-                            tabSize: 2,
-                        }} />
-                </Form.Item>
-            </ProForm.Group>
-
-        </ModalForm>
+                    <ProForm.Group>
+                        <Form.Item
+                            name='schema'
+                            label={'样例数据'}
+                            tooltip={'item.paramsDesc'}
+                            placeholder={'item.paramsDesc'}
+                            valuePropName="value">
+                            <AceEditor
+                                placeholder={'item.description'}
+                                mode={'json'}
+                                theme="terminal"
+                                fontSize={12}
+                                height={'200px'}
+                                showPrintMargin={true}
+                                showGutter={true}
+                                highlightActiveLine={true}
+                                editorProps={{ $blockScrolling: false }}
+                                setOptions={{
+                                    enableBasicAutocompletion: true,
+                                    enableLiveAutocompletion: true,
+                                    enableSnippets: true,
+                                    showLineNumbers: true,
+                                    tabSize: 2,
+                                }} />
+                        </Form.Item>
+                    </ProForm.Group>
+                </Spin>
+            </ModalForm>
+        </>
     );
 }
 

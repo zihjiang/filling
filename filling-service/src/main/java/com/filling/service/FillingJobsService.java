@@ -6,6 +6,7 @@ import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
 import com.filling.utils.DebugUtils;
+import com.filling.web.rest.vm.FillingDebugVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,9 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Service Implementation for managing {@link FillingJobs}.
@@ -223,37 +222,52 @@ public class FillingJobsService {
 
     /**
      * 异步方法, 执行debug信息
+     *
      * @param fillingJobs job信息
-     * @param debugId id
+     * @param debugId     id
      */
-    @Async("taskExecutor")
-    public void debugFillingJob(FillingJobs fillingJobs, String debugId) {
+    public FillingDebugVM debugFillingJob(FillingJobs fillingJobs, String debugId) {
+        FillingDebugVM fillingDebugVM = new FillingDebugVM();
         try {
             File result = new File(TemplateDir + File.separator + debugId + ".log");
-            DebugUtils debugUtils = new DebugUtils();
-            debugUtils.flinkDebug(result, fillingJobs.toJobString());
+
+            fillingDebugVM.setStatus(DebugUtils.flinkDebug(result, fillingJobs.toJobString()));
+            fillingDebugVM.setLog(debugFillingJobByName(debugId));
+            fillingDebugVM.setPreviewData(detailResultTable(fillingJobs.getResultTableNameSourceAndTransform()));
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-//            return fileName;
+            return fillingDebugVM;
         }
     }
 
     /**
      * 根据任务返回的debug名称, 获取日志
+     *
      * @param fileName
      * @return
      */
-    public List<String> debugFillingJobByName(String fileName) {
-        List<String> strings = new ArrayList<>();
+    public String debugFillingJobByName(String fileName) {
+        String log = null;
         try {
             Path path = Paths.get(TemplateDir + File.separator + fileName + ".log");
-            strings = Files.readAllLines(path, StandardCharsets.UTF_8);
+            log = Files.readString(path);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            return strings;
+            return log;
         }
+    }
+
+
+    public Map<String, List<String>> detailResultTable(List<String> resultNames) {
+
+        Map<String, List<String>> result = new HashMap<>();
+        for (String resultName : resultNames) {
+            result.put(resultName, detailResultTable(resultName));
+        }
+        return result;
     }
 
     public List<String> detailResultTable(String resultName) {

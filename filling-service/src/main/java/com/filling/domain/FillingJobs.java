@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Lazy;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -329,6 +331,27 @@ public class FillingJobs implements Serializable {
         result.put("source", source);
         result.put("transform", transfrom);
         result.put("sink", sink);
+        return result;
+    }
+
+    /**
+     * 获取source和transform下面的resultTableName属性
+     * @return
+     */
+    public List<String> getResultTableNameSourceAndTransform() {
+        List<String> result = new ArrayList<>();
+        JSONObject dagString = getDAGString();
+        JSONArray source = dagString.getJSONArray("source");
+        JSONArray transform = dagString.getJSONArray("transform");
+
+        for (Object o : source) {
+            String result_table_name = JSONObject.parseObject(o.toString()).getString("result_table_name");
+            result.add(result_table_name);
+        }
+        for (Object o : transform) {
+            String result_table_name = JSONObject.parseObject(o.toString()).getString("result_table_name");
+            result.add(result_table_name);
+        }
         return result;
     }
 }

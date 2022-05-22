@@ -6,6 +6,7 @@ import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
 import com.filling.service.FillingJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
+import com.filling.web.rest.vm.FillingDebugVM;
 import com.filling.web.rest.vm.ResultVM;
 import io.micrometer.core.annotation.Timed;
 import liquibase.pro.packaged.l;
@@ -298,33 +299,48 @@ public class FillingJobsResource {
     }
 
 
+//    /**
+//     *  {@code POST  /debug-filling-jobs}
+////     * @param fillingJobs
+//     * @return
+//     */
+//    @PostMapping(value = "/debug-filling-job")
+//    public ResponseEntity<JSONObject> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+//        log.debug("REST request to debug FillingJobs : {}", fillingJobs);
+//        String debugId = UUID.randomUUID().toString();
+//        JSONObject result = new JSONObject();
+//        result.put("id", debugId);
+//        fillingJobsService.debugFillingJob(fillingJobs, debugId);
+//        return ResponseEntity.ok()
+//            .body(result);
+//    }
+
+
     /**
      *  {@code POST  /debug-filling-jobs}
-//     * @param fillingJobs
+     //     * @param fillingJobs
      * @return
      */
     @PostMapping(value = "/debug-filling-job")
-    public ResponseEntity<JSONObject> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+    public ResponseEntity<FillingDebugVM> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
         log.debug("REST request to debug FillingJobs : {}", fillingJobs);
         String debugId = UUID.randomUUID().toString();
-        JSONObject result = new JSONObject();
-        result.put("id", debugId);
-        fillingJobsService.debugFillingJob(fillingJobs, debugId);
+        FillingDebugVM result = fillingJobsService.debugFillingJob(fillingJobs, debugId);
         return ResponseEntity.ok()
             .body(result);
     }
 
-    /**
-     * 根据debug的name, 查看日志
-     * @param name
-     * @return
-     */
-    @GetMapping(value = "/debug-filling-job/log-job-by-name/{name}")
-    public ResponseEntity<List<String>> debugFillingJobLogByName(@PathVariable String name) {
-        log.debug("REST request to debug FillingJobsLogByName : {}", name);
-        return ResponseEntity.ok()
-            .body(fillingJobsService.debugFillingJobByName(name));
-    }
+//    /**
+//     * 根据debug的name, 查看日志
+//     * @param name
+//     * @return
+//     */
+//    @GetMapping(value = "/debug-filling-job/log-job-by-name/{name}")
+//    public ResponseEntity<List<String>> debugFillingJobLogByName(@PathVariable String name) {
+//        log.debug("REST request to debug FillingJobsLogByName : {}", name);
+//        return ResponseEntity.ok()
+//            .body(fillingJobsService.debugFillingJobByName(name));
+//    }
 
     /**
      * 根据result table name 查询debug数据
