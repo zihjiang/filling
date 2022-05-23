@@ -25,10 +25,12 @@ public class FieldFlattener implements FlinkStreamTransform<Row, Row> {
     private JSONObject config;
 
 
-    private static String SOURCE_FIELD_NAME = "source_field";
+    private static final String SOURCE_FIELD_NAME = "source_field";
 
     @Override
     public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+        System.out.println("[DEBUG] current stage: " + config.getString("name"));
+
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
         return (DataStream<Row>) process(tableEnvironment, dataStream, "stream");
     }

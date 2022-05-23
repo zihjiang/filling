@@ -35,8 +35,9 @@ public class FieldOperation implements FlinkStreamTransform<Row, Row> {
     }
 
     private Object process(TableEnvironment tableEnvironment, Object data, String type) {
+        System.out.println("[DEBUG] current stage: " + config.getString("name"));
 
-        String sql = "select *,(" +config.getString(SCRIPT_NAME)+ ") as {target_field_name} from {table_name}"
+        String sql = "select *,(" +config.getString(SCRIPT_NAME)+ ") as `{target_field_name}` from {table_name}"
             .replaceAll("\\{target_field_name}", config.getString(TARGET_FIELD_NAME))
             .replaceAll("\\{table_name}", config.getString(SOURCE_TABLE_NAME));
 

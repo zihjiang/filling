@@ -102,7 +102,6 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
                     default:
                         break;
                 }
-                System.out.println("run model: " + runModel);
                 tableEnvironment.createTemporaryView(name, dataStream);
             }
         }

@@ -61,12 +61,14 @@ const PreviewConfiguration = (e) => {
 
         console.log("fillingJob", fillingJob);
 
-        const job = await debugFillingJob({ data: fillingJob });
+        const debugInfo = await debugFillingJob({ data: fillingJob });
 
-        console.log("job", job);
+        console.log("job", debugInfo);
         setSpinVisit(false);
         setModalVisit(false);
 
+        window.debugInfo = debugInfo;
+        window.deCodeDataMap = deCodeDataMap;
         $("#EditorDebug span").trigger("click");
 
 
@@ -87,10 +89,7 @@ const PreviewConfiguration = (e) => {
                     onCancel: () => { setModalVisit(false); },
                 }}
                 onFinish={async (values) => {
-                    console.log(values);
                     submit(values);
-                    console.log("submit");
-                    message.success('提交成功');
                     setSpinVisit(true);
                     return true;
                 }}
