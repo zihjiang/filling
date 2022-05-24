@@ -1,7 +1,9 @@
 package com.filling.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 import com.filling.client.ClusterClient;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
@@ -261,25 +263,25 @@ public class FillingJobsService {
     }
 
 
-    public Map<String, List<String>> detailResultTable(List<String> resultNames) {
+    public Map<String, JSONArray> detailResultTable(List<String> resultNames) {
 
-        Map<String, List<String>> result = new HashMap<>();
+        Map<String, JSONArray> result = new HashMap<>();
         for (String resultName : resultNames) {
             result.put(resultName, detailResultTable(resultName));
         }
         return result;
     }
 
-    public List<String> detailResultTable(String resultName) {
+    public JSONArray detailResultTable(String resultName) {
 
-        List<String> strings;
+        JSONArray strings;
 
         Path path = Paths.get("/tmp/flink_" + resultName + ".json");
         try {
-            strings = JSONArray.parseArray(Files.readString(path), String.class);
+            strings = JSONArray.parseArray(Files.readString(path));
         } catch (IOException e) {
             e.printStackTrace();
-            strings = new ArrayList<>();
+            strings = new JSONArray();
         }
 
         return strings;

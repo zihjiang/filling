@@ -1,5 +1,6 @@
 package com.filling.web.rest.vm;
 
+import com.alibaba.fastjson.JSONArray;
 import com.filling.domain.FillingEdgeNodes;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class FillingDebugVM {
     /**
      * 预览的数据
      */
-    private Map<String, List<String>> previewData;
+    private Map<String, JSONArray> previewData;
 
     public String getLog() {
         return log;
@@ -44,11 +45,11 @@ public class FillingDebugVM {
         this.status = status;
     }
 
-    public Map<String, List<String>> getPreviewData() {
+    public Map<String, JSONArray> getPreviewData() {
         return previewData;
     }
 
-    public void setPreviewData(Map<String, List<String>> previewData) {
+    public void setPreviewData(Map<String, JSONArray> previewData) {
         this.previewData = previewData;
     }
 

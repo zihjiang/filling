@@ -1,79 +1,81 @@
 {
   "transform": [
     {
-      "select.result_table_name": [
-        "dataSelector_f33b69d0_c054_t1",
-        "dataSelector_f33b69d0_c054_t2"
-      ],
-      "select.dataSelector_f33b69d0_c054_t1.where": "`value`>50",
+      "target_field": "_time",
       "parallelism": "1",
-      "name": "DataSelector-transform",
-      "select.dataSelector_f33b69d0_c054_t2.where": "`value`<50",
-      "source_table_name": "dataGen_78f10589_a4f3",
-      "result_table_name": "dataSelector_f33b69d0_c054",
-      "plugin_name": "DataSelector"
+      "name": "add _time",
+      "source_table_name": "dataGen_965beac8_141c",
+      "result_table_name": "FieldOperation_8d1e2f43_8842",
+      "plugin_name": "FieldOperation",
+      "script": "UNIX_TIMESTAMP()*1000"
     },
     {
-      "field": [
-        "`value`"
-      ],
+      "target_field": "`raw`",
       "parallelism": "1",
-      "name": "FieldSelect-transform",
-      "source_table_name": "dataGen_78f10589_a4f3",
-      "result_table_name": "FieldSelect_a503f77b_d585",
-      "plugin_name": "FieldSelect"
-    },
-    {
-      "source_field": [
-        "value"
-      ],
-      "parallelism": "1",
-      "name": "FieldTypeConver-transform",
-      "source_table_name": "FieldSelect_a503f77b_d585",
-      "result_table_name": "fieldTypeConver_8c5393f1_4685",
-      "plugin_name": "FieldTypeConver",
-      "target_field_type": "String"
+      "name": "add raw",
+      "source_table_name": "FieldOperation_8d1e2f43_8842",
+      "result_table_name": "FieldOperation_3712732d_edba",
+      "plugin_name": "FieldOperation",
+      "script": "concat('{\"id\":',  id, ',\"host\":\"', host, '\",\"source\":\"', source, '\",\"MetricsName\":\"', MetricsName, '\",\"value\":',  `value`, ',\"_time\":', _time, '}')"
     }
   ],
   "sink": [
     {
-      "producer.bootstrap.servers": "192.168.1.200:9092",
-      "topics": "filling-001",
+      "producer.bootstrap.servers": "192.168.100.203:9092",
+      "topics": "filling-test01",
       "parallelism": "1",
       "name": "Kafka-sink",
-      "source_table_name": "dataSelector_f33b69d0_c054_t1",
-      "plugin_name": "KafkaSink"
-    },
-    {
-      "producer.bootstrap.servers": "192.168.1.200:9092",
-      "topics": "filling-002",
-      "parallelism": "1",
-      "name": "Kafka-sink",
-      "source_table_name": "dataSelector_f33b69d0_c054_t2",
-      "plugin_name": "KafkaSink"
-    },
-    {
-      "producer.bootstrap.servers": "192.168.1.200:9092",
-      "topics": "filling-004",
-      "parallelism": "1",
-      "name": "Kafka-sink",
-      "source_table_name": "fieldTypeConver_8c5393f1_4685",
+      "source_table_name": "FieldOperation_3712732d_edba",
       "plugin_name": "KafkaSink"
     }
   ],
   "source": [
     {
       "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
-      "number-of-rows": "10000000",
-      "parallelism": "1",
-      "name": "dataGen-source",
-      "result_table_name": "dataGen_78f10589_a4f3",
-      "rows-per-second": "10000",
-      "plugin_name": "dataGenSource"
+      "number-of-rows": "1000000",
+      "parallelism": 1,
+      "name": "mysource",
+      "result_table_name": "dataGen_965beac8_141c",
+      "rows-per-second": "100",
+      "plugin_name": "dataGenSource",
+      "fields": [
+        {
+          "id": {
+            "min": 1,
+            "max": 2,
+            "type": "Int"
+          }
+        },
+        {
+          "host": {
+            "length": 5,
+            "type": "String"
+          }
+        },
+        {
+          "source": {
+            "length": 10,
+            "type": "String"
+          }
+        },
+        {
+          "MetricsName": {
+            "length": 10,
+            "type": "String"
+          }
+        },
+        {
+          "value": {
+            "min": 1,
+            "max": 2,
+            "type": "Int"
+          }
+        }
+      ]
     }
   ],
   "env": {
     "execution.parallelism": 2,
-    "job.name": "test"
+    "job.name": "ck"
   }
 }

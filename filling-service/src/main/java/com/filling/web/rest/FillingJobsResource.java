@@ -1,5 +1,6 @@
 package com.filling.web.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.config.ApplicationProperties;
 import com.filling.domain.FillingJobs;
@@ -348,7 +349,7 @@ public class FillingJobsResource {
      * @return
      */
     @GetMapping(value = "/debug-filling-job/detail-result-table/{name}")
-    public ResponseEntity<List<String>> detailResultTable(@PathVariable String name) {
+    public ResponseEntity<JSONArray> detailResultTable(@PathVariable String name) {
         log.debug("REST request to debug detail Result table : {}", name);
         return ResponseEntity.ok()
             .body(fillingJobsService.detailResultTable(name));
