@@ -1,12 +1,12 @@
 import { React, Component, useState } from 'react';
-import { Button, message, Form, Spin } from 'antd';
+import { message, Form, Spin, notification } from 'antd';
 import ProForm, {
     ModalForm,
     ProFormSelect,
     ProFormDigit,
     ProFormSwitch
 } from '@ant-design/pro-form';
-import { BugFilled } from '@ant-design/icons';
+import { BugFilled, SmileOutlined, WarningOutlined } from '@ant-design/icons';
 import $ from 'jquery';
 import { debugFillingJob } from '@/pages/FillingJobs/service';
 
@@ -69,6 +69,27 @@ const PreviewConfiguration = (e) => {
 
         window.debugInfo = debugInfo;
         window.deCodeDataMap = deCodeDataMap;
+        if (debugInfo.status) {
+            notification.open({
+                message: '调试成功',
+                description:
+                    '可以正常运行, 并预览数据',
+                icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+                onClick: () => {
+                    console.log('Notification Clicked!');
+                },
+            });
+        } else {
+            notification.open({
+                message: '调试失败',
+                description:
+                    '调试失败, 具体请查看日志',
+                    icon: <WarningOutlined style={{ color: '#108ee9' }} />,
+                onClick: () => {
+                    console.log('Notification Clicked!');
+                },
+            });
+        }
         $("#EditorDebug span").trigger("click");
 
 
@@ -107,7 +128,7 @@ const PreviewConfiguration = (e) => {
                     destroyOnClose: true
                 }}
             >
-                <Spin spinning={spinVisit} delay={500}>
+                <Spin spinning={spinVisit} delay={100}>
                     <ProForm.Group>
                         <ProFormSelect
                             width="md"

@@ -5,8 +5,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.filling.client.ClusterClient;
+import com.filling.config.ApplicationProperties;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
+import com.filling.utils.Base64Utils;
 import com.filling.utils.DebugUtils;
 import com.filling.web.rest.vm.FillingDebugVM;
 import org.apache.commons.lang3.StringUtils;
@@ -20,9 +22,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.zeroturnaround.exec.ProcessExecutor;
+import org.zeroturnaround.exec.stream.LogOutputStream;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -46,9 +51,12 @@ public class FillingJobsService {
 
     private final String TemplateDir = System.getProperty("java.io.tmpdir");
 
-    public FillingJobsService(FillingJobsRepository fillingJobsRepository, ClusterClient clusterClient) {
+    private ApplicationProperties flink;
+
+    public FillingJobsService(FillingJobsRepository fillingJobsRepository, ClusterClient clusterClient, ApplicationProperties flink) {
         this.fillingJobsRepository = fillingJobsRepository;
         this.clusterClient = clusterClient;
+        this.flink = flink;
     }
 
     /**
@@ -233,7 +241,7 @@ public class FillingJobsService {
         try {
             File result = new File(TemplateDir + File.separator + debugId + ".log");
 
-            fillingDebugVM.setStatus(DebugUtils.flinkDebug(result, fillingJobs.toJobString()));
+            fillingDebugVM.setStatus(flinkDebug(result, fillingJobs.toJobString()));
             fillingDebugVM.setLog(debugFillingJobByName(debugId));
             fillingDebugVM.setPreviewData(detailResultTable(fillingJobs.getResultTableNameSourceAndTransform()));
 
@@ -286,4 +294,57 @@ public class FillingJobsService {
 
         return strings;
     }
+
+
+    /**
+     * 执行java -jar脚本
+     * @param file
+     * @param jobString
+     * @return
+     */
+    private Boolean flinkDebug(File file, String jobString) {
+        log.info("create tempFile: {}", file.getAbsolutePath());
+        Boolean result = true;
+        try {
+            result = exec(file, "java", "-cp", flink.getDebugLibDir() + File.separator + "*:" + flink.getJar(), "com.filling.calculation.Filling", Base64Utils.encode(jobString), "debug");
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        } finally {
+            return result;
+        }
+    }
+
+    private Boolean exec(File file, String... command) throws Exception {
+        final Boolean[] status = {true};
+        FileWriter fw = new FileWriter(file, true);
+        new ProcessExecutor().command(command).destroyOnExit().redirectOutput(new LogOutputStream() {
+            @Override
+            protected void processLine(String s) {
+                try {
+                    fw.append(s);
+                    fw.append("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).redirectError(new LogOutputStream() {
+            @Override
+            protected void processLine(String s) {
+                try {
+                    status[0] = false;
+                    System.out.println(s);
+                    System.out.println("\n");
+                    fw.append(s);
+                    fw.append("\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).execute().getExitValue();
+        fw.close();
+        return status[0];
+    }
+
 }

@@ -115,3 +115,4 @@ application:
 #     url: http://flink.k8s.di-matrix.cc
 #     url: http://10.10.14.117:9091
      jar: /Users/jiangzihan/filling/filling-core/target/filling-core-1.0-SNAPSHOT.jar
+     debug-lib-dir: /Users/jiangzihan/filling/filling-service/flink-jars/

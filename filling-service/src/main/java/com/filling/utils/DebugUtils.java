@@ -1,7 +1,10 @@
 package com.filling.utils;
 
+import com.filling.config.ApplicationProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.stream.LogOutputStream;
 
@@ -10,48 +13,19 @@ import java.io.*;
 public class DebugUtils {
     private static final Logger log = LoggerFactory.getLogger(DebugUtils.class);
 
-    public static Boolean flinkDebug(File file, String jobString) throws IOException {
-        log.info("create tempFile: {}", file.getAbsolutePath());
-        Boolean result = true;
-        try {
-            result = exec(file, "java", "-cp", "/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-api-java-bridge_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-runtime_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-scala_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/scala-library-2.12.15.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-table-planner_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-service/flink-jars/flink-streaming-java_2.12-1.14.3.jar:/Users/jiangzihan/filling/filling-core/target/filling-core-1.0-SNAPSHOT.jar", "com.filling.calculation.Filling", Base64Utils.encode(jobString), "debug");
-        } catch (Exception e) {
 
-            e.printStackTrace();
-        }
-        finally {
-            return result;
-        }
+    static String JARSLIB_STATIC;
+
+    static String MAINJAR_STATIC;
+
+    @Value("${application.flink.debug-lib-dir}")
+    public void setJarslibStatic(String name) {
+        DebugUtils.JARSLIB_STATIC = name;
     }
 
-    private static Boolean exec(File file, String... command) throws Exception {
-        final Boolean[] status = {true};
-        FileWriter fw = new FileWriter(file, true);
-        new ProcessExecutor().command(command).destroyOnExit().redirectOutput(new LogOutputStream() {
-            @Override
-            protected void processLine(String s) {
-                try {
-                    fw.append(s);
-                    fw.append("\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }).redirectError(new LogOutputStream() {
-            @Override
-            protected void processLine(String s) {
-                try {
-                    status[0] = false;
-                    fw.append(s);
-                    fw.append("\n");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).execute().getExitValue();
-        fw.close();
-        return status[0];
+    @Value("${application.flink.jar}")
+    public void setMainjarStatic(String name) {
+        DebugUtils.MAINJAR_STATIC = name;
     }
 
 //    public static void main(String[] args) throws IOException {

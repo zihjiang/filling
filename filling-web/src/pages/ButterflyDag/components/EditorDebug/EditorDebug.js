@@ -27,6 +27,7 @@ class EditorDebug extends Component {
       beforeData: {},
       currentData: {},
       selectData: [],
+      selectTabKey: "log",
       log: ""
     };
   }
@@ -40,28 +41,30 @@ class EditorDebug extends Component {
    */
   changeData = () => {
     const debugInfo = window.debugInfo;
-    const canvas = window.deCodeDataMap(window.canvas);
-
-    canvas.nodes.forEach(node => {
-      node.data.id = node.id;
-    });
-
-
-    let selectData = [];
-    canvas.nodes.filter(d => d.PluginType != 'sink').forEach(node => {
-      this.state.previewData[node.data.name] = debugInfo.previewData[node.data['result_table_name']];
-      selectData.push({
-        label: node.data.name,
-        value: node.data['result_table_name']
-      });
-    });
-
-    console.log(this.state.previewData);
-
     if (debugInfo) {
+      const canvas = window.deCodeDataMap(window.canvas);
+
+      canvas.nodes.forEach(node => {
+        node.data.id = node.id;
+      });
+
+
+      let selectData = [];
+      canvas.nodes.filter(d => d.PluginType != 'sink').forEach(node => {
+        this.state.previewData[node.data.name] = debugInfo.previewData[node.data['result_table_name']];
+        selectData.push({
+          label: node.data.name,
+          value: node.data['result_table_name']
+        });
+      });
+
+      console.log(this.state.previewData);
+
+
       this.setState({
         log: debugInfo.log,
-        selectData: selectData
+        selectData: selectData,
+        selectTabKey: debugInfo.status ? 'preview' : 'log'
       })
     }
   }
@@ -112,8 +115,8 @@ class EditorDebug extends Component {
           >
             <Panel header="预览数据" key="1">
 
-              <Tabs tabPosition={'left'}>
-                <TabPane tab="预览" key="1">
+              <Tabs tabPosition={'left'} defaultActiveKey={this.state.selectTabKey} destroyInactiveTabPane={true}>
+                <TabPane tab="预览" key="preview">
                   <ProFormSelect
                     label="算子"
                     showSearch
@@ -151,7 +154,7 @@ class EditorDebug extends Component {
 
                   </div>
                 </TabPane>
-                <TabPane tab="日志" key="2">
+                <TabPane tab="日志" key="log">
                   <div>
                     <AceEditor
                       mode="json"
