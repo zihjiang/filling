@@ -2,6 +2,8 @@ package com.filling.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.util.Map;
+
 /**
  * Properties specific to Filling.
  * <p>
@@ -13,6 +15,7 @@ public class ApplicationProperties {
     String model;
     String url;
     String jar;
+    String debugLibDir;
 
     public String getModel() {
         return model;
@@ -38,4 +41,11 @@ public class ApplicationProperties {
         this.jar = jar;
     }
 
+    public String getDebugLibDir() {
+        return debugLibDir;
+    }
+
+    public void setDebugLibDir(String debugLibDir) {
+        this.debugLibDir = debugLibDir;
+    }
 }

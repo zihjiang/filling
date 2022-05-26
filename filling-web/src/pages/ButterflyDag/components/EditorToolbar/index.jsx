@@ -27,6 +27,7 @@ import ProForm, {
     ProFormGroup
 } from '@ant-design/pro-form';
 import { planFillingJobs, startFillingJobs, stopFillingJobs, addFillingJobs, updateFillingJobs, patchFillingJobs, exportFillingJob } from '@/pages/FillingJobs/service';
+import { PreviewConfiguration } from '../PreviewConfiguration';
 import { history } from 'umi';
 class EditorToolbar extends Component {
     constructor(props) {
@@ -413,7 +414,7 @@ class EditorToolbar extends Component {
                 <LayoutFilled onClick={this.autoLayout} title="自动对齐" />
                 <ZoomInOutlined onClick={this.zoomIn} title="放大" />
                 <ZoomOutOutlined onClick={this.zoomInOut} title="缩小" />
-                <BugFilled title="调试" onClick={this.debugMode} />
+                <PreviewConfiguration  data={this.state.data} deCodeDataMap={this.deCodeDataMap} />
                 <SaveFilled title="保存" onClick={() => this.save()} />
                 <CheckCircleFilled title="检查" onClick={() => this.plan()} />
 
@@ -422,7 +423,7 @@ class EditorToolbar extends Component {
                 <BarChartOutlined title="监控" style={{ display: (this.state.status != 2) ? 'none' : '' }} onClick={() => this.overview()} />
                 <DownloadOutlined title="下载" onClick={() => this.export()} />
                 <SelectOutlined title="另存为" />
-                {appEdit}
+                {appEdit} 
             </div>
         );
     }

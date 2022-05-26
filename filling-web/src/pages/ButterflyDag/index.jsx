@@ -10,6 +10,7 @@ import BaseNode from './components/EditorGraph/node';
 import { fillingJob } from '../FillingJobs/service';
 import { Spin } from 'antd';
 import rightTools from './components/EditorPanel/data';
+import { EditorDebug } from './components/EditorDebug/index';
 class EditorFlow extends Component {
   constructor(props) {
     super(props);
@@ -84,6 +85,7 @@ class EditorFlow extends Component {
           <Row className={styles.editorBd}>
             <Col lg={20} xxl={22} className={styles.editorContent}>
               <EditorGraph data={data} />
+              <EditorDebug />
             </Col>
             <Col lg={4} xxl={2} className={styles.editorSidebar}>
               {/* FlowItemPanel */}

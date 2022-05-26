@@ -5,6 +5,7 @@ import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.env.RuntimeEnv;
 import com.filling.calculation.flink.util.ConfigKeyName;
 import com.filling.calculation.flink.util.EnvironmentUtil;
+import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.time.Time;
 import org.apache.flink.api.java.ExecutionEnvironment;
 import org.apache.flink.runtime.state.StateBackend;
@@ -98,6 +99,7 @@ public class FlinkEnvironment implements RuntimeEnv {
     private void createStreamEnvironment() {
         environment = StreamExecutionEnvironment.getExecutionEnvironment();
         setCheckpoint();
+//        environment.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
         EnvironmentUtil.setRestartStrategy(config,environment.getConfig());
 

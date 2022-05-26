@@ -1,26 +1,81 @@
 {
-  "env": {
-    "execution.parallelism": 1,
-    "execution.time-characteristic": "event-time",
-    "job.name": "wattttt"
-  },
-  "source": [
-    {
-      "plugin_name": "MysqlCdcSource",
-      "consumer.group.id": "waterdrop52",
-      "driver": "lyj012",
-      "url": "earliest",
-      "query": "KafkaTableStreamTable",
-      "result_table_name": "es01"
-    }
-  ],
   "transform": [
-
+    {
+      "target_field": "_time",
+      "parallelism": "1",
+      "name": "add _time",
+      "source_table_name": "dataGen_965beac8_141c",
+      "result_table_name": "FieldOperation_8d1e2f43_8842",
+      "plugin_name": "FieldOperation",
+      "script": "UNIX_TIMESTAMP()*1000"
+    },
+    {
+      "target_field": "`raw`",
+      "parallelism": "1",
+      "name": "add raw",
+      "source_table_name": "FieldOperation_8d1e2f43_8842",
+      "result_table_name": "FieldOperation_3712732d_edba",
+      "plugin_name": "FieldOperation",
+      "script": "concat('{\"id\":',  id, ',\"host\":\"', host, '\",\"source\":\"', source, '\",\"MetricsName\":\"', MetricsName, '\",\"value\":',  `value`, ',\"_time\":', _time, '}')"
+    }
   ],
   "sink": [
     {
-      "source_table_name": "es01",
-      "plugin_name": "ConsoleSink"
+      "producer.bootstrap.servers": "192.168.100.203:9092",
+      "topics": "filling-test01",
+      "parallelism": "1",
+      "name": "Kafka-sink",
+      "source_table_name": "FieldOperation_3712732d_edba",
+      "plugin_name": "KafkaSink"
     }
-  ]
+  ],
+  "source": [
+    {
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+      "number-of-rows": "1000000",
+      "parallelism": 1,
+      "name": "mysource",
+      "result_table_name": "dataGen_965beac8_141c",
+      "rows-per-second": "100",
+      "plugin_name": "dataGenSource",
+      "fields": [
+        {
+          "id": {
+            "min": 1,
+            "max": 2,
+            "type": "Int"
+          }
+        },
+        {
+          "host": {
+            "length": 5,
+            "type": "String"
+          }
+        },
+        {
+          "source": {
+            "length": 10,
+            "type": "String"
+          }
+        },
+        {
+          "MetricsName": {
+            "length": 10,
+            "type": "String"
+          }
+        },
+        {
+          "value": {
+            "min": 1,
+            "max": 2,
+            "type": "Int"
+          }
+        }
+      ]
+    }
+  ],
+  "env": {
+    "execution.parallelism": 2,
+    "job.name": "ck"
+  }
 }

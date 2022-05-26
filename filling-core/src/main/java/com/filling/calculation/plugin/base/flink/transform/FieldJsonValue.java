@@ -38,6 +38,7 @@ public class FieldJsonValue implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+        System.out.println("[DEBUG] current stage: " + config.getString("name"));
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
 
