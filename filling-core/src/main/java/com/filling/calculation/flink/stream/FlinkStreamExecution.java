@@ -1,18 +1,26 @@
 package com.filling.calculation.flink.stream;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckResult;
+import com.filling.calculation.enums.RunModel;
 import com.filling.calculation.env.Execution;
 import com.filling.calculation.env.RuntimeEnv;
 import com.filling.calculation.flink.FlinkEnvironment;
+import com.filling.calculation.flink.util.SchemaUtil;
 import com.filling.calculation.flink.util.TableUtil;
 import com.filling.calculation.plugin.Plugin;
+import org.apache.flink.api.common.functions.MapFunction;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.types.Row;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,7 +41,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
     }
 
     @Override
-    public void start(List<FlinkStreamSource> sources, List<FlinkStreamTransform> transforms, List<FlinkStreamSink> sinks) throws Exception {
+    public void start(List<FlinkStreamSource> sources, List<FlinkStreamTransform> transforms, List<FlinkStreamSink> sinks, RunModel runModel) throws Exception {
 
         List<DataStream> data = new ArrayList<>();
         for (FlinkStreamSource source : sources) {
@@ -43,7 +51,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
                 prepare(flinkEnvironment, source);
                 dataStream = source.getStreamData(flinkEnvironment);
                 data.add(dataStream);
-                registerResultTable(source, dataStream);
+                registerResultTable(source, dataStream, runModel);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -60,7 +68,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
                 }
                 transform.registerFunction(flinkEnvironment);
                 input = transform.processStream(flinkEnvironment, stream);
-                registerResultTable(transform, input);
+                registerResultTable(transform, input, runModel);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -80,12 +88,20 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
         flinkEnvironment.getStreamExecutionEnvironment().execute(flinkEnvironment.getJobName());
     }
 
-    private void registerResultTable(Plugin plugin, DataStream dataStream) {
+    private void registerResultTable(Plugin plugin, DataStream dataStream, RunModel runModel){
         JSONObject config = plugin.getConfig();
         if (config.containsKey(RESULT_TABLE_NAME)) {
             String name = config.getString(RESULT_TABLE_NAME);
             StreamTableEnvironment tableEnvironment = flinkEnvironment.getStreamTableEnvironment();
             if (!TableUtil.tableExists(tableEnvironment, name)) {
+                switch (runModel) {
+                    case DEBUG:
+                        debugModel(dataStream, name);
+                        break;
+                    case RUN:
+                    default:
+                        break;
+                }
                 tableEnvironment.createTemporaryView(name, dataStream);
             }
         }
@@ -132,4 +148,38 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
     private static void prepare(RuntimeEnv env, Plugin plugin) {
         plugin.prepare(env);
     }
+
+    /**
+     * datastream to string
+     * @param dataStream
+     * @return
+     */
+    private static void debugModel(DataStream<Row> dataStream, String resultTableName) {
+        JSONArray jsonArray = new JSONArray();
+        dataStream.map((MapFunction<Row, Object>) row -> {
+            Map<String, Object> stringObjectMap = SchemaUtil.rowToJsonMap(row);
+            jsonArray.add(new JSONObject(stringObjectMap));
+            stringToFile(jsonArray.toJSONString(), resultTableName);
+            return null;
+        });
+    }
+
+    /**
+     * string to file
+     */
+    private static File stringToFile(String str, String resultTableName) {
+        File file = null;
+        try {
+            file = new File("/tmp/flink_" + resultTableName + ".json");
+            FileWriter writer = new FileWriter(file);
+            writer.write(str);
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
+
+
+
 }

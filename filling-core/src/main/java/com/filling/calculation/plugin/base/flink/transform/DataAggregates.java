@@ -42,6 +42,8 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public DataStream<Row> processStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+        System.out.println("[DEBUG] current stage: " + config.getString("name"));
+
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
         DataStream<Row> dataStreamForWT = dataStream.assignTimestampsAndWatermarks(new DefaultWaterMark(ROWTIME_WATERMARK_FIELD, ROWTIME_WATERMARK_FIELD_DELAY_MS));
          Table table = tableEnvironment.fromDataStream(

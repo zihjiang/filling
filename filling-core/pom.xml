@@ -19,6 +19,7 @@
         <elasticsearch.version>7.5.1</elasticsearch.version>
         <logback.version>1.2.3</logback.version>
         <log4j-over-slf4j.version>1.7.30</log4j-over-slf4j.version>
+        <log4j.vsersion>2.17.2</log4j.vsersion>
     </properties>
 
 
@@ -107,7 +108,6 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-api-java-bridge_${flink.scala.version}</artifactId>
             <version>${flink.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.flink/flink-jdbc -->
@@ -159,7 +159,6 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-table-common</artifactId>
             <version>${flink.version}</version>
-            <scope>provided</scope>
         </dependency>
 
         <!--flink sink source-->
@@ -230,6 +229,17 @@
             <groupId>org.slf4j</groupId>
             <artifactId>log4j-over-slf4j</artifactId>
             <version>${log4j-over-slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>${log4j.vsersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>${log4j.vsersion}</version>
         </dependency>
 
     </dependencies>

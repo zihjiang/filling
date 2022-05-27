@@ -1,12 +1,15 @@
 package com.filling.web.rest;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.config.ApplicationProperties;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
 import com.filling.service.FillingJobsService;
 import com.filling.web.rest.errors.BadRequestAlertException;
+import com.filling.web.rest.vm.FillingDebugVM;
 import com.filling.web.rest.vm.ResultVM;
+import io.micrometer.core.annotation.Timed;
 import liquibase.pro.packaged.l;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -31,9 +36,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 /**
  * REST controller for managing {@link com.filling.domain.FillingJobs}.
@@ -85,7 +90,7 @@ public class FillingJobsResource {
     /**
      * {@code PUT  /filling-jobs/:id} : Updates an existing fillingJobs.
      *
-     * @param id the id of the fillingJobs to save.
+     * @param id          the id of the fillingJobs to save.
      * @param fillingJobs the fillingJobs to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fillingJobs,
      * or with status {@code 400 (Bad Request)} if the fillingJobs is not valid,
@@ -119,7 +124,7 @@ public class FillingJobsResource {
     /**
      * {@code PATCH  /filling-jobs/:id} : Partial updates given fields of an existing fillingJobs, field will ignore if it is null
      *
-     * @param id the id of the fillingJobs to save.
+     * @param id          the id of the fillingJobs to save.
      * @param fillingJobs the fillingJobs to update.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated fillingJobs,
      * or with status {@code 400 (Bad Request)} if the fillingJobs is not valid,
@@ -187,6 +192,7 @@ public class FillingJobsResource {
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
         return ResponseUtil.wrapOrNotFound(fillingJobs);
     }
+
     /**
      * {@code DELETE  /filling-jobs/:id} : delete the "id" fillingJobs.
      *
@@ -205,6 +211,7 @@ public class FillingJobsResource {
 
     /**
      * {@code start  /filling-jobs/:id/start} : start the "id" fillingJobs.
+     *
      * @param id
      * @return
      */
@@ -212,7 +219,7 @@ public class FillingJobsResource {
     public ResponseEntity<FillingJobs> startFillingJobs(@PathVariable Long id) {
         log.debug("REST request to start FillingJobs : {}", id);
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
-        if(fillingJobs.isPresent()) {
+        if (fillingJobs.isPresent()) {
             fillingJobsService.start(fillingJobs.get());
 
         }
@@ -223,7 +230,7 @@ public class FillingJobsResource {
     public ResponseEntity<FillingJobs> stopFillingJobs(@PathVariable Long id) {
         log.debug("REST request to stop FillingJobs : {}", id);
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
-        if(fillingJobs.isPresent()) {
+        if (fillingJobs.isPresent()) {
             fillingJobsService.stop(fillingJobs.get());
 
         }
@@ -249,7 +256,7 @@ public class FillingJobsResource {
     public ResponseEntity<Object> exportFillingJobs(@PathVariable Long id) throws Exception {
 
         Optional<FillingJobs> fillingJobs = fillingJobsService.findOne(id);
-        if(fillingJobs.isPresent()) {
+        if (fillingJobs.isPresent()) {
             FillingJobs fillingJobs1 = fillingJobs.get();
             fillingJobs1.setId(null);
             fillingJobs1.setFillingJobsHistories(null);
@@ -257,7 +264,7 @@ public class FillingJobsResource {
             fillingJobs1.setApplicationId(null);
             String jsonStr = JSONObject.toJSONString(fillingJobs1);
             return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fillingJobs.get().getName(),"UTF-8") + ".json\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + URLEncoder.encode(fillingJobs.get().getName(), "UTF-8") + ".json\"")
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(new InputStreamResource(new ByteArrayInputStream(jsonStr.getBytes(Charset.forName("UTF-8")))));
         } else {
@@ -267,6 +274,7 @@ public class FillingJobsResource {
 
     /**
      * 上传文件
+     *
      * @param multipartFile
      * @return
      * @throws Exception
@@ -280,13 +288,70 @@ public class FillingJobsResource {
 
     /**
      * 导入
+     *
      * @param fileNames 文件名
      * @return
      * @throws Exception
      */
     @PostMapping(value = "/filling-job/import")
-    public void importFillingJobs(@RequestBody List<String> fileNames ) throws IOException {
+    public void importFillingJobs(@RequestBody List<String> fileNames) throws IOException {
         log.debug("REST request to overview /filling-job/import : {}", fileNames);
         fillingJobsService.importFilling(fileNames);
+    }
+
+
+//    /**
+//     *  {@code POST  /debug-filling-jobs}
+////     * @param fillingJobs
+//     * @return
+//     */
+//    @PostMapping(value = "/debug-filling-job")
+//    public ResponseEntity<JSONObject> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+//        log.debug("REST request to debug FillingJobs : {}", fillingJobs);
+//        String debugId = UUID.randomUUID().toString();
+//        JSONObject result = new JSONObject();
+//        result.put("id", debugId);
+//        fillingJobsService.debugFillingJob(fillingJobs, debugId);
+//        return ResponseEntity.ok()
+//            .body(result);
+//    }
+
+
+    /**
+     *  {@code POST  /debug-filling-jobs}
+     //     * @param fillingJobs
+     * @return
+     */
+    @PostMapping(value = "/debug-filling-job")
+    public ResponseEntity<FillingDebugVM> debugFillingJob(@RequestBody FillingJobs fillingJobs) {
+        log.debug("REST request to debug FillingJobs : {}", fillingJobs);
+        String debugId = UUID.randomUUID().toString();
+        FillingDebugVM result = fillingJobsService.debugFillingJob(fillingJobs, debugId);
+        return ResponseEntity.ok()
+            .body(result);
+    }
+
+//    /**
+//     * 根据debug的name, 查看日志
+//     * @param name
+//     * @return
+//     */
+//    @GetMapping(value = "/debug-filling-job/log-job-by-name/{name}")
+//    public ResponseEntity<List<String>> debugFillingJobLogByName(@PathVariable String name) {
+//        log.debug("REST request to debug FillingJobsLogByName : {}", name);
+//        return ResponseEntity.ok()
+//            .body(fillingJobsService.debugFillingJobByName(name));
+//    }
+
+    /**
+     * 根据result table name 查询debug数据
+     * @param name
+     * @return
+     */
+    @GetMapping(value = "/debug-filling-job/detail-result-table/{name}")
+    public ResponseEntity<JSONArray> detailResultTable(@PathVariable String name) {
+        log.debug("REST request to debug detail Result table : {}", name);
+        return ResponseEntity.ok()
+            .body(fillingJobsService.detailResultTable(name));
     }
 }

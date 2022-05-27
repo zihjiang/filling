@@ -4,10 +4,15 @@ package com.filling.calculation.plugin.base.flink.source.stream;
 //import com.alibaba.ververica.cdc.debezium.StringDebeziumDeserializationSchema;
 
 import com.filling.calculation.Filling;
+import com.filling.calculation.enums.RunModel;
 import com.filling.calculation.env.Engine;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,7 +27,7 @@ public class FillingTest {
     @Before
     public void setup() {
 
-        rootPath = this.getClass().getResource("/").getPath();
+        rootPath = "/Users/jiangzihan/filling/filling-core/src/test/resources/";
     }
 
     @Test
@@ -30,7 +35,7 @@ public class FillingTest {
         configPath = "flink/filling.json";
         String str = Files.lines(Paths.get(rootPath + configPath), StandardCharsets.UTF_8).collect(Collectors.joining());
 
-        Filling.entryPoint(str, Engine.FLINK);
+        Filling.entryPoint(str, Engine.FLINK, RunModel.DEBUG);
     }
 
     @Test
@@ -57,5 +62,29 @@ public class FillingTest {
 
     @Test
     public void testessocll() {
+
+        Runtime runtime = Runtime.getRuntime();
+        Process process;
+        BufferedReader br = null;
+        BufferedWriter wr = null;
+        try {
+            process = runtime.exec("pwd");
+
+            br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            wr = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+
+            String inline;
+            while ((inline = br.readLine()) != null) {
+//                inline = inline.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+                System.out.println(inline);
+//                System.out.println("\n");
+            }
+            br.close();
+        } catch (Exception e) {
+
+
+            e.printStackTrace();
+        }
+
     }
 }
