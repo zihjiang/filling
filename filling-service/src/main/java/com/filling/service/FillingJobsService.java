@@ -288,7 +288,7 @@ public class FillingJobsService {
         try {
             strings = JSONArray.parseArray(Files.readString(path));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             strings = new JSONArray();
         }
 

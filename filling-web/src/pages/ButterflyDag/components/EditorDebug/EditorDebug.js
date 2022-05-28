@@ -10,6 +10,8 @@ import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-javascript';
 import "ace-builds/src-noconflict/theme-xcode";
 
+import 'ace-builds/src-noconflict/ext-searchbox';
+
 import styles from './index.less';
 
 
@@ -93,6 +95,11 @@ class EditorDebug extends Component {
 
       console.log('beforeData', beforeData);
       console.log('currentData', currentData);
+    } else {
+      this.setState({
+        beforeData: [],
+        currentData: debugInfo.previewData[d.value]
+      })
     }
   }
 
