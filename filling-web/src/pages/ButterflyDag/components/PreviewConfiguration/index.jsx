@@ -37,9 +37,11 @@ const PreviewConfiguration = (e) => {
         const data = deCodeDataMap(window.canvas.getDataMap());
         selectSource = data.nodes.filter(_d => _d.id == values);
 
-        form.setFieldsValue({
-            schema: selectSource[0].data.schema
-        });
+        if(selectSource[0].data.schema && selectSource[0].data.schema.startsWith("{")) {
+            form.setFieldsValue({
+                schema: JSON.stringify(JSON.parse(selectSource[0].data.schema), null, 2)
+            });
+        }
         console.log("selectSource: ", selectSource);
 
     }
@@ -52,7 +54,7 @@ const PreviewConfiguration = (e) => {
 
 
         jobText.nodes.map(d => {
-            if (d.data.result_table_name == changeData.result_table_name.replaceAll('-', '_')) {
+            if (['KafkaTableStream', 'dataGenSource'].includes(d.data['plugin_name']) && d.data.result_table_name == changeData.result_table_name.replaceAll('-', '_')) {
                 d.data.schema = changeData.schema;
                 d.data['plugin_name'] = 'CustomDataSource';
             }
