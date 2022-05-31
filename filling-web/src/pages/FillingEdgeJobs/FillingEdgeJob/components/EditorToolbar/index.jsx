@@ -230,7 +230,7 @@ class EditorToolbar extends Component {
     render() {
         let initialValues = this.state.data;
         if (!initialValues.confProp) {
-            initialValues.confProp = '{"execution.parallelism": 2}';
+            initialValues.confProp = '{"execution.parallelism": 1, "execution.checkpoint.interval": 1000}';
         }
 
         let uiInfo = this.state.data.uiInfo || {};

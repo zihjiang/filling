@@ -312,19 +312,20 @@ public class FillingJobs implements Serializable {
         JSONArray transfrom = new JSONArray();
         JSONArray sink = new JSONArray();
         JSONObject env = JSONObject.parseObject(getConfProp());
-        orgJobTextNodes.stream().forEach(d -> {
-            JSONObject jsonObject = JSON.parseObject(d.toString());
-            if("source".equals(jsonObject.getString("PluginType"))) {
-                source.add(jsonObject.getJSONObject("data"));
-            } else if("transform".equals(jsonObject.getString("PluginType"))) {
-                transfrom.add(jsonObject.getJSONObject("data"));
-            } else if("sink".equals(jsonObject.getString("PluginType"))) {
-                sink.add(jsonObject.getJSONObject("data"));
-            }
-        });
+        if (orgJobTextNodes != null) {
+            orgJobTextNodes.stream().forEach(d -> {
+                JSONObject jsonObject = JSON.parseObject(d.toString());
+                if ("source".equals(jsonObject.getString("PluginType"))) {
+                    source.add(jsonObject.getJSONObject("data"));
+                } else if ("transform".equals(jsonObject.getString("PluginType"))) {
+                    transfrom.add(jsonObject.getJSONObject("data"));
+                } else if ("sink".equals(jsonObject.getString("PluginType"))) {
+                    sink.add(jsonObject.getJSONObject("data"));
+                }
+            });
+        }
 
-
-        if(StringUtils.isEmpty(env.getString("job.name"))) {
+        if (StringUtils.isEmpty(env.getString("job.name"))) {
             env.put("job.name", getName());
         }
         result.put("env", env);
@@ -336,6 +337,7 @@ public class FillingJobs implements Serializable {
 
     /**
      * 获取source和transform下面的resultTableName属性
+     *
      * @return
      */
     public List<String> getResultTableNameSourceAndTransform() {

@@ -104,8 +104,16 @@ public class SchemaUtil {
             Object value = stringObjectEntry.getValue();
             if(value instanceof HashMap) {
                 row.setField(key, JsonMapToRow((HashMap<String, Object>) map.get(key)));
+            } else if(value instanceof JSONObject) {
+
+                JSONObject jsonObject = new JSONObject(map);
+                row.setField(key, JsonMapToRow(jsonObject.getJSONObject(key)));
             } else if(value instanceof ArrayList) {
                 ArrayList arrayList = (ArrayList) value;
+                row.setField(key, JsonMapArrayToRow(arrayList));
+            }  else if(value instanceof JSONArray) {
+                JSONArray jsonArray = JSONArray.parseArray(value.toString());
+                ArrayList arrayList = jsonArray.toJavaObject(ArrayList.class);
                 row.setField(key, JsonMapArrayToRow(arrayList));
             } else {
                 row.setField(key, value);
@@ -246,5 +254,26 @@ public class SchemaUtil {
 
 
         return result;
+    }
+
+
+    /**
+     * 判断object是否为基本类型
+     * @param object
+     * @return
+     */
+    public static boolean isBaseType(Object object) {
+        Class className = object.getClass();
+        if (className.equals(java.lang.Integer.class) ||
+                className.equals(java.lang.Byte.class) ||
+                className.equals(java.lang.Long.class) ||
+                className.equals(java.lang.Double.class) ||
+                className.equals(java.lang.Float.class) ||
+                className.equals(java.lang.Character.class) ||
+                className.equals(java.lang.Short.class) ||
+                className.equals(java.lang.Boolean.class)) {
+            return true;
+        }
+        return false;
     }
 }

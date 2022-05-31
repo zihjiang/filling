@@ -71,9 +71,9 @@ public class FieldOperation implements FlinkStreamTransform<Row, Row> {
      * @param expr
      * @return
      */
-    private Expression[] _(String expr) {
-
-        List<Expression> expressions = ExpressionParser.parseExpressionList(expr);
-        return expressions.toArray(new Expression[0]);
-    }
+//    private Expression[] _(String expr) {
+//
+//        List<Expression> expressions = ExpressionParser.parseExpressionList(expr);
+//        return expressions.toArray(new Expression[0]);
+//    }
 }

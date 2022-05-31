@@ -1,22 +1,70 @@
 {
-  "env": {
-    "execution.parallelism": 1
-  },
-  "source": [
-    {
-      "schema": "{\"hostid\": \"host01\",\"metric\": \"cpu_user\",\"value\": 13, \"auth\": \"1|2|3|4|5\"}",
-      "simple_data": "{\"hostid\": \"host01\",\"metric\": \"cpu_user\",\"value\": 13, \"auth\": \"1|2|3|4|5\"}\n{\"hostid\": \"host01\",\"metric\": \"cpu_user\",\"value\": 13, \"auth\": \"1|2|3|4|5\"}",
-      "result_table_name": "FileSourceTable",
-      "plugin_name": "CustomStream",
-      "format.type": "json"
-    }
-  ],
   "transform": [
+    {
+      "target_field": "message",
+      "parallelism": "1",
+      "name": "add message字段",
+      "source_table_name": "dataGen_66389dc7_7016",
+      "result_table_name": "FieldOperation_ca93138c_32bb",
+      "id": "FieldOperation-ca93138c-32bb",
+      "plugin_name": "FieldOperation",
+      "script": "'{\"message\": {\"name\": \"张三\"}}'"
+    }
   ],
   "sink": [
     {
-      "source_table_name": "FileSourceTable",
-      "plugin_name": "ConsoleSink"
+      "plugin_name": "ConsoleSink",
+      "source_table_name": "FieldOperation_ca93138c_32bb"
     }
-  ]
+  ],
+  "source": [
+    {
+      "schema": "[\n{\n  \"id\": 1,\n  \"host\": \"192.168.1.103\",\n  \"source\": \"datasource\",\n  \"MetricsName\": \"cpu\",\n  \"value\": 49\n},\n{\n  \"id\": 1,\n  \"host\": \"192.168.1.103\",\n  \"source\": \"datasource\",\n  \"MetricsName\": \"cpu\",\n  \"value\": 49\n}\n]",
+      "number-of-rows": "1000000",
+      "parallelism": 1,
+      "name": "mysource",
+      "result_table_name": "dataGen_66389dc7_7016",
+      "rows-per-second": "100",
+      "id": "dataGen-66389dc7-7016",
+      "plugin_name": "CustomDataSource",
+      "fields": [
+        {
+          "id": {
+            "min": 1,
+            "max": 2,
+            "type": "Int"
+          }
+        },
+        {
+          "host": {
+            "length": 5,
+            "type": "String"
+          }
+        },
+        {
+          "source": {
+            "length": 10,
+            "type": "String"
+          }
+        },
+        {
+          "MetricsName": {
+            "length": 10,
+            "type": "String"
+          }
+        },
+        {
+          "value": {
+            "min": 1,
+            "max": 2,
+            "type": "Int"
+          }
+        }
+      ]
+    }
+  ],
+  "env": {
+    "execution.parallelism": 1,
+    "job.name": "测试jsonValue-selecter"
+  }
 }

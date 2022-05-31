@@ -54,7 +54,30 @@
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
             <version>${flink.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>kryo</artifactId>
+                    <groupId>com.esotericsoftware.kryo</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.esotericsoftware.kryo/kryo -->
+        <!-- 解决debug下找不到类的问题 -->
+        <dependency>
+            <groupId>com.esotericsoftware.kryo</groupId>
+            <artifactId>kryo</artifactId>
+            <version>2.24.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.twitter/chill -->
+        <dependency>
+            <groupId>com.twitter</groupId>
+            <artifactId>chill_2.12</artifactId>
+            <version>0.7.6</version>
+        </dependency>
+
+
 
         <dependency>
             <groupId>org.apache.flink</groupId>

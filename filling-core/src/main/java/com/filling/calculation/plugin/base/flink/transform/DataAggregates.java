@@ -10,7 +10,6 @@ import com.filling.calculation.flink.util.TableUtil;
 import com.filling.calculation.plugin.base.flink.transform.watermark.DefaultWaterMark;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.Tumble;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.expressions.Expression;
@@ -48,7 +47,7 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
         DataStream<Row> dataStreamForWT = dataStream.assignTimestampsAndWatermarks(new DefaultWaterMark(ROWTIME_WATERMARK_FIELD, ROWTIME_WATERMARK_FIELD_DELAY_MS));
          Table table = tableEnvironment.fromDataStream(
                  dataStreamForWT,
-                 _(
+                 field(
                          getGroupField(ROWTIME_WATERMARK_FIELD + ".rowtime", getColumnByTable(tableEnvironment.from(config.getString(SOURCE_TABLE_NAME)), ROWTIME_WATERMARK_FIELD))
                  )
          );
@@ -57,9 +56,9 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
                         // define window
         ).window(Tumble.over(lit(ROWTIME_WATERMARK_FIELD_MS).millis()).on($(ROWTIME_WATERMARK_FIELD)).as(ROWTIME_WATERMARK_FIELD + "_watermark"))
                 // group by key and window
-                .groupBy( _(getGroupField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS)))
+                .groupBy( field(getGroupField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS)))
                 .select(
-                        _(getSelectField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS))
+                        field(getSelectField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS))
                 );
 
         return TableUtil.tableToDataStream(tableEnvironment, result, true);
@@ -100,7 +99,7 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
      * @param expr
      * @return
      */
-    private Expression[] _(String expr) {
+    private Expression[] field(String expr) {
 
         List<Expression> expressions = ExpressionParser.parseExpressionList(expr);
         return expressions.toArray(new Expression[0]);
