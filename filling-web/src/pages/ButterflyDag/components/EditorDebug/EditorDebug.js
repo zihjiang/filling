@@ -70,7 +70,10 @@ class EditorDebug extends Component {
       })
     }
   }
-
+  /**
+   * 
+   * @param {改变的数据} d 
+   */
   changeSelect = (d) => {
 
     const canvas = window.deCodeDataMap(window.canvas);
