@@ -8,7 +8,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 import { BugFilled, SmileOutlined, WarningOutlined } from '@ant-design/icons';
 import $ from 'jquery';
-import { debugFillingJob } from '@/pages/FillingJobs/service';
+import { debugFillingJob, debugFillingSourceData } from '@/pages/FillingJobs/service';
 
 
 import AceEditor from "react-ace";
@@ -37,13 +37,33 @@ const PreviewConfiguration = (e) => {
         const data = deCodeDataMap(window.canvas.getDataMap());
         selectSource = data.nodes.filter(_d => _d.id == values);
 
-        if(selectSource[0].data.schema && selectSource[0].data.schema.startsWith("{")) {
+        if (selectSource[0].data.schema && selectSource[0].data.schema.startsWith("{")) {
             form.setFieldsValue({
                 schema: JSON.stringify(JSON.parse(selectSource[0].data.schema), null, 2)
             });
         }
         console.log("selectSource: ", selectSource);
 
+    }
+
+    // 从数据源获取数据
+    const getSourceData = async () => {
+
+        const values = form.getFieldValue("result_table_name");
+        const data = deCodeDataMap(window.canvas.getDataMap());
+        selectSource = data.nodes.filter(_d => _d.id == values);
+
+        if (selectSource && selectSource[0]) {
+            setSpinVisit(true);
+            const data = selectSource[0].data;
+            const sourceData = await debugFillingSourceData({ "data": data });
+            setSpinVisit(false);
+
+            form.setFieldsValue({
+                schema: JSON.stringify(sourceData, null, 2)
+            });
+
+        }
     }
 
     const submit = async (changeData) => {
@@ -86,7 +106,7 @@ const PreviewConfiguration = (e) => {
                 message: '调试失败',
                 description:
                     '调试失败, 具体请查看日志',
-                    icon: <WarningOutlined style={{ color: '#108ee9' }} />,
+                icon: <WarningOutlined style={{ color: '#108ee9' }} />,
                 onClick: () => {
                     console.log('Notification Clicked!');
                 },
@@ -117,7 +137,7 @@ const PreviewConfiguration = (e) => {
                     return true;
                 }}
 
-                width='40%'
+                width='60%'
                 submitter={{
                     // 配置按钮文本
                     searchConfig: {
@@ -143,7 +163,7 @@ const PreviewConfiguration = (e) => {
                                 window.canvas == undefined ? sourceOptions : deCodeDataMap(window.canvas.getDataMap()).nodes.filter(_d => _d.PluginType == 'source').map(c => { return { 'label': c.data.name, 'value': c.id } })
                             }
                             onChange={changeTestOrigin}
-                            addonAfter={<a>尝试获取样例数据</a>}
+                            addonAfter={<a onClick={getSourceData}>尝试获取样例数据</a>}
                         />
 
                     </ProForm.Group>
@@ -161,16 +181,13 @@ const PreviewConfiguration = (e) => {
                                 theme="terminal"
                                 fontSize={12}
                                 height={'200px'}
+                                width={window.screen.width * 0.55 + 'px'}
                                 showPrintMargin={true}
                                 showGutter={true}
                                 highlightActiveLine={true}
-                                editorProps={{ $blockScrolling: false }}
+                                editorProps={{ $blockScrolling: true }}
                                 setOptions={{
-                                    enableBasicAutocompletion: true,
-                                    enableLiveAutocompletion: true,
-                                    enableSnippets: true,
-                                    showLineNumbers: true,
-                                    tabSize: 2,
+                                    tabSize: 2
                                 }} />
                         </Form.Item>
                     </ProForm.Group>

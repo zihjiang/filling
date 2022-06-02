@@ -14,6 +14,8 @@ import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.api.common.serialization.DeserializationSchema;
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.connector.kafka.source.KafkaSource;
 import org.apache.flink.connector.kafka.source.enumerator.initializer.OffsetsInitializer;
 import org.apache.flink.formats.csv.CsvRowDeserializationSchema;
@@ -74,9 +76,9 @@ public class KafkaTableStream implements FlinkStreamSource<Row> {
     @Override
     public void prepare(FlinkEnvironment env) {
         String startsWith = "[";
-        if(config.getString(TOPICS) != null) {
+        if (config.getString(TOPICS) != null) {
             // 查看是否以[开头
-            if(config.getString(TOPICS).startsWith(startsWith)) {
+            if (config.getString(TOPICS).startsWith(startsWith)) {
                 for (int i = 0; i < config.getJSONArray(TOPICS).size(); i++) {
                     topics.add(config.getJSONArray(TOPICS).getString(i));
                 }
@@ -110,20 +112,24 @@ public class KafkaTableStream implements FlinkStreamSource<Row> {
     private DeserializationSchema getSchema() {
         DeserializationSchema result = null;
         String schemaContent = config.getString(SCHEMA);
-        schemaInfo = JSONObject.parse(schemaContent, Feature.OrderedField);
-
-        TypeInformation<Row> typeInfo = SchemaUtil.getTypeInformation((JSONObject) schemaInfo);
         switch (format) {
             case "csv":
-                char delimiter =config.getString(FORMAT_FIELD_DELIMITER).charAt(0);
-                result = new CsvRowDeserializationSchema.Builder(typeInfo).setFieldDelimiter(delimiter).setIgnoreParseErrors(true).build();
+                // TODO
+//                char delimiter = config.getString(FORMAT_FIELD_DELIMITER).charAt(0);
+//                result = new CsvRowDeserializationSchema.Builder(typeInfo).setFieldDelimiter(delimiter).setIgnoreParseErrors(true).build();
                 break;
             case "json":
+                schemaInfo = JSONObject.parse(schemaContent, Feature.OrderedField);
+
+                TypeInformation<Row> typeInfo = SchemaUtil.getTypeInformation((JSONObject) schemaInfo);
                 // 忽略转换错误引发的退出任务, 提升健壮性,
                 result = new JsonRowDeserializationSchema.Builder(typeInfo).ignoreParseErrors().build();
                 break;
             case "text":
-                result = new SimpleStringSchema();
+            case "string":
+                TypeInformation[] info = {Types.STRING()};
+                String[] name = {"message"};
+                result = new JsonRowDeserializationSchema.Builder(new RowTypeInfo(info, name)).ignoreParseErrors().build();
                 break;
             default:
                 break;
