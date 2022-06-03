@@ -16,6 +16,9 @@ import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-sql';
 import "ace-builds/src-noconflict/theme-terminal";
+import 'ace-builds/src-noconflict/theme-github';
+// import "ace-builds/src-noconflict/ext-language_tools"
+import autocomplete from "@/utils/autocomplete";
 
 import { Form } from 'antd';
 
@@ -62,7 +65,9 @@ class ParamsFrom extends Component {
         break;
     }
     // 更改节点的值
-    document.getElementById(selectNode.id).innerText = values.name;
+    if (values.name) {
+      document.getElementById(selectNode.id).innerText = values.name;
+    }
   }
 
   _forceUpdate = (values) => {
@@ -104,11 +109,12 @@ class ParamsFrom extends Component {
     console.log('pluginOptions', pluginOptions);
     let data = this.state.data;
 
+    // console.log("editor", editor);
+
     // if (pluginOptions) {
     if (this.state.data != undefined) {
       // 编辑
       initialValues = data;
-      console.log('编辑', initialValues);
     } else {
       // 新建
       pluginOptions.forEach((pluginOption) => {
@@ -117,8 +123,9 @@ class ParamsFrom extends Component {
 
       console.log('新建');
     }
-    console.log('pluginOptions', pluginOptions);
-    console.log('window.jobRunStatus', window.jobRunStatus);
+
+    autocomplete();
+
     // }
 
     let Universal = () => (
@@ -140,10 +147,42 @@ class ParamsFrom extends Component {
                       required: item.required,
                       message: `${item.text}是必须的`,
                     },
+                    {
+                      pattern: new RegExp(item.ruleRegexp),
+                      message: item.ruleMessage
+                    }
                   ],
                 }
               }
             />
+          case "ace-auto-complete":
+            return <Form.Item
+              key={idx}
+              name={item.name}
+              label={item.text}
+              tooltip={item.paramsDesc}
+              placeholder={item.paramsDesc}
+              // style={{ display: item.display }}
+              disabled={item.readOnly || window.jobRunStatus}
+              valuePropName="value">
+              <AceEditor
+                mode={'sql'}
+                theme="github"
+                fontSize={12}
+                height={'200px'}
+                width={window.screen.width * 0.17 + 'px'}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                editorProps={{ $blockScrolling: true }}
+                setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: true,
+                  showLineNumbers: true,
+                  tabSize: 2
+                }} />
+            </Form.Item>
           case "text":
             return (
               <Form.Item
@@ -158,12 +197,12 @@ class ParamsFrom extends Component {
                   placeholder={item.description}
                   mode={item.mode == 'sql' ? 'sql' : 'json'}
                   name="data"
-                  theme="terminal"
+                  theme="github"
                   fontSize={12}
                   showPrintMargin={true}
                   showGutter={true}
                   highlightActiveLine={true}
-                  width={250}
+                  width={window.screen.width * 0.17 + 'px'}
                   editorProps={{ $blockScrolling: false }}
                   setOptions={{
                     enableBasicAutocompletion: true,

@@ -8,7 +8,7 @@ import AceEditor from "react-ace";
 
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-javascript';
-import "ace-builds/src-noconflict/theme-xcode";
+import "ace-builds/src-noconflict/theme-github";
 
 import 'ace-builds/src-noconflict/ext-searchbox';
 
@@ -150,13 +150,14 @@ class EditorDebug extends Component {
                       // readOnly
                       width="100%"
                       height="300px"
-                      theme="xcode"
+                      theme="github"
                       setOptions={{
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: true,
                         enableSnippets: true,
                         showLineNumbers: true,
                         showConnectors: true,
+                        useWorker: false,
                         readOnly: true,
                         tabSize: 2,
                       }}
@@ -177,7 +178,7 @@ class EditorDebug extends Component {
                       // readOnly
                       width="100%"
                       height="350px"
-                      theme="xcode"
+                      theme="github"
                       setOptions={{
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: true,

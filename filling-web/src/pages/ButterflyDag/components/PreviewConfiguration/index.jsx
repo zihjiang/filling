@@ -1,10 +1,11 @@
 import { React, Component, useState } from 'react';
-import { message, Form, Spin, notification } from 'antd';
+import { message, Form, Spin, notification, Row, Col } from 'antd';
 import ProForm, {
     ModalForm,
     ProFormSelect,
     ProFormDigit,
-    ProFormSwitch
+    ProFormSwitch,
+    ProFormText
 } from '@ant-design/pro-form';
 import { BugFilled, SmileOutlined, WarningOutlined } from '@ant-design/icons';
 import $ from 'jquery';
@@ -13,7 +14,7 @@ import { debugFillingJob, debugFillingSourceData } from '@/pages/FillingJobs/ser
 
 import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
-import "ace-builds/src-noconflict/theme-terminal";
+import "ace-builds/src-noconflict/theme-github";
 
 const PreviewConfiguration = (e) => {
 
@@ -137,7 +138,7 @@ const PreviewConfiguration = (e) => {
                     return true;
                 }}
 
-                width='60%'
+                width='35%'
                 submitter={{
                     // 配置按钮文本
                     searchConfig: {
@@ -153,7 +154,7 @@ const PreviewConfiguration = (e) => {
                 <Spin spinning={spinVisit} delay={100}>
                     <ProForm.Group>
                         <ProFormSelect
-                            width="md"
+                            width="xl"
                             name="result_table_name"
                             label="Preview Source"
                             tooltip="Preview Source"
@@ -163,7 +164,44 @@ const PreviewConfiguration = (e) => {
                                 window.canvas == undefined ? sourceOptions : deCodeDataMap(window.canvas.getDataMap()).nodes.filter(_d => _d.PluginType == 'source').map(c => { return { 'label': c.data.name, 'value': c.id } })
                             }
                             onChange={changeTestOrigin}
-                            addonAfter={<a onClick={getSourceData}>尝试获取样例数据</a>}
+
+                        />
+
+                    </ProForm.Group>
+
+
+                    <ProForm.Group>
+                        <ProFormDigit
+                            width="xl"
+                            name="batchSize"
+                            label="样例数据大小"
+                            tooltip="样例数据大小"
+                            placeholder="样例数据大小"
+                        // options={sourceOptions}
+                        />
+
+                    </ProForm.Group>
+
+                    <ProForm.Group>
+                        <ProFormDigit
+                            width="xl"
+                            name="timeout"
+                            label="预览超时"
+                            tooltip="预览超时"
+                            placeholder="预览超时"
+                        // options={sourceOptions}
+                        />
+
+                    </ProForm.Group>
+
+                    <ProForm.Group>
+                        <ProFormSwitch
+                            width="xl"
+                            name="isOutSink"
+                            label="写入sink"
+                            tooltip="写入sink"
+                            placeholder="写入sink"
+                        // options={sourceOptions}
                         />
 
                     </ProForm.Group>
@@ -171,17 +209,16 @@ const PreviewConfiguration = (e) => {
                     <ProForm.Group>
                         <Form.Item
                             name='schema'
-                            label={'样例数据'}
+                            label='样例数据'
                             tooltip={'item.paramsDesc'}
                             placeholder={'item.paramsDesc'}
                             valuePropName="value">
                             <AceEditor
-                                placeholder={'item.description'}
                                 mode={'json'}
-                                theme="terminal"
+                                theme="github"
                                 fontSize={12}
                                 height={'200px'}
-                                width={window.screen.width * 0.55 + 'px'}
+                                width={window.screen.width * 0.3 + 'px'}
                                 showPrintMargin={true}
                                 showGutter={true}
                                 highlightActiveLine={true}
@@ -191,6 +228,7 @@ const PreviewConfiguration = (e) => {
                                 }} />
                         </Form.Item>
                     </ProForm.Group>
+                    <a onClick={getSourceData}>从数据源加载</a>
                 </Spin>
             </ModalForm>
         </>
