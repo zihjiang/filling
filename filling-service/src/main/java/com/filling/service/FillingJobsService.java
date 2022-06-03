@@ -36,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service Implementation for managing {@link FillingJobs}.
@@ -373,7 +374,7 @@ public class FillingJobsService {
         log.info("create tempFile: {}", file.getAbsolutePath());
         Boolean result = true;
         try {
-            result = exec(file, "/Library/Java/JavaVirtualMachines/zulu-11.jdk/Contents/Home/bin/java", "-cp", flink.getDebugLibDir() + File.separator + "*:" + flink.getJar(), "com.filling.calculation.Filling", Base64Utils.encode(jobString), "debug");
+            result = exec(file, "java", "-cp", flink.getDebugLibDir() + File.separator + "*:" + flink.getJar(), "com.filling.calculation.Filling", Base64Utils.encode(jobString), "debug");
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -385,7 +386,7 @@ public class FillingJobsService {
     private Boolean exec(File file, String... command) throws Exception {
         final Boolean[] status = {true};
         FileWriter fw = new FileWriter(file, true);
-        new ProcessExecutor().command(command).destroyOnExit().redirectOutput(new LogOutputStream() {
+        new ProcessExecutor().command(command).timeout(30, TimeUnit.SECONDS).destroyOnExit().redirectOutput(new LogOutputStream() {
             @Override
             protected void processLine(String s) {
                 try {
