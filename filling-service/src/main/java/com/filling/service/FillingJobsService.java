@@ -289,6 +289,7 @@ public class FillingJobsService {
         Path path = Paths.get("/tmp/flink_" + resultName + ".json");
         try {
             strings = JSONArray.parseArray(Files.readString(path));
+            Files.deleteIfExists(path);
         } catch (IOException e) {
             System.out.println(e.getMessage());
             strings = new JSONArray();

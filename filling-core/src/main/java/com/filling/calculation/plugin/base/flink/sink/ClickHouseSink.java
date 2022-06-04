@@ -13,6 +13,10 @@ import org.apache.flink.connector.jdbc.JdbcSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.types.Row;
+import org.apache.logging.log4j.util.Strings;
+
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -43,7 +47,7 @@ public class ClickHouseSink implements FlinkStreamSink<Row, Row> {
     private int batchSize = 5000;
     private int batchIntervalMs = 200;
     private int maxRetries = 5;
-    private JSONArray params;
+    private List params;
 
 
     @Override
@@ -79,9 +83,12 @@ public class ClickHouseSink implements FlinkStreamSink<Row, Row> {
 
         driverName = config.getString(DRIVER);
         dbUrl = config.getString(URL);
-        username = config.getString(USERNAME);
         query = config.getString(QUERY);
-        if (config.containsKey(PASSWORD)) {
+
+        if (config.containsKey(USERNAME) && !StringUtils.isEmpty(config.getString(USERNAME))) {
+            username = config.getString(USERNAME);
+        }
+        if (config.containsKey(PASSWORD) && !StringUtils.isEmpty(config.getString(PASSWORD))) {
             password = config.getString(PASSWORD);
         }
         if (config.containsKey(BATCHSIZE)) {
@@ -96,6 +103,13 @@ public class ClickHouseSink implements FlinkStreamSink<Row, Row> {
         if (config.containsKey(PARAMS)) {
             params = config.getJSONArray(PARAMS);
         }
+        String columns = String.join(",", params);
+        String[] str = new String[params.size()];
+        Arrays.fill(str, "?");
+        String questionMark = String.join(",", str);
+
+        query = query.replaceAll("\\{columns}", columns);
+        query = query.replaceAll("\\{questionMark}", questionMark);
     }
 
 
@@ -107,9 +121,8 @@ public class ClickHouseSink implements FlinkStreamSink<Row, Row> {
                         query
                         ,
                         (statement, row) -> {
-//                    statement.setObject(1, row.getField("_time"));
                             for (int i = 0; i < params.size(); i++) {
-                                statement.setObject(i + 1, row.getField(params.getString(i)));
+                                statement.setObject(i + 1, row.getField(params.get(i).toString()));
                             }
                         },
                         JdbcExecutionOptions.builder()

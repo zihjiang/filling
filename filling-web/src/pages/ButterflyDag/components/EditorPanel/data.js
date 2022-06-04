@@ -572,7 +572,7 @@ const transform = [
                 "paramsDesc": "时间字段, 必须是13位时间戳类型",
                 "desc": " ",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "rowtime.watermark.tumble.ms",
                 "text": "翻滚窗口的大小(毫秒)",
@@ -601,7 +601,7 @@ const transform = [
                 "paramsDesc": "分组的字段, 回车选择",
                 "desc": " ",
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             }, {
                 "name": "custom.fields",
                 "text": "自定义聚合字段",
@@ -687,7 +687,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "target_field",
                 "text": "目标字段名",
@@ -695,7 +695,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段名",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "string",
                 "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
@@ -766,7 +765,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "target_field",
                 "text": "目标字段名",
@@ -774,7 +773,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段名",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "string",
                 "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
@@ -955,7 +953,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "数据{id}_t1, 的条件",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "text_rex_id"
             }, {
@@ -1038,7 +1035,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段类型",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "select",
                 "selectOptions": [
@@ -1062,9 +1058,8 @@ const transform = [
                 "required": true,
                 "paramsDesc": "源字段名称",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             },
             {
                 "name": "parallelism",
@@ -1130,7 +1125,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "string",
                 "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
@@ -1142,7 +1136,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "表达式(支持sql函数)",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "ace-auto-complete",
             },
@@ -1213,7 +1206,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "path",
                 "text": "表达式(xpath语法)",
@@ -1232,7 +1225,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段名称",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "string",
                 "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
@@ -1339,7 +1331,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "sql语句(用{source_table_name}表示上个算子的表名)",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "text",
                 "mode": "sql"
@@ -1409,9 +1400,8 @@ const transform = [
                 "required": true,
                 "paramsDesc": "需要保留的字段, 回车选择",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             },
             {
                 "name": "parallelism",
@@ -1567,7 +1557,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             },
             {
                 "name": "es.bulk.flush.max.actions",
@@ -1812,7 +1802,7 @@ const sink = [
             {
                 "name": "query",
                 "text": "insert语句, 用?表示占位符",
-                "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
+                "defaultValue": "insert into user_table({columns}) values({questionMark})",
                 "required": true,
                 "paramsDesc": "query",
                 "desc": " ",
@@ -1822,14 +1812,14 @@ const sink = [
             },
             {
                 "name": "params",
-                "text": "insert语句, 的参数, 与query数量必须保持一致",
+                "text": "insert语句的参数, 与query数量必须保持一致",
                 "defaultValue": [],
                 "required": true,
                 "paramsDesc": "params",
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             },
             {
                 "name": "batch_size",
@@ -1941,7 +1931,7 @@ const sink = [
             {
                 "name": "query",
                 "text": "insert语句, 用?表示占位符",
-                "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
+                "defaultValue": "insert into user_table({columns}) values({questionMark})",
                 "required": true,
                 "paramsDesc": "query",
                 "desc": " ",

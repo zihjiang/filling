@@ -3,6 +3,9 @@ let langTools = ace.require("ace/ext/language_tools");
 // 根据sourceNode名称, 获取关键词
 const getKey = () => {
 
+    if (!window.selectNode) {
+        return [];
+    }
     const targetNode = window.selectNode.options.id;
 
     let result = [];
@@ -23,15 +26,68 @@ const getKey = () => {
 
     function getMap(re) {
         let _result = [];
+
+        function generateDataAggregates(data) {
+            let result = [];
+            let timeFiemd = data["rowtime.watermark.field"];
+            let groupFields = data['group.fields'];
+            let customFields = data['custom.fields'];
+            // fields = fields.concat(data['custom.fields']);
+
+            groupFields.concat(customFields).forEach(field => {
+                result.push({
+                    word: field,
+                    meta: field
+                });
+            });
+            // group字段单独处理
+            groupFields.forEach(field => {
+                result.push({
+                    word: field + '_count',
+                    meta: field + '_count'
+                });
+            });
+
+            // start时间戳
+            result.push({
+                word: timeFiemd + '_watermark_start',
+                meta: timeFiemd + '_watermark_start'
+            });
+
+            // end时间戳
+            result.push({
+                word: timeFiemd + '_watermark_end',
+                meta: timeFiemd + '_watermark_end'
+            });
+
+            console.log('result: ', result);
+
+            return result;
+        }
         re.forEach(d => {
             if (d['target_field']) {
                 _result.push({ 'word': d['target_field'], 'meta': d['name'] });
-            } else if (d['schema']) {
+            } else if (d['schema'] && d['schema'].startsWith('{')) {
                 let json = JSON.parse(d['schema']);
                 Object.keys(json).forEach(key => {
                     _result.push({ 'word': key, 'meta': d['name'] });
                 }
                 )
+            } else {
+                _result.push({ 'word': 'message', 'meta': d['name'] });
+            }
+
+            if (d['plugin_name'] == 'FieldSelect') {
+
+                _result = [];
+                d.field.forEach(field => {
+                    _result.push({ 'word': field, 'meta': d['name'] });
+                })
+            }
+
+            if (d['plugin_name'] == 'DataAggregates') {
+
+                _result = generateDataAggregates(d);
             }
 
         }
@@ -75,4 +131,4 @@ const targetAutocomplete = () => {
 
     langTools.addCompleter(rhymeCompleter);
 }
-export default targetAutocomplete;
+export { targetAutocomplete, getKey };
