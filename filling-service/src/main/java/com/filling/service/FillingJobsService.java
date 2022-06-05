@@ -10,6 +10,7 @@ import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
 import com.filling.utils.Base64Utils;
 import com.filling.utils.DebugUtils;
+import com.filling.utils.KafkaUtil;
 import com.filling.web.rest.vm.FillingDebugVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Service Implementation for managing {@link FillingJobs}.
@@ -287,17 +289,84 @@ public class FillingJobsService {
         Path path = Paths.get("/tmp/flink_" + resultName + ".json");
         try {
             strings = JSONArray.parseArray(Files.readString(path));
+            Files.deleteIfExists(path);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             strings = new JSONArray();
         }
 
         return strings;
     }
 
+    public List getSourceData(JSONObject params) throws Exception {
+        String pluginName = params.getString("plugin_name");
+        List result = new ArrayList();
+        switch (pluginName) {
+            case "KafkaTableStream":
+                Map<String, Object> map;
+                if (params.containsKey("topics")) {
+                    map = extractSubConfig(params, "consumer.", false);
+                } else {
+                    throw new Exception("must is topics");
+                }
+                String topic = params.getString("topics");
+                List<String> _result = KafkaUtil.consumeMessage(topic, map);
+
+                _result.stream().forEach(s -> {
+                    if (s.startsWith("{")) {
+                        result.add(JSONObject.parseObject(s));
+                    } else {
+                        result.add(s);
+                    }
+                });
+
+                break;
+            case "dataGenSource":
+                for (int i = 0; i < 10; i++) {
+                    result.add(params.getJSONObject("schema"));
+                }
+                break;
+
+            default:
+                throw new Exception("pluginName not support preview ");
+        }
+
+        return result;
+
+    }
+
+
+    /**
+     * 剔除prefix后, 保留参数
+     *
+     * @param source
+     * @param prefix
+     * @param keepPrefix
+     * @return
+     */
+    public static Map<String, Object> extractSubConfig(JSONObject source, String prefix, boolean keepPrefix) {
+
+        Map<String, Object> result = new HashMap<>();
+
+        for (Map.Entry<String, Object> entry : source.entrySet()) {
+            final String key = entry.getKey();
+            final String value = String.valueOf(entry.getValue());
+            if (key.startsWith(prefix)) {
+
+                if (keepPrefix) {
+                    result.put(key, value);
+                } else {
+                    result.put(key.substring(prefix.length()), value);
+                }
+            }
+        }
+        return result;
+    }
+
 
     /**
      * 执行java -jar脚本
+     *
      * @param file
      * @param jobString
      * @return
@@ -318,7 +387,7 @@ public class FillingJobsService {
     private Boolean exec(File file, String... command) throws Exception {
         final Boolean[] status = {true};
         FileWriter fw = new FileWriter(file, true);
-        new ProcessExecutor().command(command).destroyOnExit().redirectOutput(new LogOutputStream() {
+        new ProcessExecutor().command(command).timeout(30, TimeUnit.SECONDS).destroyOnExit().redirectOutput(new LogOutputStream() {
             @Override
             protected void processLine(String s) {
                 try {

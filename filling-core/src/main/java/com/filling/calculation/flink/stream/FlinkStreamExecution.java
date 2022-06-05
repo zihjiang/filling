@@ -11,13 +11,17 @@ import com.filling.calculation.flink.util.SchemaUtil;
 import com.filling.calculation.flink.util.TableUtil;
 import com.filling.calculation.plugin.Plugin;
 import org.apache.flink.api.common.functions.MapFunction;
-import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -88,7 +92,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
         flinkEnvironment.getStreamExecutionEnvironment().execute(flinkEnvironment.getJobName());
     }
 
-    private void registerResultTable(Plugin plugin, DataStream dataStream, RunModel runModel){
+    private void registerResultTable(Plugin plugin, DataStream dataStream, RunModel runModel) {
         JSONObject config = plugin.getConfig();
         if (config.containsKey(RESULT_TABLE_NAME)) {
             String name = config.getString(RESULT_TABLE_NAME);
@@ -151,6 +155,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
 
     /**
      * datastream to string
+     *
      * @param dataStream
      * @return
      */
@@ -167,19 +172,20 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
     /**
      * string to file
      */
-    private static File stringToFile(String str, String resultTableName) {
-        File file = null;
+    private static void stringToFile(String str, String resultTableName) {
+        Path paths = Paths.get("/tmp/flink_" + resultTableName + ".json");
         try {
-            file = new File("/tmp/flink_" + resultTableName + ".json");
-            FileWriter writer = new FileWriter(file);
-            writer.write(str);
-            writer.close();
+
+            File file = new File("/tmp/flink_" + resultTableName + ".json");
+            if (file.exists()) {
+                file.delete();
+            }
+
+            Files.write(paths, str.getBytes(StandardCharsets.UTF_8), new StandardOpenOption[]{StandardOpenOption.CREATE});
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return file;
     }
-
 
 
 }

@@ -1,19 +1,20 @@
 import { React, Component, useState } from 'react';
-import { message, Form, Spin, notification } from 'antd';
+import { message, Form, Spin, notification, Row, Col } from 'antd';
 import ProForm, {
     ModalForm,
     ProFormSelect,
     ProFormDigit,
-    ProFormSwitch
+    ProFormSwitch,
+    ProFormText
 } from '@ant-design/pro-form';
 import { BugFilled, SmileOutlined, WarningOutlined } from '@ant-design/icons';
 import $ from 'jquery';
-import { debugFillingJob } from '@/pages/FillingJobs/service';
+import { debugFillingJob, debugFillingSourceData } from '@/pages/FillingJobs/service';
 
 
 import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
-import "ace-builds/src-noconflict/theme-terminal";
+import "ace-builds/src-noconflict/theme-github";
 
 const PreviewConfiguration = (e) => {
 
@@ -37,11 +38,33 @@ const PreviewConfiguration = (e) => {
         const data = deCodeDataMap(window.canvas.getDataMap());
         selectSource = data.nodes.filter(_d => _d.id == values);
 
-        form.setFieldsValue({
-            schema: selectSource[0].data.schema
-        });
+        if (selectSource[0].data.schema && selectSource[0].data.schema.startsWith("{")) {
+            form.setFieldsValue({
+                schema: JSON.stringify(JSON.parse(selectSource[0].data.schema), null, 2)
+            });
+        }
         console.log("selectSource: ", selectSource);
 
+    }
+
+    // 从数据源获取数据
+    const getSourceData = async () => {
+
+        const values = form.getFieldValue("result_table_name");
+        const data = deCodeDataMap(window.canvas.getDataMap());
+        selectSource = data.nodes.filter(_d => _d.id == values);
+
+        if (selectSource && selectSource[0]) {
+            setSpinVisit(true);
+            const data = selectSource[0].data;
+            const sourceData = await debugFillingSourceData({ "data": data });
+            setSpinVisit(false);
+
+            form.setFieldsValue({
+                schema: JSON.stringify(sourceData, null, 2)
+            });
+
+        }
     }
 
     const submit = async (changeData) => {
@@ -52,7 +75,7 @@ const PreviewConfiguration = (e) => {
 
 
         jobText.nodes.map(d => {
-            if (d.data.result_table_name == changeData.result_table_name.replaceAll('-', '_')) {
+            if (['KafkaTableStream', 'dataGenSource'].includes(d.data['plugin_name']) && d.data.result_table_name == changeData.result_table_name.replaceAll('-', '_')) {
                 d.data.schema = changeData.schema;
                 d.data['plugin_name'] = 'CustomDataSource';
             }
@@ -84,7 +107,7 @@ const PreviewConfiguration = (e) => {
                 message: '调试失败',
                 description:
                     '调试失败, 具体请查看日志',
-                    icon: <WarningOutlined style={{ color: '#108ee9' }} />,
+                icon: <WarningOutlined style={{ color: '#108ee9' }} />,
                 onClick: () => {
                     console.log('Notification Clicked!');
                 },
@@ -115,7 +138,7 @@ const PreviewConfiguration = (e) => {
                     return true;
                 }}
 
-                width='40%'
+                width='35%'
                 submitter={{
                     // 配置按钮文本
                     searchConfig: {
@@ -131,7 +154,7 @@ const PreviewConfiguration = (e) => {
                 <Spin spinning={spinVisit} delay={100}>
                     <ProForm.Group>
                         <ProFormSelect
-                            width="md"
+                            width="xl"
                             name="result_table_name"
                             label="Preview Source"
                             tooltip="Preview Source"
@@ -141,7 +164,44 @@ const PreviewConfiguration = (e) => {
                                 window.canvas == undefined ? sourceOptions : deCodeDataMap(window.canvas.getDataMap()).nodes.filter(_d => _d.PluginType == 'source').map(c => { return { 'label': c.data.name, 'value': c.id } })
                             }
                             onChange={changeTestOrigin}
-                            addonAfter={<a>尝试获取样例数据</a>}
+
+                        />
+
+                    </ProForm.Group>
+
+
+                    <ProForm.Group>
+                        <ProFormDigit
+                            width="xl"
+                            name="batchSize"
+                            label="样例数据大小"
+                            tooltip="样例数据大小"
+                            placeholder="样例数据大小"
+                        // options={sourceOptions}
+                        />
+
+                    </ProForm.Group>
+
+                    <ProForm.Group>
+                        <ProFormDigit
+                            width="xl"
+                            name="timeout"
+                            label="预览超时"
+                            tooltip="预览超时"
+                            placeholder="预览超时"
+                        // options={sourceOptions}
+                        />
+
+                    </ProForm.Group>
+
+                    <ProForm.Group>
+                        <ProFormSwitch
+                            width="xl"
+                            name="isOutSink"
+                            label="写入sink"
+                            tooltip="写入sink"
+                            placeholder="写入sink"
+                        // options={sourceOptions}
                         />
 
                     </ProForm.Group>
@@ -149,29 +209,26 @@ const PreviewConfiguration = (e) => {
                     <ProForm.Group>
                         <Form.Item
                             name='schema'
-                            label={'样例数据'}
+                            label='样例数据'
                             tooltip={'item.paramsDesc'}
                             placeholder={'item.paramsDesc'}
                             valuePropName="value">
                             <AceEditor
-                                placeholder={'item.description'}
                                 mode={'json'}
-                                theme="terminal"
+                                theme="github"
                                 fontSize={12}
                                 height={'200px'}
+                                width={window.screen.width * 0.3 + 'px'}
                                 showPrintMargin={true}
                                 showGutter={true}
                                 highlightActiveLine={true}
-                                editorProps={{ $blockScrolling: false }}
+                                editorProps={{ $blockScrolling: true }}
                                 setOptions={{
-                                    enableBasicAutocompletion: true,
-                                    enableLiveAutocompletion: true,
-                                    enableSnippets: true,
-                                    showLineNumbers: true,
-                                    tabSize: 2,
+                                    tabSize: 2
                                 }} />
                         </Form.Item>
                     </ProForm.Group>
+                    <a onClick={getSourceData}>从数据源加载</a>
                 </Spin>
             </ModalForm>
         </>

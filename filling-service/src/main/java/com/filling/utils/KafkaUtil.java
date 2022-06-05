@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.Duration;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by lyb on 2017/4/25.
@@ -20,14 +21,10 @@ public class KafkaUtil {
     public static final Logger logger = LogManager.getLogger(KafkaUtil.class);
 
 
-    static {
-
-    }
-
     /**
      * 拉取消息间隔 ms
      */
-    private final int CONSUME_POLL_TIME_OUT = 10000;
+    private static final int CONSUME_POLL_TIME_OUT = 10000;
     /**
      * kafka server ip端口列表
      */
@@ -41,15 +38,19 @@ public class KafkaUtil {
      */
     private static String agentId = "filling-debug";
 
-    private long waitMS = 0L;
+    /**
+     * 默认key.deserializer
+     */
+    private static String DEFAULT_KEY_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
 
-    public long getWaitMS() {
-        return waitMS;
-    }
+    private static String DEFAULT_VALUE_DESERIALIZER = "org.apache.kafka.common.serialization.StringDeserializer";
 
-    public void setWaitMS(long waitMS) {
-        this.waitMS = waitMS;
-    }
+    private static Integer MAX_POLL_RECORDS = 10;
+
+    private static Boolean ENABLE_AUTO_COMMIT = false;
+
+    private static String OFFSET_RESET = "earliest";
+
 
     /**
      * 关闭构造方法
@@ -95,7 +96,7 @@ public class KafkaUtil {
     /**
      * kafka client 消费者对象
      */
-    private KafkaConsumer<String, String> consumer;
+    private static KafkaConsumer<String, String> consumer;
 
     /**
      * 获取生产者对象，获取kafka生产者连接 目前只实现key和value都是String类型
@@ -120,50 +121,41 @@ public class KafkaUtil {
     }
 
     /**
-     * 获取消费者对象，获取kafka消费者连接 目前只实现key和value都是String类型
+     * 获取消费者对象，获取kafka消费者连接 接受的是所有kafka的配置
      *
      * @return
      */
-    private KafkaConsumer getKafkaConsumer() {
-        if (consumer == null) {
-            Properties props = new Properties();
-            props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka_server_list);
-            props.put(ConsumerConfig.GROUP_ID_CONFIG, "filling-" + UUID.randomUUID() + agentId);
-            props.put(ConsumerConfig.CLIENT_ID_CONFIG, "filling-" + agentId);
-            props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-            props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
-            props.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "30000");
-            props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-            props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringDeserializer");
-            props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-            props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "10");
-            consumer = new KafkaConsumer(props);
-            logger.debug("创建kafka consumer 连接");
-        }
-        return consumer;
+    private static KafkaConsumer getKafkaConsumer(Map<String, Object> params, Integer maxCount) {
+
+        params.putIfAbsent("key.deserializer", DEFAULT_KEY_DESERIALIZER);
+        params.putIfAbsent("value.deserializer", DEFAULT_VALUE_DESERIALIZER);
+        params.putIfAbsent("max.poll.records", maxCount);
+        params.putIfAbsent("enable.auto.commit", ENABLE_AUTO_COMMIT);
+        params.putIfAbsent("auto.offset.reset", OFFSET_RESET);
+        logger.debug("创建kafka consumer 连接");
+        return new KafkaConsumer(params);
     }
 
-    public List<String> consumeMessage(String topic) {
+    public static List<String> consumeMessage(String topic, Map<String, Object> params) {
+
+        return consumeMessage(topic, params, MAX_POLL_RECORDS);
+    }
+
+    public static List<String> consumeMessage(String topic, Map<String, Object> params, Integer maxCount) {
         List<String> result = new ArrayList();
 
         ConsumerRecords<String, String> records;
-        if (waitMS > 0) {
-            try {
-                logger.info("KAFKA消费等待" + waitMS + "ms");
-                Thread.sleep(waitMS);
-            } catch (InterruptedException e) {
-                logger.error("KAFKA 消费 等待异常", e);
-            }
-        } else {
-            getKafkaConsumer().subscribe(Collections.singletonList(topic));
-            records = consumer.poll(Duration.ofMillis(CONSUME_POLL_TIME_OUT));
-            records.forEach(record -> {
-                result.add(record.value());
-                logger.info("KAFKA消费者收到消息：" + record.value());
-            });
-            logger.debug("本次poll从kafka消费信息：" + records.count() + "条");
-        }
-//        consumer.close();
+
+        KafkaConsumer<String, String> consumer = getKafkaConsumer(params, maxCount);
+        consumer.subscribe(Pattern.compile(topic));
+        records = consumer.poll(Duration.ofMillis(CONSUME_POLL_TIME_OUT));
+        records.forEach(record -> {
+            result.add(record.value());
+            logger.info("KAFKA消费者收到消息：" + record.value());
+        });
+        logger.debug("本次poll从kafka消费信息：" + records.count() + "条");
+
+        consumer.close();
         return result;
     }
 
@@ -262,8 +254,10 @@ public class KafkaUtil {
 
     public static void main(String[] agrs) {
 
-        KafkaUtil kafkaUtil = KafkaUtil.getInstance("192.168.100.203:9092");
-        List<String> result = kafkaUtil.consumeMessage("test14");
+        Map params = new HashMap();
+        params.put("bootstrap.servers", "192.168.100.203:9092");
+        params.put("group.id", "filling-14");
+        List<String> result = KafkaUtil.consumeMessage("filling-001", params);
         for (String o : result) {
             System.out.println("------------------" + o);
         }

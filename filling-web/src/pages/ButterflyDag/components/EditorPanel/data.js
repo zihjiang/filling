@@ -141,7 +141,7 @@ const source = [
             }, {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "kafka-source",
+                "defaultValue": "kafka",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -169,7 +169,7 @@ const source = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "jdbc-source",
+                "defaultValue": "jdbc",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -315,7 +315,7 @@ const source = [
                 }
             ],
             "parallelism": 5,
-            "name": "my-datagen-source"
+            "name": "my-datagen"
         },
         pluginType: 'source',
         pluginName: "dataGenSource",
@@ -323,7 +323,7 @@ const source = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "dataGen-source",
+                "defaultValue": "dataGen",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -442,7 +442,6 @@ const source = [
                 "paramsDesc": "cdc的建表语句, 参考https://ververica.github.io/flink-cdc-connectors/master/content/%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B/mysql-postgres-tutorial-zh.html",
                 "defaultValue": "CREATE TABLE {table} (\n    id INT,\n    name STRING,\n    description STRING,\n    PRIMARY KEY (id) NOT ENFORCED\n  ) WITH (\n    'connector' = 'mysql-cdc',\n    'hostname' = '192.168.100.177',\n    'port' = '3306',\n    'username' = 'root',\n    'password' = '123456',\n    'database-name' = 'mydb',\n    'table-name' = 'products'\n  )",
                 "required": true,
-                "paramsDesc": "sql",
                 "desc": " ",
 
                 "readOnly": false,
@@ -503,7 +502,6 @@ const source = [
                 "name": "hosts",
                 "label": "hosts",
                 "text": "hosts",
-                "paramsDesc": "elasticsearch 的主机地址, 格式为 ip:port",
                 "defaultValue": ["127.0.0.1:9200"],
                 "required": true,
                 "paramsDesc": "elasticsearch 的主机地址, 格式为 ip:port",
@@ -516,7 +514,6 @@ const source = [
                 "name": "index",
                 "label": "index",
                 "text": "index",
-                "paramsDesc": "elasticsearch 的索引名称",
                 "defaultValue": "",
                 "required": true,
                 "paramsDesc": "elasticsearch 的索引名称",
@@ -575,7 +572,7 @@ const transform = [
                 "paramsDesc": "时间字段, 必须是13位时间戳类型",
                 "desc": " ",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "rowtime.watermark.tumble.ms",
                 "text": "翻滚窗口的大小(毫秒)",
@@ -604,7 +601,7 @@ const transform = [
                 "paramsDesc": "分组的字段, 回车选择",
                 "desc": " ",
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             }, {
                 "name": "custom.fields",
                 "text": "自定义聚合字段",
@@ -664,7 +661,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "DecodeBase64-transform",
+                "defaultValue": "DecodeBase64",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -690,7 +687,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "target_field",
                 "text": "目标字段名",
@@ -698,9 +695,10 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段名",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "string",
+                "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
+                "ruleMessage": "字段名称只能包含字母、数字、下划线，且以字母开头"
             }, {
                 "name": "parallelism",
                 "text": "并行度",
@@ -741,7 +739,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "EncodeBase64-transform",
+                "defaultValue": "EncodeBase64",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -767,7 +765,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "target_field",
                 "text": "目标字段名",
@@ -775,9 +773,10 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段名",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "string",
+                "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
+                "ruleMessage": "字段名称只能包含字母、数字、下划线，且以字母开头"
             }, {
                 "name": "parallelism",
                 "text": "并行度",
@@ -818,7 +817,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "DataJoin-transform",
+                "defaultValue": "DataJoin",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -920,7 +919,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "DataSelector-transform",
+                "defaultValue": "DataSelector",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -954,7 +953,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "数据{id}_t1, 的条件",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "text_rex_id"
             }, {
@@ -1013,7 +1011,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "FieldTypeConver-transform",
+                "defaultValue": "FieldTypeConver",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1037,7 +1035,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段类型",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "select",
                 "selectOptions": [
@@ -1051,7 +1048,9 @@ const transform = [
                         "value": "Long",
                         "label": "Long"
                     }
-                ]
+                ],
+                "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
+                "ruleMessage": "字段名称只能包含字母、数字、下划线，且以字母开头"
             }, {
                 "name": "source_field",
                 "text": "源字段名称",
@@ -1059,9 +1058,8 @@ const transform = [
                 "required": true,
                 "paramsDesc": "源字段名称",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             },
             {
                 "name": "parallelism",
@@ -1104,11 +1102,10 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "FieldOperation-transform",
+                "defaultValue": "FieldOperation",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
-
                 "readOnly": false,
                 "type": "string"
             }, {
@@ -1128,9 +1125,10 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "string",
+                "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
+                "ruleMessage": "字段名称只能包含字母、数字、下划线，且以字母开头"
             }, {
                 "name": "script",
                 "text": "表达式(支持sql函数)",
@@ -1138,9 +1136,8 @@ const transform = [
                 "required": true,
                 "paramsDesc": "表达式(支持sql函数)",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "ace-auto-complete",
             },
             {
                 "name": "parallelism",
@@ -1183,7 +1180,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "FieldJsonValue-transform",
+                "defaultValue": "FieldJsonValue",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1209,7 +1206,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             }, {
                 "name": "path",
                 "text": "表达式(xpath语法)",
@@ -1228,9 +1225,10 @@ const transform = [
                 "required": true,
                 "paramsDesc": "目标字段名称",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "string",
+                "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
+                "ruleMessage": "字段名称只能包含字母、数字、下划线，且以字母开头"
             },
             {
                 "name": "return_type",
@@ -1309,7 +1307,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "Sql-transform",
+                "defaultValue": "Sql",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1333,7 +1331,6 @@ const transform = [
                 "required": true,
                 "paramsDesc": "sql语句(用{source_table_name}表示上个算子的表名)",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "text",
                 "mode": "sql"
@@ -1379,7 +1376,7 @@ const transform = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "FieldSelect-transform",
+                "defaultValue": "FieldSelect",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1403,9 +1400,8 @@ const transform = [
                 "required": true,
                 "paramsDesc": "需要保留的字段, 回车选择",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             },
             {
                 "name": "parallelism",
@@ -1451,7 +1447,7 @@ const sink = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "Console-sink",
+                "defaultValue": "Console",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1502,7 +1498,7 @@ const sink = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "Elasticsearch-sink",
+                "defaultValue": "Elasticsearch",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1561,7 +1557,7 @@ const sink = [
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "string"
+                "type": "field_string"
             },
             {
                 "name": "es.bulk.flush.max.actions",
@@ -1655,7 +1651,7 @@ const sink = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "Kafka-sink",
+                "defaultValue": "Kafka",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1731,7 +1727,7 @@ const sink = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "ClickHouse-sink",
+                "defaultValue": "ClickHouse",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1806,7 +1802,7 @@ const sink = [
             {
                 "name": "query",
                 "text": "insert语句, 用?表示占位符",
-                "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
+                "defaultValue": "insert into user_table({columns}) values({questionMark})",
                 "required": true,
                 "paramsDesc": "query",
                 "desc": " ",
@@ -1816,14 +1812,14 @@ const sink = [
             },
             {
                 "name": "params",
-                "text": "insert语句, 的参数, 与query数量必须保持一致",
+                "text": "insert语句的参数, 与query数量必须保持一致",
                 "defaultValue": [],
                 "required": true,
                 "paramsDesc": "params",
                 "desc": " ",
 
                 "readOnly": false,
-                "type": "array"
+                "type": "field_array"
             },
             {
                 "name": "batch_size",
@@ -1860,7 +1856,7 @@ const sink = [
             {
                 "name": "name",
                 "text": "名称",
-                "defaultValue": "Mysql-sink",
+                "defaultValue": "Mysql",
                 "required": true,
                 "paramsDesc": "自定义名称, 显示用",
                 "desc": " ",
@@ -1935,7 +1931,7 @@ const sink = [
             {
                 "name": "query",
                 "text": "insert语句, 用?表示占位符",
-                "defaultValue": "insert into host_metric15(id, host, metric, value, system, instance, _time) values(?,?,?,?,?,?,?)",
+                "defaultValue": "insert into user_table({columns}) values({questionMark})",
                 "required": true,
                 "paramsDesc": "query",
                 "desc": " ",

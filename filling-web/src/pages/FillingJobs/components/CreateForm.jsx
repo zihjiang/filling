@@ -17,13 +17,13 @@ const { TabPane } = Tabs;
 
 const CreateForm = (props) => {
   console.log(props);
-  let model;  // 哪种模式新建 blank 空白, 
+  let model = 'blank';  // 哪种模式新建 blank 空白, 
 
   let fromFile = {};
   let type = "";
   let initialValues = {};
   if (!initialValues.confProp) {
-    initialValues.confProp = '{"execution.parallelism": 2}';
+    initialValues.confProp = '{"execution.parallelism": 1, "execution.checkpoint.interval": 1000}';
   }
   return (
     <>

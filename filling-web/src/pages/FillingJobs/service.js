@@ -113,3 +113,12 @@ export async function planFillingJobs(id) {
         method: 'GET'
       });
     }
+
+     /** 获取一个算子的数据 /debug-filling-job/log-job-by-name/{name} */
+
+    export async function debugFillingSourceData(options) {
+      return request('/api/debug-filling-job/source', {
+        method: 'POST',
+        ...(options || {}),
+      });
+    }

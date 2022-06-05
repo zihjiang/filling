@@ -1,5 +1,5 @@
 import React, { useRef, Component, useState } from 'react';
-import { Button, message, Select } from 'antd';
+import { Button, message, Select, AutoComplete } from 'antd';
 import {
   DrawerForm,
   ProFormText,
@@ -16,6 +16,9 @@ import AceEditor from "react-ace";
 import 'ace-builds/src-noconflict/mode-json';
 import 'ace-builds/src-noconflict/mode-sql';
 import "ace-builds/src-noconflict/theme-terminal";
+import 'ace-builds/src-noconflict/theme-github';
+import "ace-builds/src-noconflict/ext-language_tools"
+import { targetAutocomplete, getKey } from "@/utils/autocomplete";
 
 import { Form } from 'antd';
 
@@ -62,7 +65,9 @@ class ParamsFrom extends Component {
         break;
     }
     // 更改节点的值
-    document.getElementById(selectNode.id).innerText = values.name;
+    if (values.name) {
+      document.getElementById(selectNode.id).innerText = values.name;
+    }
   }
 
   _forceUpdate = (values) => {
@@ -104,11 +109,12 @@ class ParamsFrom extends Component {
     console.log('pluginOptions', pluginOptions);
     let data = this.state.data;
 
+    // console.log("editor", editor);
+
     // if (pluginOptions) {
     if (this.state.data != undefined) {
       // 编辑
       initialValues = data;
-      console.log('编辑', initialValues);
     } else {
       // 新建
       pluginOptions.forEach((pluginOption) => {
@@ -117,33 +123,69 @@ class ParamsFrom extends Component {
 
       console.log('新建');
     }
-    console.log('pluginOptions', pluginOptions);
-    console.log('window.jobRunStatus', window.jobRunStatus);
+
+    targetAutocomplete();
+
     // }
 
     let Universal = () => (
       this.state.pluginOptions.map((item, idx) => {
         switch (item.type) {
           case "string":
-            return <ProFormText
+            return <Form.Item
+              style={{ display: item.display }}
+            > <ProFormText
+                key={idx}
+                name={item.name}
+                label={item.text}
+                tooltip={item.paramsDesc}
+                placeholder={item.paramsDesc}
+                style={{ display: item.display }}
+                disabled={item.readOnly || window.jobRunStatus}
+                formItemProps={
+                  {
+                    rules: [
+                      {
+                        required: item.required,
+                        message: `${item.text}是必须的`,
+                      },
+                      {
+                        pattern: new RegExp(item.ruleRegexp),
+                        message: item.ruleMessage
+                      }
+                    ],
+                  }
+                }
+              />
+            </Form.Item>
+          case "ace-auto-complete":
+            return <Form.Item
               key={idx}
               name={item.name}
               label={item.text}
               tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
-              style={{ display: item.display }}
+              // style={{ display: item.display }}
               disabled={item.readOnly || window.jobRunStatus}
-              formItemProps={
-                {
-                  rules: [
-                    {
-                      required: item.required,
-                      message: `${item.text}是必须的`,
-                    },
-                  ],
-                }
-              }
-            />
+              valuePropName="value">
+              <AceEditor
+                mode={'sql'}
+                theme="github"
+                fontSize={12}
+                height={'200px'}
+                width={window.screen.width * 0.17 + 'px'}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                editorProps={{ $blockScrolling: true }}
+                setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: true,
+                  showLineNumbers: true,
+                  tabSize: 2
+                }} />
+            </Form.Item>
           case "text":
             return (
               <Form.Item
@@ -158,12 +200,12 @@ class ParamsFrom extends Component {
                   placeholder={item.description}
                   mode={item.mode == 'sql' ? 'sql' : 'json'}
                   name="data"
-                  theme="terminal"
+                  theme="github"
                   fontSize={12}
                   showPrintMargin={true}
                   showGutter={true}
                   highlightActiveLine={true}
-                  width={250}
+                  width={window.screen.width * 0.17 + 'px'}
                   editorProps={{ $blockScrolling: false }}
                   setOptions={{
                     enableBasicAutocompletion: true,
@@ -209,30 +251,106 @@ class ParamsFrom extends Component {
             </ProFormSelect>
 
           case "array":
-            return <ProFormSelect
+            return <Form.Item
+              style={{ display: item.display }}
+            >
+              <ProFormSelect
+                key={idx}
+                mode="tags"
+                name={item.name}
+                label={item.text}
+                tooltip={item.paramsDesc}
+                placeholder={item.paramsDesc}
+                style={{ display: item.display }}
+                disabled={item.readOnly || window.jobRunStatus}
+                options={item.selectOptions}>
+              </ProFormSelect>
+            </Form.Item>
+
+          case "field_array":
+            let options = getKey().map(d => {
+              d['value'] = d.word;
+              d['label'] = d.word;
+              return d;
+            });
+
+            return <Form.Item
+              style={{ display: item.display }}
+            >
+              <ProFormSelect
+                key={idx}
+                mode="tags"
+                name={item.name}
+                label={item.text}
+                tooltip={item.paramsDesc}
+                placeholder={item.paramsDesc}
+                style={{ display: item.display }}
+                disabled={item.readOnly || window.jobRunStatus}
+                options={options}>
+              </ProFormSelect>
+            </Form.Item>
+
+          case "field_string":
+            options = getKey().map(d => {
+              d['value'] = d.word;
+              d['label'] = d.word;
+              return d;
+            });
+
+            return <Form.Item
               key={idx}
-              mode="tags"
               name={item.name}
               label={item.text}
               tooltip={item.paramsDesc}
               placeholder={item.paramsDesc}
-              style={{ display: item.display }}
+              // style={{ display: item.display }}
               disabled={item.readOnly || window.jobRunStatus}
-              options={item.selectOptions}>
+              valuePropName="value">
+              <AutoComplete
+                options={options}>
+              </AutoComplete>
+            </Form.Item>
 
-            </ProFormSelect>
+          // case "text_rex_id":
+          //   return <ProFormText
+          //     key={idx}
+          //     tooltip={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
+          //     name={item.name.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
+          //     label={item.text.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
+          //     placeholder={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
+          //     style={{ display: item.display }}
+          //     disabled={item.readOnly || window.jobRunStatus}
+          //     options={item.selectOptions}>
+          //   </ProFormText>
 
           case "text_rex_id":
-            return <ProFormText
+            return <Form.Item
               key={idx}
               tooltip={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               name={item.name.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               label={item.text.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
               placeholder={item.paramsDesc.replace("{id}", window.selectNode.id).replaceAll("-", "_")}
-              style={{ display: item.display }}
               disabled={item.readOnly || window.jobRunStatus}
-              options={item.selectOptions}>
-            </ProFormText>
+              valuePropName="value">
+              <AceEditor
+                mode={'sql'}
+                theme="github"
+                fontSize={12}
+                height={'20px'}
+                width={window.screen.width * 0.17 + 'px'}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                editorProps={{ $blockScrolling: true }}
+                setOptions={{
+                  enableBasicAutocompletion: true,
+                  enableLiveAutocompletion: true,
+                  enableSnippets: true,
+                  showLineNumbers: true,
+                  tabSize: 2
+                }} />
+            </Form.Item>
+
 
           case "child":
             return (_.find(this.state.pluginOptions, (d) => { return d.name == item.father }) || []).defaultValue.map((_item, _idx) => {

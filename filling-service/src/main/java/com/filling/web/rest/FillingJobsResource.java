@@ -354,4 +354,15 @@ public class FillingJobsResource {
         return ResponseEntity.ok()
             .body(fillingJobsService.detailResultTable(name));
     }
+
+    /**
+     *
+     * @return
+     */
+    @PostMapping(value = "/debug-filling-job/source")
+    public ResponseEntity<List> getSourceData(@RequestBody JSONObject params) throws Exception {
+        log.debug("REST request to get source : {}", params);
+        return ResponseEntity.ok()
+            .body(fillingJobsService.getSourceData(params));
+    }
 }
