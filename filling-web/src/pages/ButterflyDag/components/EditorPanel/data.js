@@ -853,7 +853,7 @@ const transform = [
                 "desc": " ",
                 "display": "none",
                 "readOnly": false,
-                "type": "string"
+                "type": "ace-auto-complete"
             }, {
                 "name": "join.secondary.type",
                 "text": "关联类型",

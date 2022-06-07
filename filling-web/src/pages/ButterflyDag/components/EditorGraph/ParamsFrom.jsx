@@ -134,8 +134,8 @@ class ParamsFrom extends Component {
           case "string":
             return <Form.Item
               style={{ display: item.display }}
+              key={idx}
             > <ProFormText
-                key={idx}
                 name={item.name}
                 label={item.text}
                 tooltip={item.paramsDesc}

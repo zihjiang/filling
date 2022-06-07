@@ -54,17 +54,16 @@ const start = async (record) => {
     return;
   }
   if (record.id) {
-    const hide = message.loading('启动中');
+    const key = 'updatable';
+    message.loading({content: '启动中',duration: 100, key});
     const job = await startFillingJobs(record.id);
     console.log("job", job.status);
     switch (job.status) {
       case "2":
-        hide();
-        message.success('启动成功');
+        message.success({content: '启动成功', key});
         break;
       default:
-        hide();
-        message.error('启动失败, 请查看flink端日志');
+        message.error({content: '启动失败, 请查看flink端日志', key});
         window.jobRunStatus = false;
         break;
     };
