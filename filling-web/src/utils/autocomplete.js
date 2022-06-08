@@ -117,7 +117,6 @@ const targetAutocomplete = () => {
                 callback(null, []);
                 return
             }
-            console.log(pos, session.getTokenAt(pos.row, pos.column));
             callback(null, wordList.map(function (ea) {
                 return {
                     name: ea.word,

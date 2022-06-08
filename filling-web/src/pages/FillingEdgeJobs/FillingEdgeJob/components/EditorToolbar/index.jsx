@@ -115,19 +115,18 @@ class EditorToolbar extends Component {
     }
 
     start = async () => {
+        const key = 'updatable';
         if (this.state.jobId) {
-            const hide = message.loading('启动中');
+            message.loading({content: '启动中',duration: 100, key});
             const job = await startFillingEdgeJob(this.state.jobId);
             console.log("job", job.status);
             switch (job.status) {
                 case "RUNNING":
-                    hide();
-                    message.success('启动成功');
+                    message.success({content: '启动成功', key});
                     window.jobRunStatus = true;
                     break;
                 default:
-                    hide();
-                    message.error('启动失败, 请查看日志');
+                    message.error({content: '启动失败, 请查看日志', key});
                     window.jobRunStatus = false;
                     break;
             };
