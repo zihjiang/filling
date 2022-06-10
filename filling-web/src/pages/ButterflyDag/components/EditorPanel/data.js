@@ -1549,6 +1549,28 @@ const sink = [
                 "type": "string"
             },
             {
+                "name": "es.username",
+                "text": "用户名(如果有)",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "elasticserach的用户名",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            },
+            {
+                "name": "es.password",
+                "text": "密码(如果有)",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "elasticserach的密码",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            },
+            {
                 "name": "index_id_field",
                 "text": "主键",
                 "defaultValue": "",
