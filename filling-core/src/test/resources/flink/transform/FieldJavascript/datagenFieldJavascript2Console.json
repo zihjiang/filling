@@ -1,0 +1,86 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "dataGenSource",
+      "result_table_name": "dataGenSourceTable",
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+      "rows-per-second": 10,
+      "number-of-rows": 100,
+      "fields": [
+        {
+          "id": {
+            "type": "Int",
+            "min": 1,
+            "max": 2
+          }
+        },
+        {
+          "host": {
+            "type": "String",
+            "length": 5
+          }
+        },
+        {
+          "source": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "MetricsName": {
+            "type": "String",
+            "length": 10
+          }
+        },
+        {
+          "value": {
+            "type": "Int",
+            "min": 1,
+            "max": 2
+          }
+        }
+      ],
+      "parallelism": 1,
+      "name": "mysource"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "dataGenSourceTable",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "FieldJavascript",
+      "target_field": "jsfield",
+      "script": "function process(d) { return d;}"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "FieldOperation_time",
+      "plugin_name": "ConsoleSink"
+    },
+    {
+      "name": "Elasticsearch",
+      "plugin_name": "Elasticsearch",
+      "parallelism": "1",
+      "hosts": [
+        "192.168.1.200:9200"
+      ],
+      "index": "filling-js",
+      "es.bulk.flush.max.actions": 1000,
+      "es.bulk.flush.max.size.mb": 2,
+      "es.bulk.flush.interval.ms": 1000,
+      "es.username": "elastic",
+      "es.password": "L47P64Jn4kyKKnCKhhwn",
+      "es.bulk.flush.backoff.enable": "true",
+      "es.bulk.flush.backoff.delay": 50,
+      "es.bulk.flush.backoff.retries": "8",
+      "source_table_name": "FieldOperation_time",
+      "id": "Elasticsearch-31b36005-4bdd"
+    }
+  ]
+}

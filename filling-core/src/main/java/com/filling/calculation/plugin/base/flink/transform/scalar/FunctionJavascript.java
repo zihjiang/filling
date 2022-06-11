@@ -1,63 +1,70 @@
 package com.filling.calculation.plugin.base.flink.transform.scalar;
 
 import com.alibaba.fastjson.JSONObject;
+import com.filling.calculation.flink.util.SchemaUtil;
+import jdk.nashorn.api.scripting.NashornScriptEngineFactory;
+import org.apache.flink.api.common.functions.RichFlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.api.scala.typeutils.Types;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.table.annotation.DataTypeHint;
+import org.apache.flink.table.annotation.FunctionHint;
+import org.apache.flink.table.annotation.InputGroup;
+import org.apache.flink.table.api.DataTypes;
+import org.apache.flink.table.catalog.DataTypeFactory;
+import org.apache.flink.table.data.RowData;
+import org.apache.flink.table.data.util.RowDataUtil;
+import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.table.functions.TableFunction;
+import org.apache.flink.table.types.inference.TypeInference;
 import org.apache.flink.types.Row;
+import org.apache.flink.util.Collector;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
-public class FunctionJavascript extends TableFunction<Row> {
 
-    private  String script = "";
-    private  ScriptEngine engine;
+public class FunctionJavascript extends ScalarFunction {
 
-    public FunctionJavascript(String script ) {
-        this.script = script;
+    private static final ScriptEngine SCRIPT_ENGINE;
+    static Invocable inv2;
+
+    public FunctionJavascript(String script) {
+
+        try {
+            SCRIPT_ENGINE.eval(script);
+        } catch (ScriptException e) {
+            System.out.println("[ERROR] script error: " + e.getMessage());
+        }
     }
 
-    public void eval(String event) throws Exception {
-
-        if (!(engine instanceof Invocable)) {
-            engine =  new ScriptEngineManager().getEngineByName("javascript");
-            System.out.println(" init ScriptEngineManager");
-            System.out.println("script: " + script);
-        }
-
-
-        engine.eval(script + "function _process(d){ return JSON.stringify(process(JSON.parse(d)))}");
-        Invocable inv2 = (Invocable) engine;
-        JSONObject jsonObject = JSONObject.parseObject(inv2.invokeFunction("_process", event).toString());
-        Row row = new Row(jsonObject.size());
-
-        int num = 0;
-        for(Map.Entry<String,Object> entry : jsonObject.entrySet()){
-            String key = entry.getKey();
-            Object value = entry.getValue();
-            row.setField(num, value.toString());
-            num ++;
-        }
-        collect(row);
+    static {
+        SCRIPT_ENGINE = new ScriptEngineManager().getEngineByName("javascript");
+        inv2 = (Invocable) SCRIPT_ENGINE;
     }
 
-    @Override
-    public TypeInformation<Row> getResultType() {
-        String[] fields = "hostid,metric,value,auth".split(",");
+    public String eval(@DataTypeHint(inputGroup = InputGroup.ANY) Object... o) throws Exception {
+        String[] column = (String[]) o[o.length - 1];
+        JSONObject row = new JSONObject();
+        for (int i = 0; i < o.length - 1; i++) {
+            if (!SchemaUtil.isBaseType(o[i])) {
+                if (o[i] instanceof org.apache.flink.types.Row) {
+                    row.put(column[i], new JSONObject(SchemaUtil.rowToJsonMap((Row) o[i])));
+                } else {
+                    row.put(column[i], o[i]);
+                }
+            } else {
+                row.put(column[i], o[i]);
+            }
 
-        TypeInformation[] types = new  TypeInformation[fields.length];
-        for (int i = 0; i< types.length; i++){
-            types[i] = Types.STRING();
         }
-        new RowTypeInfo(types,fields);
-        System.out.println("init TypeInformation ... ");
-
-
-        return Types.ROW(fields, types);
+        return inv2.invokeFunction("process", row).toString();
     }
-
 }

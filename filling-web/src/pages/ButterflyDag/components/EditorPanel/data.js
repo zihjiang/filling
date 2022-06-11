@@ -19,6 +19,8 @@ import ClickHouseIcon from './images/clickhouse.svg';
 import MysqlIcon from './images/mysql.svg';
 import jsonIcon from './images/json.svg';
 
+import javascriptIcon from './images/javascript.svg';
+
 import _ from 'lodash';
 const source = [
     {
@@ -1327,7 +1329,7 @@ const transform = [
             }, {
                 "name": "sql",
                 "text": "sql语句(用{source_table_name}表示上个算子的表名) ",
-                "defaultValue": "select * from {source_table_name}",
+                "defaultValue": "select \n* \nfrom \n{source_table_name}",
                 "required": true,
                 "paramsDesc": "sql语句(用{source_table_name}表示上个算子的表名)",
                 "desc": " ",
@@ -1430,6 +1432,86 @@ const transform = [
                 color: 'system-green'
             }],
         content: selectIocn,
+        height: 90,
+        width: "100%"
+    },
+    {
+        id: 'FieldJavascript',
+        text: 'FieldJavascript',
+        type: 'png',
+        Data: {},
+        pluginType: 'transform',
+        pluginName: "FieldJavascript",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "FieldJavascript",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "FieldJavascript",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "string"
+            }, {
+                "name": "target_field",
+                "text": "目标字段",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "目标字段",
+                "desc": " ",
+                "readOnly": false,
+                "type": "string",
+                "ruleRegexp": "(^_([a-zA-Z0-9]_?)*$)|(^[a-zA-Z](_?[a-zA-Z0-9])*_?$)",
+                "ruleMessage": "字段名称只能包含字母、数字、下划线，且以字母开头"
+            }, {
+                "name": "script",
+                "text": "脚本",
+                "defaultValue": "function process(d) {\n // 固定返回字符串 \n // d为所有字段的对象\n // 格式为{\"key\": \"value\"} \n\treturn d;\n}",
+                "required": true,
+                "paramsDesc": "脚本",
+                "desc": " ",
+                "readOnly": false,
+                "type": "text",
+                "mode": "javascript"
+            },
+            {
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": false,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            }
+        ],
+        endpoints: [
+            {
+                id: 'fieldJavascript_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'fieldJavascript_source_table_name_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
+        content: javascriptIcon,
         height: 90,
         width: "100%"
     }
@@ -1543,6 +1625,28 @@ const sink = [
                 "defaultValue": "filling",
                 "required": true,
                 "paramsDesc": "es的索引名称",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            },
+            {
+                "name": "es.username",
+                "text": "用户名(如果有)",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "elasticserach的用户名",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            },
+            {
+                "name": "es.password",
+                "text": "密码(如果有)",
+                "defaultValue": "",
+                "required": true,
+                "paramsDesc": "elasticserach的密码",
                 "desc": " ",
 
                 "readOnly": false,
