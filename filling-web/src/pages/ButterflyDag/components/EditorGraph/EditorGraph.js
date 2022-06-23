@@ -126,7 +126,7 @@ class EditorGraph extends Component {
             top: 10,
             botton: 10
           }
-        },
+        }
       }
     });
     this.canvas.draw(data, () => {
@@ -142,6 +142,22 @@ class EditorGraph extends Component {
       });
     });
     this.canvas.setMinimap(true);
+
+    this.canvas.unknownNode = () => {
+      let result = [];
+      let quote_node = {};
+      for (let i = 0; i < canvas.edges.length; i++) {
+        quote_node[canvas.edges[i].options.sourceNode] = 1;
+        quote_node[canvas.edges[i].options.targetNode] = 1;
+      }
+      canvas.nodes.forEach(d => {
+        if (!quote_node[d.id]) {
+          result.push(d);
+        }
+      })
+
+      return result;
+    }
 
     this.canvas.on('system.link.connect', (data) => {
 

@@ -118,18 +118,19 @@ class EditorToolbar extends Component {
     }
 
     start = async () => {
+        const key = 'updatable';
         if (this.state.data.name == undefined) {
             message.info('任务名称不能为空');
             return;
         }
         if (this.state.jobId) {
-            const hide = message.loading('启动中');
+            const hide = message.loading({ content: '启动中', duration: 100, key });
             const job = await startFillingJobs(this.state.jobId);
             console.log("job", job.status);
             switch (job.status) {
                 case "2":
                     hide();
-                    message.success('启动成功');
+                    message.success({ content: '启动成功', key });
                     window.jobRunStatus = true;
                     break;
                 default:
@@ -167,15 +168,16 @@ class EditorToolbar extends Component {
     }
 
     plan = async () => {
+        const key = 'updatable';
         if (this.state.jobId) {
-            const hide = message.loading('检查中');
+            message.loading({ content: '检查中', duration: 100, key });
             const status = await planFillingJobs(this.state.jobId);
-            hide();
             console.log('status', status);
             if (status.errors) {
                 message.error(status.errors[1]);
+                message.error({ content: status.errors[1], key });
             } else {
-                message.success('检查成功');
+                message.success({ content: '检查成功', key });
             }
         }
 

@@ -269,6 +269,7 @@ public class SchemaUtil {
                 className.equals(java.lang.Float.class) ||
                 className.equals(java.lang.Character.class) ||
                 className.equals(java.lang.Short.class) ||
+                className.equals(java.lang.String.class) ||
                 className.equals(java.lang.Boolean.class)) {
             return true;
         }
