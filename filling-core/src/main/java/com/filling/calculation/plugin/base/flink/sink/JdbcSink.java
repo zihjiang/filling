@@ -1,6 +1,5 @@
 package com.filling.calculation.plugin.base.flink.sink;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;

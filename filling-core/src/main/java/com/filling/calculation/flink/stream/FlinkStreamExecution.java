@@ -16,7 +16,8 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.types.Row;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -164,7 +165,7 @@ public class FlinkStreamExecution implements Execution<FlinkStreamSource, FlinkS
         dataStream.map((MapFunction<Row, Object>) row -> {
             Map<String, Object> stringObjectMap = SchemaUtil.rowToJsonMap(row);
             jsonArray.add(new JSONObject(stringObjectMap));
-            stringToFile(jsonArray.toJSONString(), resultTableName);
+            stringToFile(jsonArray.toString(), resultTableName);
             return null;
         });
     }

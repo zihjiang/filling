@@ -1,18 +1,15 @@
 package com.filling.calculation.plugin.base.flink.source;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.flink.api.common.io.DelimitedInputFormat;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
 import org.apache.flink.api.java.typeutils.ResultTypeQueryable;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.core.fs.Path;
 import org.apache.flink.types.Row;
 
-import java.beans.beancontext.BeanContext;
 import java.io.IOException;
 import java.util.Map;
 

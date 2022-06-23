@@ -1,6 +1,5 @@
 package com.filling.calculation.plugin.base.flink.sink;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
@@ -13,7 +12,6 @@ import org.apache.flink.connector.jdbc.JdbcSink;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
 import org.apache.flink.types.Row;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,36 +1,28 @@
 package com.filling.service;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.filling.client.ClusterClient;
 import com.filling.config.ApplicationProperties;
 import com.filling.domain.FillingJobs;
 import com.filling.repository.FillingJobsRepository;
 import com.filling.utils.Base64Utils;
-import com.filling.utils.DebugUtils;
 import com.filling.utils.KafkaUtil;
 import com.filling.web.rest.vm.FillingDebugVM;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.loader.tools.FileUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.exec.stream.LogOutputStream;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -298,9 +290,9 @@ public class FillingJobsService {
         return strings;
     }
 
-    public List getSourceData(JSONObject params) throws Exception {
+    public List<java.io.Serializable> getSourceData(JSONObject params) throws Exception {
         String pluginName = params.getString("plugin_name");
-        List result = new ArrayList();
+        List<java.io.Serializable> result = new ArrayList<>();
         switch (pluginName) {
             case "KafkaTableStream":
                 Map<String, Object> map;
@@ -312,7 +304,7 @@ public class FillingJobsService {
                 String topic = params.getString("topics");
                 List<String> _result = KafkaUtil.consumeMessage(topic, map);
 
-                _result.stream().forEach(s -> {
+                _result.forEach(s -> {
                     if (s.startsWith("{")) {
                         result.add(JSONObject.parseObject(s));
                     } else {

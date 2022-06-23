@@ -2,13 +2,10 @@ package com.filling.calculation.plugin.base.flink.sink.kafka;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.filling.calculation.flink.util.SchemaUtil;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.types.Row;
-
-import java.nio.charset.StandardCharsets;
 
 /**
  * @program: filling
