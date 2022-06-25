@@ -65,7 +65,7 @@
     },
     {
       "name": "Elasticsearch",
-      "plugin_name": "Elasticsearch",
+      "plugin_name": "ConsoleSink",
       "parallelism": "1",
       "hosts": [
         "192.168.1.200:9200"
