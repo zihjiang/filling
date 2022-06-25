@@ -4,11 +4,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.DtStringUtil;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.api.java.typeutils.TypeExtractor;
 import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.table.utils.TypeStringUtils;
 import org.apache.flink.types.Row;
@@ -271,6 +269,7 @@ public class SchemaUtil {
                 className.equals(java.lang.Float.class) ||
                 className.equals(java.lang.Character.class) ||
                 className.equals(java.lang.Short.class) ||
+                className.equals(java.lang.String.class) ||
                 className.equals(java.lang.Boolean.class)) {
             return true;
         }

@@ -134,8 +134,8 @@ class ParamsFrom extends Component {
           case "string":
             return <Form.Item
               style={{ display: item.display }}
+              key={idx}
             > <ProFormText
-                key={idx}
                 name={item.name}
                 label={item.text}
                 tooltip={item.paramsDesc}
@@ -198,7 +198,7 @@ class ParamsFrom extends Component {
                 valuePropName="value">
                 <AceEditor
                   placeholder={item.description}
-                  mode={item.mode == 'sql' ? 'sql' : 'json'}
+                  mode={item.mode}
                   name="data"
                   theme="github"
                   fontSize={12}
@@ -376,6 +376,7 @@ class ParamsFrom extends Component {
         name="data"
         theme="terminal"
         fontSize={12}
+        width={window.screen.width * 0.17 + 'px'}
         showPrintMargin={true}
         showGutter={true}
         highlightActiveLine={true}

@@ -1,7 +1,9 @@
 package com.filling.calculation.plugin.base.flink.source.batch;
 
-import javax.script.*;
-import java.util.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import java.util.List;
+import java.util.Map;
 
 public class jsTest {
     public static void main(String[] args) throws Exception {

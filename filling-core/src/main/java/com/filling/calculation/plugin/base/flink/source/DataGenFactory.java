@@ -12,13 +12,10 @@ import org.apache.flink.streaming.api.functions.source.datagen.DataGenerator;
 import org.apache.flink.types.Row;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class DataGenFactory implements DataGenerator<Row> {
 
