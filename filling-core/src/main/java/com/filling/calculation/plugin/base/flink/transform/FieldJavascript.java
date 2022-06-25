@@ -6,18 +6,27 @@ import com.filling.calculation.common.CheckConfigUtil;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamTransform;
+import com.filling.calculation.flink.util.SchemaUtil;
 import com.filling.calculation.flink.util.TableUtil;
+//import com.filling.calculation.plugin.base.flink.transform.scalar.FunctionJavascript;
 import com.filling.calculation.plugin.base.flink.transform.scalar.FunctionJavascript;
 import com.filling.calculation.plugin.base.flink.transform.scalar.ScalarSplit;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.table.annotation.DataTypeHint;
+import org.apache.flink.table.annotation.InputGroup;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
+import org.apache.flink.table.functions.ScalarFunction;
 import org.apache.flink.types.Row;
 
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.List;
 
 import static org.apache.flink.table.api.Expressions.$;
@@ -28,7 +37,7 @@ public class FieldJavascript implements FlinkStreamTransform<Row, Row> {
 
     private JSONObject config;
 
-    static final String  TARGET_FIELD_NAME = "target_field";
+    static final String TARGET_FIELD_NAME = "target_field";
     static final String SCRIPT = "script";
 
 
@@ -37,12 +46,12 @@ public class FieldJavascript implements FlinkStreamTransform<Row, Row> {
         System.out.println("[DEBUG] current stage: " + config.getString("name"));
 
         StreamTableEnvironment tableEnvironment = env.getStreamTableEnvironment();
+
         Table table = tableEnvironment.fromDataStream(dataStream).addColumns(
-                call(
-                        new FunctionJavascript(config.getString(SCRIPT)),
+                call(new FunctionJavascript(config.getString(SCRIPT)),
                         $("*"),
                         tableEnvironment.fromDataStream(dataStream).getResolvedSchema().getColumnNames()).as(config.getString(TARGET_FIELD_NAME))
-                );
+        );
 
 
         return tableEnvironment.toChangelogStream(table);
@@ -64,12 +73,13 @@ public class FieldJavascript implements FlinkStreamTransform<Row, Row> {
 
     @Override
     public CheckResult checkConfig() {
-        return CheckConfigUtil.check(config,TARGET_FIELD_NAME, SCRIPT);
+        return CheckConfigUtil.check(config, TARGET_FIELD_NAME, SCRIPT);
     }
 
     @Override
     public void prepare(FlinkEnvironment prepareEnv) {
     }
+
 
 
 }
