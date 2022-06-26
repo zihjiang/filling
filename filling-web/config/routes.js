@@ -20,7 +20,7 @@ export default [
   },
   {
     path: '/welcome',
-    name: 'welcome',
+    name: '欢迎页',
     icon: 'smile',
     component: './Welcome',
   },
