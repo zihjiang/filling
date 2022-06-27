@@ -1212,11 +1212,10 @@ const transform = [
             }, {
                 "name": "path",
                 "text": "表达式(xpath语法)",
-                "defaultValue": "",
+                "defaultValue": "$.name",
                 "required": true,
                 "paramsDesc": "表达式(xpath语法)",
                 "desc": " ",
-                "display": "none",
                 "readOnly": false,
                 "type": "string"
             },
@@ -1634,10 +1633,9 @@ const sink = [
                 "name": "es.username",
                 "text": "用户名(如果有)",
                 "defaultValue": "",
-                "required": true,
+                "required": false,
                 "paramsDesc": "elasticserach的用户名",
                 "desc": " ",
-
                 "readOnly": false,
                 "type": "string"
             },
@@ -1645,7 +1643,7 @@ const sink = [
                 "name": "es.password",
                 "text": "密码(如果有)",
                 "defaultValue": "",
-                "required": true,
+                "required": false,
                 "paramsDesc": "elasticserach的密码",
                 "desc": " ",
 
