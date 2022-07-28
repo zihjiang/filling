@@ -55,3 +55,19 @@ ol {
     min-height: 100vh;
   }
 }
+.butterflie-circle-endpoint {
+  position: absolute;
+  z-index: 100;
+  width: 15px !important;
+  height: 15px !important;;
+  border: 1px solid #999;
+  border-radius: 50%;
+  background: #fff;
+
+  &.linkable {
+    background: green;
+    &.hover {
+      background: orange;
+    }
+  }
+}
