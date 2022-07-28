@@ -345,11 +345,10 @@ const source = [
             }, {
                 "name": "schema",
                 "text": "简单数据",
-                "defaultValue": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49}",
+                "defaultValue": "{\"id\":1}",
                 "required": true,
                 "paramsDesc": "数据样本, 用来解析数据格式",
                 "desc": " ",
-
                 "readOnly": false,
                 "type": "textArea"
             }, {
@@ -382,6 +381,18 @@ const source = [
 
                 "readOnly": false,
                 "type": "digit"
+            },
+            {
+                "name": "fields",
+                "text": "",
+                "defaultValue": [{"id": {"kind": "SEQUENCE", "type": "Int", "start": 0, "end": 10000000 }}],
+                "required": false,
+                "paramsDesc": "f",
+                "desc": " ",
+
+                "display": "none",
+                "readOnly": false,
+                "type": "string"
             }
         ],
         endpoints: [{
