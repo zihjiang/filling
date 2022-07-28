@@ -67,7 +67,7 @@ public class SchemaUtil {
         } else if (value instanceof Long) {
             result = Types.LONG();
         } else if (value instanceof BigDecimal) {
-            result = Types.DOUBLE();
+            result = Types.JAVA_BIG_DEC();
         } else if (value instanceof JSONObject) {
             result = getTypeInformation((JSONObject) value);
         } else if (value instanceof JSONArray) {
