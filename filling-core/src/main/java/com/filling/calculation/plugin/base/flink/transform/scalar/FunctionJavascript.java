@@ -19,6 +19,7 @@ public class FunctionJavascript extends ScalarFunction {
 
     public FunctionJavascript(String script) {
         this.script = script;
+        scriptEngine = new ScriptEngineManager().getEngineByName("Nashorn");
         System.setProperty("nashorn.args", "--language=es6");
     }
 

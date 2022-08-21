@@ -98,7 +98,6 @@ public class FlinkEnvironment implements RuntimeEnv {
     private void createStreamEnvironment() {
         environment = StreamExecutionEnvironment.getExecutionEnvironment();
         setCheckpoint();
-//        environment.setRuntimeMode(RuntimeExecutionMode.BATCH);
 
         EnvironmentUtil.setRestartStrategy(config,environment.getConfig());
 

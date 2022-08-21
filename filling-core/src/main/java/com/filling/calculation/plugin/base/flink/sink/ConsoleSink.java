@@ -4,12 +4,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.filling.calculation.common.CheckResult;
 import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamSink;
+import com.filling.calculation.flink.util.TableUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.io.RichOutputFormat;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSink;
+import org.apache.flink.table.api.Table;
 import org.apache.flink.types.Row;
+import org.apache.flink.util.Collector;
 
 import java.io.IOException;
 
@@ -58,6 +62,13 @@ public class ConsoleSink extends RichOutputFormat<Row> implements FlinkStreamSin
 
     @Override
     public DataStreamSink<Row> outputStream(FlinkEnvironment env, DataStream<Row> dataStream) {
+
+//        Table table = env.getStreamTableEnvironment().fromChangelogStream(dataStream);
+//
+//        dataStream.flatMap((FlatMapFunction<Row, Object>) (value, out) -> {
+//            System.out.println(value);
+//            out.collect(value);
+//        });
         return dataStream.print(config.getString(SOURCE_TABLE_NAME)).setParallelism(getParallelism()).name(getName());
     }
 

@@ -4,27 +4,51 @@
   },
   "source": [
     {
-      "plugin_name": "JdbcSource",
-      "driver": "ru.yandex.clickhouse.ClickHouseDriver",
-      "result_table_name": "JdbcSourceTable",
-      "url": "jdbc:clickhouse://192.168.100.15:8123/aiops",
-      "query": "select * from host_metric08",
-      "fetch_size": 1000
+      "plugin_name": "CustomDataSource",
+      "plugin_name": "CustomDataSource",
+      "result_table_name": "dataGenSourceTable",
+      "schema": "{\"id\":1, \"name\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"age\":49}",
+      "parallelism": 1,
+      "name": "mysource"
     }
   ],
   "transform": [
   ],
   "sink": [
     {
-      "source_table_name": "JdbcSourceTable",
+      "source_table_name": "dataGenSourceTable",
       "plugin_name": "ClickHouseSink",
       "driver": "ru.yandex.clickhouse.ClickHouseDriver",
-      "url": "jdbc:clickhouse://192.168.100.15:8123/aiops",
-      "query": "insert into host_metric10(host, metric, value, system, instance, _time) values(?,?,?,?,?,?)",
+      "url": "jdbc:clickhouse://192.168.1.242:8123/default",
+      "query": "insert into user_table({columns}) values({questionMark})",
       "batch_size": "2000",
-      "params": ["host", "metric", "value", "system", "instance", "_time"],
+      "params": [
+        "id",
+        "name",
+        "age"
+      ],
+      "username": "default",
+      "password": "admin",
       "parallelism": 5,
       "name": "mytest"
+    },
+
+    {
+      "source_table_name": "dataGenSourceTable",
+      "plugin_name": "ClickHouseSink",
+      "driver": "ru.yandex.clickhouse.ClickHouseDriver",
+      "url": "jdbc:clickhouse://192.168.100.203:8123/default",
+      "query": "insert into user_table({columns}) values({questionMark})",
+      "batch_size": "2000",
+      "params": [
+        "id",
+        "name",
+        "age"
+      ],
+      "username": "",
+      "password": "",
+      "parallelism": 5,
+      "name": "mytest2"
     }
   ]
 }
