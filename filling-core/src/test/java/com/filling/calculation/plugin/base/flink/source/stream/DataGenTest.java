@@ -19,7 +19,7 @@ public class DataGenTest {
     @Before
     public void setup() {
 
-        rootPath = this.getClass().getResource("/").getPath();
+        rootPath = "/Users/jiangzihan/filling/filling-core/src/test/resources/";
     }
 
     @Test
