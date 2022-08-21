@@ -1524,6 +1524,75 @@ const transform = [
         content: javascriptIcon,
         height: 90,
         width: "100%"
+    },
+    {
+        id: 'DataJavascript',
+        text: 'DataJavascript',
+        type: 'png',
+        Data: {},
+        pluginType: 'transform',
+        pluginName: "DataJavascript",
+        pluginOptions: [
+            {
+                "name": "name",
+                "text": "名称",
+                "defaultValue": "DataJavascript",
+                "required": true,
+                "paramsDesc": "自定义名称, 显示用",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "string"
+            }, {
+                "name": "plugin_name",
+                "text": "插件名称",
+                "defaultValue": "DataJavascript",
+                "required": true,
+                "paramsDesc": "插件名称, 系统自带, 无需更改",
+                "desc": " ",
+                "display": "none",
+                "readOnly": true,
+                "type": "string"
+            }, {
+                "name": "script",
+                "text": "脚本",
+                "defaultValue": "function process(d) {\n // 固定返回字符串 \n // d为所有字段的对象\n // 格式为{\"key\": \"value\"} \n\treturn d;\n}",
+                "required": true,
+                "paramsDesc": "脚本",
+                "desc": " ",
+                "readOnly": false,
+                "type": "text",
+                "mode": "javascript"
+            },
+            {
+                "name": "parallelism",
+                "text": "并行度",
+                "defaultValue": "1",
+                "required": false,
+                "paramsDesc": "flink并行度设置, 请谨慎设置",
+                "desc": " ",
+
+                "readOnly": false,
+                "type": "digit"
+            }
+        ],
+        endpoints: [
+            {
+                id: 'DataJavascript_source_table_name',
+                orientation: [1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }, {
+                id: 'dataJavascript_source_table_name_result_table_name',
+                orientation: [-1, 0],
+                pos: [0, 0.5],
+                Class: BaseEndpoint,
+                color: 'system-green'
+            }],
+        content: javascriptIcon,
+        height: 90,
+        width: "100%"
     }
 
 ];

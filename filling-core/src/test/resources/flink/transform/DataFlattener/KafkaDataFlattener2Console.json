@@ -1,0 +1,38 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "KafkaTableStream",
+      "consumer.group.id": "filling-group01",
+      "topics": "qtjson01",
+      "schema": "{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49, \"attrs\": [123,456]}",
+      "format.type": "json",
+      "offset.reset": "earliest",
+      "consumer.bootstrap.servers": "192.168.31.200:9092",
+      "parallelism": "1",
+      "name": "kafka",
+      "result_table_name": "kafka_6ca6e5e4_b7e6",
+      "id": "kafka-6ca6e5e4-b7e6"
+    }
+  ],
+  "transform": [
+    {
+      "name": "DataFlattener",
+      "source_table_name": "kafka_6ca6e5e4_b7e6",
+      "result_table_name": "DataFlattener_time",
+      "plugin_name": "DataFlattener",
+      "source_field": "attrs",
+      "target_field": "attr"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "DataFlattener_time",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

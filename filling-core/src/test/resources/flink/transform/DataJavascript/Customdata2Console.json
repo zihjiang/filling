@@ -1,0 +1,30 @@
+{
+  "env": {
+    "execution.parallelism": 1,
+    "execution.time-characteristic": "event-time",
+    "job.name": "wattttt"
+  },
+  "source": [
+    {
+      "plugin_name": "CustomDataSource",
+      "result_table_name": "CustomDataSource",
+      "schema": "[{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49, \"attr\": {\"name\": 123}},{\"id\":1, \"host\":\"192.168.1.103\",\"source\":\"datasource\",\"MetricsName\":\"cpu\",\"value\":49, \"attr\": {\"name\": 123}}]",
+      "parallelism": 1,
+      "name": "mysource"
+    }
+  ],
+  "transform": [
+    {
+      "source_table_name": "CustomDataSource",
+      "result_table_name": "FieldOperation_time",
+      "plugin_name": "DataJavascript",
+      "script": "function process(d) { d=d.attr; return d;}"
+    }
+  ],
+  "sink": [
+    {
+      "source_table_name": "FieldOperation_time",
+      "plugin_name": "ConsoleSink"
+    }
+  ]
+}

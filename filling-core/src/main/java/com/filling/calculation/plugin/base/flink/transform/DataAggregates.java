@@ -8,6 +8,7 @@ import com.filling.calculation.flink.FlinkEnvironment;
 import com.filling.calculation.flink.stream.FlinkStreamTransform;
 import com.filling.calculation.flink.util.TableUtil;
 import com.filling.calculation.plugin.base.flink.transform.watermark.DefaultWaterMark;
+import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.Tumble;
@@ -61,6 +62,8 @@ public class DataAggregates implements FlinkStreamTransform<Row, Row> {
                         field(getSelectField(ROWTIME_WATERMARK_FIELD + "_watermark", SELECT_FIELDS))
                 );
 
+
+//        return env.getStreamTableEnvironment().toDataStream(result);
         return TableUtil.tableToDataStream(tableEnvironment, result, true);
     }
 

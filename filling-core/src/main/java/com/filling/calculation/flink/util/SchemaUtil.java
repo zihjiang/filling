@@ -7,6 +7,7 @@ import com.google.common.collect.Maps;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.ObjectArrayTypeInfo;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.api.java.typeutils.TypeExtractor;
 import org.apache.flink.api.scala.typeutils.Types;
 import org.apache.flink.table.utils.TypeStringUtils;
 import org.apache.flink.types.Row;
