@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: zihjiang/filling:latest
+    image: zihjiang/filling:main
     container_name: filling
     depends_on:
       - jobmanager
