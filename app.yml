@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: zihjiang/filling:latest
+    image: zihjiang/filling:main
     container_name: filling
     depends_on:
       - jobmanager
@@ -12,7 +12,7 @@ services:
     environment:
       - _JAVA_OPTIONS=-Xmx1g -Xms1g
       - JHIPSTER_SLEEP=10 # gives time for the JHipster Registry to boot before the application
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=docker
       - application_flink_url=http://jobmanager:8081
     ports:
       - "8080:8080"
